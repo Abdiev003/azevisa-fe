@@ -1,0 +1,398 @@
+{
+  "VisaRequirements": {
+    "hero": {
+      "badge": "Entry Requirements",
+      "title": "Azerbaijan eVisa Requirements",
+      "subtitle": "Review all required documents and eligibility criteria before starting your application. Complete applications are processed significantly faster."
+    },
+    "stats": {
+      "processing": "From 3 Hours",
+      "processingLabel": "Processing Time",
+      "online": "100% Online",
+      "onlineLabel": "No Embassy Visit",
+      "validity": "Up to 90 Days",
+      "validityLabel": "Visa Validity"
+    },
+    "generalDocs": {
+      "title": "General Requirements",
+      "subtitle": "All visa applicants must provide the following documents",
+      "passport": {
+        "name": "Valid Passport",
+        "desc": "Must be valid for at least 6 months beyond your intended travel dates and have at least 2 blank pages."
+      },
+      "photo": {
+        "name": "Digital Photo",
+        "desc": "Passport-style photo (3.5 × 4.5 cm, white background, taken within the last 6 months)."
+      },
+      "email": {
+        "name": "Email Address",
+        "desc": "A valid email address to receive your approved eVisa document and any correspondence."
+      },
+      "payment": {
+        "name": "Payment Card",
+        "desc": "Valid credit or debit card (Visa, Mastercard or Amex) for the visa fee payment."
+      },
+      "travel": {
+        "name": "Travel Itinerary",
+        "desc": "Confirmed return or onward flight ticket showing entry and departure dates."
+      },
+      "accommodation": {
+        "name": "Proof of Accommodation",
+        "desc": "Hotel booking confirmation, invitation letter or Airbnb reservation for your stay."
+      }
+    },
+    "tabs": {
+      "title": "Requirements by Visa Category",
+      "subtitle": "Select your intended visa type to view specific additional requirements",
+      "note": "Additional requirement",
+      "applyNow": "Apply Now"
+    },
+    "process": {
+      "title": "How to Apply",
+      "subtitle": "Complete your application in 4 simple steps",
+      "step1": {
+        "title": "Check Requirements",
+        "desc": "Confirm your nationality is eligible and gather all required documents listed on this page."
+      },
+      "step2": {
+        "title": "Fill Application Form",
+        "desc": "Complete the online form with your personal details exactly as they appear in your passport."
+      },
+      "step3": {
+        "title": "Upload & Pay",
+        "desc": "Upload your photo, select a processing speed and pay securely by credit or debit card."
+      },
+      "step4": {
+        "title": "Receive Your eVisa",
+        "desc": "Your approved eVisa PDF will be emailed to you. Print it and present it at the port of entry."
+      }
+    },
+    "notes": {
+      "title": "Important Information",
+      "items": [
+        {
+          "heading": "Validity vs. Maximum Stay",
+          "body": "The visa validity period is how long you have to enter Azerbaijan from the date of issue. The maximum stay is the number of days you may remain once inside. These are two different limits — check your visa carefully."
+        },
+        {
+          "heading": "Photo Requirements",
+          "body": "Photos must be JPEG or PNG, minimum 400×500 px, maximum 5 MB. No glasses, hats or sunglasses. Background must be plain white or off-white."
+        },
+        {
+          "heading": "Passport Validity Rule",
+          "body": "Your passport must remain valid for at least 6 months after the last date you plan to be in Azerbaijan. Check the expiry date before applying."
+        },
+        {
+          "heading": "Multiple-Entry Visas",
+          "body": "Business eVisas typically allow multiple entries. Tourist and transit visas are generally single-entry. If you plan to exit and re-enter Azerbaijan you will need a multiple-entry visa."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Ready to Apply?",
+      "subtitle": "Once you have all documents ready, starting your application takes less than 10 minutes.",
+      "apply": "Start Application",
+      "checkCountry": "Check Eligibility"
+    }
+  },
+  "Blog": {
+    "hero": {
+      "badge": "Travel & Visa Insights",
+      "title": "Blog",
+      "subtitle": "Expert guides, travel tips and the latest news about Azerbaijan eVisa — everything you need for a smooth journey."
+    },
+    "readMore": "Read More",
+    "minRead": "min read",
+    "backToBlog": "Back to Blog",
+    "relatedPosts": "Related Articles",
+    "ctaTitle": "Ready to apply for your eVisa?",
+    "ctaSubtitle": "Apply online in minutes — standard processing from $20.",
+    "ctaButton": "View Visa Types"
+  },
+  "CheckStatus": {
+    "hero": {
+      "title": "Check Your Application Status",
+      "subtitle": "Enter your credentials below to track the real-time progress of your Azerbaijan electronic visa application."
+    },
+    "form": {
+      "refLabel": "Application Reference Number",
+      "refPlaceholder": "e.g. AZ-2024-88921",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "alex@example.com",
+      "submit": "Check Status",
+      "checking": "Checking..."
+    },
+    "activeApplication": {
+      "title": "Active Application",
+      "appId": "APPLICATION ID",
+      "applicant": "APPLICANT",
+      "visaType": "VISA TYPE",
+      "submissionDate": "SUBMISSION DATE",
+      "statusProcessing": "PROCESSING",
+      "statusApproved": "APPROVED",
+      "statusRejected": "REJECTED",
+      "steps": {
+        "submitted": "Submitted",
+        "underReview": "Under Review",
+        "processing": "Processing",
+        "finalDecision": "Final Decision",
+        "inProgress": "IN PROGRESS",
+        "pending": "PENDING"
+      }
+    },
+    "recentDecisions": {
+      "title": "Recent Decisions",
+      "appId": "APPLICATION ID",
+      "status": "STATUS",
+      "validUntil": "VALID UNTIL",
+      "approved": "Approved",
+      "download": "Download eVisa PDF"
+    },
+    "help": {
+      "title": "Need help with your application?",
+      "subtitle": "Our support team is available 24/7 to assist with any questions regarding your visa status or documentation requirements.",
+      "button": "Contact Support"
+    },
+    "waitTimes": {
+      "title": "Wait Times",
+      "description": "Standard processing usually takes 3 business days. Urgent visas are issued within 3 hours.",
+      "learnMore": "Learn More"
+    },
+    "notFound": {
+      "title": "No application found",
+      "subtitle": "We couldn't find any application matching those credentials. Please check your reference number and email."
+    }
+  },
+  "Footer": {
+    "brand": {
+      "description": "The official independent portal for expedited electronic visa services for the Republic of Azerbaijan. Secure, efficient, and reliable."
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "visaRequirements": "Visa Requirements",
+      "applicationTracker": "Application Tracker",
+      "eligibleNationalities": "Eligible Nationalities",
+      "travelAdvisory": "Travel Advisory"
+    },
+    "support": {
+      "title": "Support",
+      "helpCenter": "24/7 Help Center",
+      "contactUs": "Contact Us",
+      "refundPolicy": "Refund Policy",
+      "privacyPolicy": "Privacy Policy"
+    },
+    "trust": {
+      "title": "Trust & Security",
+      "ssl": "SSL ENCRYPTED SECURE PAYMENT",
+      "official": "OFFICIAL SERVICE PROVIDER"
+    },
+    "bottom": {
+      "copyright": "© 2024 eViza Republic of Azerbaijan. All rights reserved.",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "cookiePolicy": "Cookie Policy"
+    }
+  },
+  "Header": {
+    "nav": {
+      "home": "Home",
+      "visaTypes": "Visa Types",
+      "eligibleCountries": "Eligible Countries",
+      "checkStatus": "Check Status",
+      "blog": "Blog",
+      "contact": "Contact"
+    },
+    "applyNow": "Apply Now"
+  },
+  "ContactUs": {
+    "breadcrumb": "Contact Us",
+    "hero": {
+      "badge": "Get in Touch",
+      "title": "We'd Love to Hear From You",
+      "subtitle": "Have a question about your application or need assistance? Our support team is available 24/7 to help."
+    },
+    "info": {
+      "email": {
+        "label": "Email Us",
+        "value": "support@azevisa.com",
+        "description": "We respond within 2 hours"
+      },
+      "phone": {
+        "label": "Call Us",
+        "value": "+994 12 555 0199",
+        "description": "Mon – Fri, 09:00 – 18:00 AZT"
+      },
+      "address": {
+        "label": "Visit Us",
+        "value": "12 Niyami Street, Baku AZ1001",
+        "description": "Republic of Azerbaijan"
+      },
+      "hours": {
+        "label": "Working Hours",
+        "value": "24/7 Online Support",
+        "description": "Office: Mon – Fri, 09:00 – 18:00"
+      }
+    },
+    "form": {
+      "title": "Send Us a Message",
+      "subtitle": "Fill in the form below and we'll get back to you as soon as possible.",
+      "firstName": {
+        "label": "First Name",
+        "placeholder": "John"
+      },
+      "lastName": {
+        "label": "Last Name",
+        "placeholder": "Doe"
+      },
+      "email": {
+        "label": "Email Address",
+        "placeholder": "john@example.com"
+      },
+      "subject": {
+        "label": "Subject",
+        "placeholder": "Select a subject",
+        "options": {
+          "application": "Application Status",
+          "payment": "Payment Issue",
+          "refund": "Refund Request",
+          "technical": "Technical Problem",
+          "general": "General Inquiry"
+        }
+      },
+      "message": {
+        "label": "Message",
+        "placeholder": "Describe your issue or question in detail..."
+      },
+      "submit": "Send Message",
+      "submitting": "Sending...",
+      "successTitle": "Message Sent!",
+      "successText": "Thank you for reaching out. We'll get back to you within 2 hours.",
+      "sendAnother": "Send Another Message"
+    },
+    "validation": {
+      "firstNameRequired": "First name is required",
+      "lastNameRequired": "Last name is required",
+      "emailRequired": "Email is required",
+      "emailInvalid": "Please enter a valid email address",
+      "subjectRequired": "Please select a subject",
+      "messageRequired": "Message is required",
+      "messageTooShort": "Message must be at least 20 characters"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "items": [
+        {
+          "q": "How long does it take to process a visa application?",
+          "a": "Standard processing takes 3 business days. Express processing guarantees a decision within 24 hours."
+        },
+        {
+          "q": "Can I get a refund if my visa is rejected?",
+          "a": "The azEvisa service fee is refunded in full for rejected applications. The government visa fee is non-refundable."
+        },
+        {
+          "q": "How will I receive my approved visa?",
+          "a": "Your approved e-Visa will be sent directly to your email address as a PDF document."
+        }
+      ]
+    }
+  },
+  "VisaTypes": {
+    "hero": {
+      "badge": "Official Entry Portal",
+      "title": "Azerbaijan eVisa Types",
+      "subtitle": "The Republic of Azerbaijan offers a streamlined electronic visa process tailored to your travel needs. Whether you are visiting for leisure, business, or education, ensure you select the appropriate visa category to facilitate a seamless entry into the Land of Fire."
+    },
+    "card": {
+      "keyDetails": "Key Details",
+      "requirements": "Requirements",
+      "processingFees": "Processing & Fees",
+      "validity": "Validity",
+      "maxStay": "Max Stay",
+      "entryType": "Entry Type"
+    },
+    "secondary": {
+      "details": "Details"
+    },
+    "comparison": {
+      "title": "Comprehensive Visa Comparison",
+      "col": {
+        "category": "Visa Category",
+        "validity": "Validity",
+        "maxStay": "Max Stay",
+        "priceRange": "Price Range",
+        "processingTime": "Processing Time"
+      }
+    },
+    "cta": {
+      "title": "Unsure which visa you need?",
+      "subtitle": "Our automated eligibility wizard can help you determine the exact requirements for your nationality and purpose of travel in less than 2 minutes.",
+      "startWizard": "Start Wizard",
+      "contactSupport": "Contact Support"
+    },
+    "visas": {
+      "tourism": {
+        "name": "Tourism eVisa",
+        "badge": "MOST POPULAR",
+        "description": "Perfect for sightseeing, visiting family, or attending cultural events in Azerbaijan. This single-entry visa is the fastest way to explore the historic Old City of Baku.",
+        "entryType": "Single Entry",
+        "validity": "90 Days",
+        "maxStay": "30 Days",
+        "processingTime": "3 Hours – 5 Days",
+        "requirements": [
+          "Valid Passport (6+ months)",
+          "Digital Photo (3.5x4.5cm)",
+          "Proof of Stay (Hotel Booking)"
+        ],
+        "applyLabel": "Apply for Tourism Visa",
+        "fees": [
+          { "label": "STANDARD", "time": "3-5 days" },
+          { "label": "URGENT", "time": "3 Hours" },
+          { "label": "SUPER RUSH", "time": "Immediate" }
+        ]
+      },
+      "business": {
+        "name": "Business eVisa",
+        "description": "Designed for professionals attending conferences, meetings, or negotiating trade deals. Efficiently handles all corporate travel requirements.",
+        "entryType": "Multiple Entry",
+        "validity": "90 Days",
+        "maxStay": "30 Days",
+        "processingTime": "3 Hours – 5 Days",
+        "requirements": [
+          "Business Invitation Letter",
+          "Passport Scan",
+          "Company Credentials"
+        ],
+        "applyLabel": "Apply for Business Visa",
+        "fees": [
+          { "label": "STANDARD", "time": "3-5 days" },
+          { "label": "URGENT", "time": "3 Hours" },
+          { "label": "RUSH", "time": "Immediate" }
+        ]
+      },
+      "transit": {
+        "name": "Transit eVisa",
+        "description": "Short-term entry for travelers passing through Azerbaijan to a third destination.",
+        "validity": "30 Days",
+        "maxStay": "5 Days",
+        "processingTime": "1 – 3 Days",
+        "priceLabel": "Starting at"
+      },
+      "student": {
+        "name": "Student eVisa",
+        "description": "For international students enrolled in recognized Azerbaijani educational institutions.",
+        "validity": "Program Length",
+        "maxStay": "90+ Days",
+        "processingTime": "7 – 15 Days",
+        "priceLabel": "Standard Fee"
+      },
+      "work": {
+        "name": "Work Permit",
+        "description": "Official authorization for foreign nationals to engage in professional employment.",
+        "validity": "1 Year (Renewable)",
+        "maxStay": "Contract Length",
+        "processingTime": "15 – 30 Days",
+        "priceLabel": "Processing Fee"
+      }
+    }
+  }
+}

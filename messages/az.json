@@ -1,0 +1,398 @@
+{
+  "VisaRequirements": {
+    "hero": {
+      "badge": "Giriş Tələbləri",
+      "title": "Azərbaycan eViza Tələbləri",
+      "subtitle": "Müraciətinizə başlamazdan əvvəl bütün tələb olunan sənədləri və uyğunluq meyarlarını nəzərdən keçirin."
+    },
+    "stats": {
+      "processing": "3 Saatdan",
+      "processingLabel": "Emal Müddəti",
+      "online": "100% Onlayn",
+      "onlineLabel": "Konsulluğa Gediş Lazım Deyil",
+      "validity": "90 Günə qədər",
+      "validityLabel": "Viza Etibarlılığı"
+    },
+    "generalDocs": {
+      "title": "Ümumi Tələblər",
+      "subtitle": "Bütün viza ərizəçiləri aşağıdakı sənədləri təqdim etməlidir",
+      "passport": {
+        "name": "Etibarlı Pasport",
+        "desc": "Planlaşdırılan səyahət tarixlərindən sonra ən azı 6 ay etibarlı olmalı və ən azı 2 boş səhifəsi olmalıdır."
+      },
+      "photo": {
+        "name": "Rəqəmsal Foto",
+        "desc": "Pasport tipli foto (3.5 × 4.5 sm, ağ fon, son 6 ay ərzində çəkilmiş)."
+      },
+      "email": {
+        "name": "E-poçt Ünvanı",
+        "desc": "Təsdiqlənmiş eVizanızı almaq üçün etibarlı e-poçt ünvanı tələb olunur."
+      },
+      "payment": {
+        "name": "Ödəniş Kartı",
+        "desc": "Viza rüsumunun ödənişi üçün etibarlı kredit və ya debet kartı (Visa, Mastercard və ya Amex)."
+      },
+      "travel": {
+        "name": "Səyahət Marşrutu",
+        "desc": "Giriş və ayrılış tarixlərini göstərən təsdiqlənmiş geri dönüş və ya irəli uçuş bileti."
+      },
+      "accommodation": {
+        "name": "Sığınacaq Sübut",
+        "desc": "Otel rezervasiyasının təsdiqi, dəvətnamə məktubu və ya Airbnb rezervasiyası."
+      }
+    },
+    "tabs": {
+      "title": "Viza Kateqoriyasına Görə Tələblər",
+      "subtitle": "Xüsusi əlavə tələbləri görmək üçün nəzərdə tutduğunuz viza növünü seçin",
+      "note": "Əlavə tələb",
+      "applyNow": "İndi Müraciət Et"
+    },
+    "process": {
+      "title": "Necə Müraciət Etmək",
+      "subtitle": "Müraciətinizi 4 sadə addımda tamamlayın",
+      "step1": {
+        "title": "Tələbləri Yoxlayın",
+        "desc": "Vətəndaşlığınızın uyğun olduğunu təsdiqləyin və bu səhifədə sadalanan bütün sənədləri toplayın."
+      },
+      "step2": {
+        "title": "Ərizə Formasını Doldurun",
+        "desc": "Pasportunuzda göründüyü kimi şəxsi məlumatlarınızla onlayn formanı doldurun."
+      },
+      "step3": {
+        "title": "Yükləyin və Ödəyin",
+        "desc": "Fotoşəklinizi yükləyin, emal sürətini seçin və kredit kartı ilə təhlükəsiz ödəniş edin."
+      },
+      "step4": {
+        "title": "eVizanızı Alın",
+        "desc": "Təsdiqlənmiş eViza PDF-i e-poçtunuza göndəriləcək. Giriş limanında çap edib təqdim edin."
+      }
+    },
+    "notes": {
+      "title": "Vacib Məlumat",
+      "items": [
+        {
+          "heading": "Etibarlılıq və Maksimum Qalma",
+          "body": "Viza etibarlılıq müddəti, verilmə tarixindən etibarən Azərbaycana girişiniz üçün nə qədər vaxtınız olduğunu göstərir. Maksimum qalma isə daxil olduqdan sonra qala biləcəyiniz gün sayıdır."
+        },
+        {
+          "heading": "Foto Tələbləri",
+          "body": "Fotolar JPEG və ya PNG formatında, minimum 400×500 px, maksimum 5 MB olmalıdır. Eynək, papaq icazə verilmir. Fon ağ olmalıdır."
+        },
+        {
+          "heading": "Pasport Etibarlılığı Qaydası",
+          "body": "Pasportunuz Azərbaycanda olmağı planlaşdırdığınız son tarixdən sonra ən azı 6 ay etibarlı olmalıdır."
+        },
+        {
+          "heading": "Çoxsaylı Giriş Vizaları",
+          "body": "Biznes eVizaları adətən çoxsaylı girişə icazə verir. Turizm və tranzit vizaları isə ümumiyyətlə tək girişdir."
+        }
+      ]
+    },
+    "cta": {
+      "title": "Müraciətə Hazırsınız?",
+      "subtitle": "Bütün sənədlər hazır olduqda, müraciətinizə başlamaq 10 dəqiqədən az vaxt aparır.",
+      "apply": "Müraciəti Başla",
+      "checkCountry": "Uyğunluğu Yoxla"
+    }
+  },
+  "Blog": {
+    "hero": {
+      "badge": "Səyahət və Viza Məsləhətləri",
+      "title": "Bloq",
+      "subtitle": "Azərbaycan eVizası barədə ekspert təlimatları, səyahət məsləhətləri və ən son xəbərlər — rəvin gədiş üçün sizin üçün lazım olan hər şey."
+    },
+    "readMore": "Daha Ətraflı",
+    "minRead": "dəq oxuma",
+    "backToBlog": "Bloqa Qədər",
+    "relatedPosts": "Əlaqədar Məqalələr",
+    "ctaTitle": "eVizanza müraciət etməyə hazırsınız?",
+    "ctaSubtitle": "Dəqiqələr ərzində onlayn müraciət edin — standart emal $20-dən başlayaraq.",
+    "ctaButton": "Viza Növlərinə Bax"
+  },
+  "CheckStatus": {
+    "hero": {
+      "title": "Müraciətinizin Statusunu Yoxlayın",
+      "subtitle": "Azərbaycan elektron viza müraciətinizin real vaxtda icrasını izləmək üçün aşağıda məlumatlarınızı daxil edin."
+    },
+    "form": {
+      "refLabel": "Müraciət İstinad Nömrəsi",
+      "refPlaceholder": "məs. AZ-2024-88921",
+      "emailLabel": "E-poçt Ünvanı",
+      "emailPlaceholder": "alex@example.com",
+      "submit": "Statusu Yoxla",
+      "checking": "Yoxlanılır..."
+    },
+    "activeApplication": {
+      "title": "Aktiv Müraciət",
+      "appId": "MÜRACİƏT İD",
+      "applicant": "MÜRACİƏTÇİ",
+      "visaType": "VİZA NÖV",
+      "submissionDate": "TƏQDİM TARİXİ",
+      "statusProcessing": "İCRADA",
+      "statusApproved": "TƏSDİQLƏNİB",
+      "statusRejected": "RƏDD EDİLİB",
+      "steps": {
+        "submitted": "Təqdim edildi",
+        "underReview": "Nəzərdən keçirilir",
+        "processing": "İcrada",
+        "finalDecision": "Son Qərar",
+        "inProgress": "İCRADA",
+        "pending": "GÖZLƏYİR"
+      }
+    },
+    "recentDecisions": {
+      "title": "Son Qərarlar",
+      "appId": "MÜRACİƏT İD",
+      "status": "STATUS",
+      "validUntil": "GEÇERLİLİK TARİXİ",
+      "approved": "Təsdiqlənib",
+      "download": "eVizanı PDF Yüklə"
+    },
+    "help": {
+      "title": "Müraciətinizlə bağlı köməyə ehtiyacınız var?",
+      "subtitle": "Dəstək komandamız viza statusunuz və ya sənəd tələbləri ilə bağlı istənilən sualda 24/7 kömək etməyə hazırdır.",
+      "button": "Dəstəklə Əlaqə"
+    },
+    "waitTimes": {
+      "title": "Gözləmə Müddətləri",
+      "description": "Standart emal adətən 3 iş günü çəkir. Təcili vizalar 3 saat ərzində verilir.",
+      "learnMore": "Daha Çox"
+    },
+    "notFound": {
+      "title": "Müraciət tapılmadı",
+      "subtitle": "Bu məlumatlara uyğun heç bir müraciət tapa bilmədik. Lütfən, istinad nömrənizi və e-poçtunuzu yoxlayın."
+    }
+  },
+  "Footer": {
+    "brand": {
+      "description": "Azərbaycan Respublikası üçün sürətli elektron viza xidmətlərinin rəsmi müstəqil portalı. Təhlükəsiz, səmərəli və etibarlı."
+    },
+    "quickLinks": {
+      "title": "Sürətli Keçidlər",
+      "visaRequirements": "Viza Tələbləri",
+      "applicationTracker": "Müraciət İzləyicisi",
+      "eligibleNationalities": "Uyğun Milliyyətlər",
+      "travelAdvisory": "Səyahət Məsləhəti"
+    },
+    "support": {
+      "title": "Dəstək",
+      "helpCenter": "7/24 Yardım Mərkəzi",
+      "contactUs": "Bizimlə Əlaqə",
+      "refundPolicy": "Geri Ödəmə Siyasəti",
+      "privacyPolicy": "Məxfilik Siyasəti"
+    },
+    "trust": {
+      "title": "Etibar və Təhlükəsizlik",
+      "ssl": "SSL ŞİFRƏLİ TƏHLÜKƏSİZ ÖDƏMƏ",
+      "official": "RƏSMİ XİDMƏT TƏMİNATÇISI"
+    },
+    "bottom": {
+      "copyright": "© 2026 Azərbaycan Respublikasının eVizası. Bütün hüquqlar qorunur.",
+      "privacyPolicy": "Məxfilik Siyasəti",
+      "termsOfService": "İstifadə Şərtləri",
+      "cookiePolicy": "Çərəz Siyasəti"
+    }
+  },
+  "Header": {
+    "nav": {
+      "home": "Ana Səhifə",
+      "visaTypes": "Viza Növləri",
+      "eligibleCountries": "Uyğun Ölkələr",
+      "checkStatus": "Statusu Yoxla",
+      "blog": "Bloq",
+      "contact": "Əlaqə"
+    },
+    "applyNow": "İndi Müraciət Edin"
+  },
+  "ContactUs": {
+    "breadcrumb": "Bizimlə Əlaqə",
+    "hero": {
+      "badge": "Əlaqəyə Keçin",
+      "title": "Sizdən Eşitmək İstəyirik",
+      "subtitle": "Müraciətinizlə bağlı sualınız var? Dəstək komandamız 7/24 sizə kömək etməyə hazırdır."
+    },
+    "info": {
+      "email": {
+        "label": "Bizə Yazın",
+        "value": "support@azevisa.com",
+        "description": "2 saat ərzində cavablayırıq"
+      },
+      "phone": {
+        "label": "Zəng Edin",
+        "value": "+994 12 555 0199",
+        "description": "B.e – Cüm, 09:00 – 18:00 AZT"
+      },
+      "address": {
+        "label": "Ünvanımız",
+        "value": "Niyami küç. 12, Bakı AZ1001",
+        "description": "Azərbaycan Respublikası"
+      },
+      "hours": {
+        "label": "İş Saatları",
+        "value": "7/24 Onlayn Dəstək",
+        "description": "Ofis: B.e – Cüm, 09:00 – 18:00"
+      }
+    },
+    "form": {
+      "title": "Bizə Mesaj Göndərin",
+      "subtitle": "Aşağıdakı formu doldurun, ən qısa zamanda sizinlə əlaqə saxlayacağıq.",
+      "firstName": {
+        "label": "Ad",
+        "placeholder": "Əli"
+      },
+      "lastName": {
+        "label": "Soyad",
+        "placeholder": "Əliyev"
+      },
+      "email": {
+        "label": "E-poçt Ünvanı",
+        "placeholder": "ali@nümunə.com"
+      },
+      "subject": {
+        "label": "Mövzu",
+        "placeholder": "Mövzu seçin",
+        "options": {
+          "application": "Müraciət Statusu",
+          "payment": "Ödəniş Problemi",
+          "refund": "Geri Ödəmə Tələbi",
+          "technical": "Texniki Problem",
+          "general": "Ümumi Sual"
+        }
+      },
+      "message": {
+        "label": "Mesaj",
+        "placeholder": "Probleminizi və ya sualınızı ətraflı izah edin..."
+      },
+      "submit": "Mesaj Göndər",
+      "submitting": "Göndərilir...",
+      "successTitle": "Mesaj Göndərildi!",
+      "successText": "Müraciətiniz üçün təşəkkür edirik. 2 saat ərzində sizinlə əlaqə saxlayacağıq.",
+      "sendAnother": "Başqa Mesaj Göndər"
+    },
+    "validation": {
+      "firstNameRequired": "Ad tələb olunur",
+      "lastNameRequired": "Soyad tələb olunur",
+      "emailRequired": "E-poçt tələb olunur",
+      "emailInvalid": "Düzgün e-poçt ünvanı daxil edin",
+      "subjectRequired": "Zəhmət olmasa mövzu seçin",
+      "messageRequired": "Mesaj tələb olunur",
+      "messageTooShort": "Mesaj ən az 20 simvol olmalıdır"
+    },
+    "faq": {
+      "title": "Tez-Tez Verilən Suallar",
+      "items": [
+        {
+          "q": "Viza müraciətinin işlənməsi nə qədər vaxt aparır?",
+          "a": "Standart işləmə 3 iş günü çəkir. Sürətli işləmə 24 saat ərzində qərar əldə etməyi zəmanət verir."
+        },
+        {
+          "q": "Vizam rədd edilsə geri ödəmə ala bilərəmmi?",
+          "a": "Rədd edilmiş müraciətlər üçün azEvisa xidmət haqqı tam geri qaytarılır. Hökumət viza haqqı geri qaytarılmır."
+        },
+        {
+          "q": "Təsdiqlənmiş vizamı necə alacağam?",
+          "a": "Təsdiqlənmiş e-Viza birbaşa e-poçt ünvanınıza PDF sənədi kimi göndəriləcək."
+        }
+      ]
+    }
+  },
+  "VisaTypes": {
+    "hero": {
+      "badge": "Rəsmi Giriş Portalı",
+      "title": "Azərbaycan eViza Növləri",
+      "subtitle": "Azərbaycan Respublikası səyahət ehtiyaclarınıza uyğun sadələşdirilmiş elektron viza prosesini təklif edir. İstirahət, biznes və ya təhsil məqsədilə gəlməyinizdən asılı olmayaraq, Atəşlər Ölkəsinə rahat giriş üçün uyğun viza kateqoriyasını seçin."
+    },
+    "card": {
+      "keyDetails": "Əsas Məlumatlar",
+      "requirements": "Tələblər",
+      "processingFees": "Emal & Ödənişlər",
+      "validity": "Etibarlılıq",
+      "maxStay": "Maks. Qalma",
+      "entryType": "Giriş Növü"
+    },
+    "secondary": {
+      "details": "Ətraflı"
+    },
+    "comparison": {
+      "title": "Hərtərəfli Viza Müqayisəsi",
+      "col": {
+        "category": "Viza Kateqoriyası",
+        "validity": "Etibarlılıq",
+        "maxStay": "Maks. Qalma",
+        "priceRange": "Qiymət Aralığı",
+        "processingTime": "Emal Müddəti"
+      }
+    },
+    "cta": {
+      "title": "Hansı vizaya ehtiyacınız olduğundan əmin deyilsiniz?",
+      "subtitle": "Avtomatik uyğunluq sehrbanımız vətəndaşlığınıza və səyahət məqsədinizə əsaslanan dəqiq tələbləri 2 dəqiqəyə müəyyən etməyinizə kömək edəcək.",
+      "startWizard": "Sehrbazı Başlat",
+      "contactSupport": "Dəstəklə Əlaqə"
+    },
+    "visas": {
+      "tourism": {
+        "name": "Turizm eVizası",
+        "badge": "ƏN MƏŞHUR",
+        "description": "Azərbaycanda görməli yerləri ziyarət etmək, qohumlarınızı görmək və ya mədəni tədbirlərdə iştirak etmək üçün mükəmməldir. Bu tək girişli viza, tarixi Bakı Köhnə Şəhərini kəşf etməyin ən sürətli yoludur.",
+        "entryType": "Tək Giriş",
+        "validity": "90 Gün",
+        "maxStay": "30 Gün",
+        "processingTime": "3 Saat – 5 Gün",
+        "requirements": [
+          "Etibarlı Pasport (6+ ay)",
+          "Rəqəmsal Foto (3.5x4.5sm)",
+          "Qalma Sübutu (Otel Rezervasiyası)"
+        ],
+        "applyLabel": "Turizm Vizası üçün Müraciət",
+        "fees": [
+          { "label": "STANDART", "time": "3-5 gün" },
+          { "label": "TƏCİLİ", "time": "3 Saat" },
+          { "label": "SUPER TƏCİLİ", "time": "Dərhal" }
+        ]
+      },
+      "business": {
+        "name": "Biznes eVizası",
+        "description": "Konfranslara, görüşlərə və ya ticarət müzakirələrinə qatılan peşəkarlar üçün nəzərdə tutulmuşdur. Bütün korporativ səyahət tələblərini effektiv şəkildə idarə edir.",
+        "entryType": "Çoxlu Giriş",
+        "validity": "90 Gün",
+        "maxStay": "30 Gün",
+        "processingTime": "3 Saat – 5 Gün",
+        "requirements": [
+          "Biznes Dəvəti Məktubu",
+          "Pasportun Skanı",
+          "Şirkət Etibarnəmələri"
+        ],
+        "applyLabel": "Biznes Vizası üçün Müraciət",
+        "fees": [
+          { "label": "STANDART", "time": "3-5 gün" },
+          { "label": "TƏCİLİ", "time": "3 Saat" },
+          { "label": "TƏLƏSİK", "time": "Dərhal" }
+        ]
+      },
+      "transit": {
+        "name": "Tranzit eVizası",
+        "description": "Üçüncü bir ölkəyə keçən səyahətçilər üçün qısamüddətli giriş.",
+        "validity": "30 Gün",
+        "maxStay": "5 Gün",
+        "processingTime": "1 – 3 Gün",
+        "priceLabel": "Başlanğıcdan"
+      },
+      "student": {
+        "name": "Tələbə eVizası",
+        "description": "Azərbaycanın tanınmış təhsil müəssisələrində oxuyan beynəlxalq tələbələr üçün.",
+        "validity": "Proqram Müddəti",
+        "maxStay": "90+ Gün",
+        "processingTime": "7 – 15 Gün",
+        "priceLabel": "Standart Ödəniş"
+      },
+      "work": {
+        "name": "İş İcazəsi",
+        "description": "Xarici vətəndaşların peşəkar fəaliyyətlə məşğul olması üçün rəsmi icazə.",
+        "validity": "1 İl (Yenilənən)",
+        "maxStay": "Müqavilə Müddəti",
+        "processingTime": "15 – 30 Gün",
+        "priceLabel": "Emal Haqqı"
+      }
+    }
+  }
+}
