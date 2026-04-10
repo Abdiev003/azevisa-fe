@@ -1,4 +1,116 @@
 {
+  "Home": {
+    "hero": {
+      "title": "Get Your Azerbaijan eVisa Online",
+      "subtitle": "Fast, secure, and hassle-free visa application for citizens of 70+ countries. Start your journey today.",
+      "applyNow": "Apply Now",
+      "checkStatus": "Check Status"
+    },
+    "steps": {
+      "title": "How It Works",
+      "step1": {
+        "num": "01",
+        "title": "Fill Application",
+        "desc": "Complete our simplified online form with your personal and travel details. It takes less than 5 minutes."
+      },
+      "step2": {
+        "num": "02",
+        "title": "Make Payment",
+        "desc": "Securely pay the visa fee using your credit card or PayPal. We use bank-grade encryption for all transactions."
+      },
+      "step3": {
+        "num": "03",
+        "title": "Receive eVisa",
+        "desc": "Your approved eVisa will be sent directly to your email. Just print it and bring it with your passport."
+      }
+    },
+    "tiers": {
+      "title": "Choose Your Service Tier",
+      "standard": {
+        "name": "Standard eVisa",
+        "tagline": "Ideal for planned travel",
+        "price": "$26",
+        "priceLabel": "PROCESSING FEE",
+        "feature1": "3-5 Business Days",
+        "feature2": "Email Delivery",
+        "cta": "Apply Now"
+      },
+      "urgent": {
+        "name": "Urgent eVisa",
+        "badge": "MOST POPULAR",
+        "tagline": "For quick travel needs",
+        "price": "$55",
+        "priceLabel": "PROCESSING FEE",
+        "feature1": "24 Hours Processing",
+        "feature2": "Priority Handling",
+        "cta": "Apply Now"
+      },
+      "superRush": {
+        "name": "Super Rush eVisa",
+        "tagline": "Emergency travel support",
+        "price": "$85",
+        "priceLabel": "PROCESSING FEE",
+        "feature1": "3-5 Hours Processing",
+        "feature2": "24/7 VIP Support",
+        "cta": "Apply Now"
+      }
+    },
+    "stats": {
+      "visas": "50,000+",
+      "visasLabel": "VISAS ISSUED",
+      "approval": "98%",
+      "approvalLabel": "APPROVAL RATE",
+      "countries": "70+",
+      "countriesLabel": "COUNTRIES SUPPORTED",
+      "years": "5+",
+      "yearsLabel": "YEARS OF SERVICE"
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "items": [
+        {
+          "q": "What documents are required for an eVisa?",
+          "a": "You only need a digital copy of your passport\u2019s information page (valid for at least 6 months beyond travel dates) and a valid email address."
+        },
+        {
+          "q": "How long can I stay with an eVisa?",
+          "a": "The standard Tourism eVisa allows stays of up to 30 days within a 90-day validity window. Business visas permit stays of up to 30 days with multiple-entry options."
+        },
+        {
+          "q": "Can I apply for a group or family?",
+          "a": "Each traveller must submit a separate application. You can, however, manage multiple applications simultaneously using the same email account."
+        },
+        {
+          "q": "Is the eVisa valid for land border crossings?",
+          "a": "Yes. The Azerbaijan eVisa is accepted at all international border crossing points, including airports, seaports and designated land borders."
+        },
+        {
+          "q": "What if my visa application is rejected?",
+          "a": "In the rare case of a rejection, our service fee is fully refunded. The government visa fee is non-refundable as it is collected on behalf of the Azerbaijani government."
+        }
+      ]
+    },
+    "testimonials": {
+      "title": "Traveler Stories",
+      "items": [
+        {
+          "quote": "\u201cThe fastest visa process I\u2019ve ever experienced. Applied for the Urgent option and received my eVisa in 18 hours. Highly recommend!\u201d",
+          "name": "Mark Sutherland",
+          "country": "UNITED KINGDOM"
+        },
+        {
+          "quote": "\u201cClean interface and very easy to follow steps. The support team answered my question about passport validity within minutes.\u201d",
+          "name": "Elena Rodriguez",
+          "country": "SPAIN"
+        },
+        {
+          "quote": "\u201cSeamless payment process and constant updates on the status. Azerbaijan is beautiful and this was the perfect start to my trip.\u201d",
+          "name": "James Chen",
+          "country": "SINGAPORE"
+        }
+      ]
+    }
+  },
   "VisaRequirements": {
     "hero": {
       "badge": "Entry Requirements",
@@ -393,6 +505,173 @@
         "processingTime": "15 – 30 Days",
         "priceLabel": "Processing Fee"
       }
+    }
+  },
+  "Apply": {
+    "meta": {
+      "title": "Apply for Azerbaijan eVisa",
+      "description": "Complete your Azerbaijan eVisa application online in minutes. Fast, secure, and reliable."
+    },
+    "sidebar": {
+      "title": "Application Progress",
+      "stepOf": "Step {current} of {total}",
+      "steps": {
+        "countryRegion": "Country / Region",
+        "arrivalDate": "Arrival Date",
+        "personalInfo": "Personal Information",
+        "passportDetails": "Passport Details",
+        "review": "Review & Submit",
+        "payment": "Payment"
+      }
+    },
+    "step1": {
+      "number": "01",
+      "title": "Country / Region",
+      "subtitle": "Select your nationality and the type of travel document you will use.",
+      "nationality": "Nationality / Citizenship",
+      "nationalityPlaceholder": "Choose from list",
+      "documentType": "Document Type",
+      "documentTypePlaceholder": "Choose from list",
+      "docOrdinary": "Ordinary Passport",
+      "docOfficial": "Official Passport",
+      "docDiplomatic": "Diplomatic Passport",
+      "docEmergency": "Emergency Passport",
+      "next": "Next Step"
+    },
+    "step2": {
+      "number": "02",
+      "title": "Arrival Date",
+      "subtitle": "Tell us when you plan to arrive and the purpose of your visit.",
+      "arrivalDate": "Arrival Date",
+      "purposeOfVisit": "Purpose of Visit",
+      "purposePlaceholder": "Choose from list",
+      "purposeTourism": "Tourism",
+      "purposeBusiness": "Business",
+      "purposeTransit": "Transit",
+      "purposeEducation": "Education",
+      "purposeMedical": "Medical",
+      "back": "Back",
+      "next": "Next Step"
+    },
+    "step3": {
+      "number": "03",
+      "title": "Personal Information",
+      "subtitle": "Please provide your personal details exactly as they appear on your travel document.",
+      "firstName": "First Name",
+      "firstNamePlaceholder": "Enter your first name",
+      "surname": "Surname",
+      "surnamePlaceholder": "Enter your surname",
+      "otherNames": "Other Names / Given Name(s)",
+      "otherNamesPlaceholder": "Enter other names (optional)",
+      "dateOfBirth": "Date of Birth",
+      "countryOfBirth": "Country of Birth",
+      "countryOfBirthPlaceholder": "Choose from list",
+      "placeOfBirth": "Place of Birth",
+      "placeOfBirthPlaceholder": "City or town of birth",
+      "sex": "Sex",
+      "sexPlaceholder": "Choose from list",
+      "sexMale": "Male",
+      "sexFemale": "Female",
+      "occupation": "Occupation",
+      "occupationPlaceholder": "Choose from list",
+      "occupationEmployed": "Employed",
+      "occupationSelfEmployed": "Self-Employed / Business Owner",
+      "occupationStudent": "Student",
+      "occupationRetired": "Retired",
+      "occupationUnemployed": "Unemployed",
+      "occupationGovernment": "Government Official",
+      "occupationMilitary": "Military / Law Enforcement",
+      "occupationHealthcare": "Healthcare Worker",
+      "occupationTeacher": "Teacher / Academic",
+      "occupationOther": "Other",
+      "mobileNumber": "Mobile Number",
+      "mobileNumberPlaceholder": "Enter your mobile number",
+      "address": "Address",
+      "addressPlaceholder": "Enter your home address",
+      "email": "E-mail Address",
+      "emailPlaceholder": "Enter your e-mail address",
+      "emailNote": "We will send you a Visa and application update to this address",
+      "back": "Back",
+      "next": "Next Step"
+    },
+    "step4": {
+      "number": "04",
+      "title": "Passport Details",
+      "subtitle": "Enter your passport information as shown on the biographical data page.",
+      "passportNumber": "Passport Number",
+      "passportNumberPlaceholder": "e.g. A0Z345678",
+      "passportIssueDate": "Passport Issue Date",
+      "passportExpiryDate": "Passport Expiry Date",
+      "passportCopyTitle": "Copy of the Passport",
+      "passportCopyDesc": "Upload a clear, colored scan or photo of the biographical page of your passport.",
+      "passportCopyWarning": "MAX SIZE: 5MB (JPG, PDF)",
+      "passportCopyDrop": "Drag and drop file here or click to browse your computer",
+      "addressInAzerbaijan": "Address in Azerbaijan",
+      "addressInAzerbaijanPlaceholder": "Enter your hotel or accommodation address in Azerbaijan",
+      "back": "Back",
+      "next": "Continue to Review"
+    },
+    "step5": {
+      "number": "05",
+      "title": "Review & Submit",
+      "subtitle": "Please review your application carefully before proceeding to payment.",
+      "countryRegionTitle": "Country / Region",
+      "arrivalDateTitle": "Arrival Date",
+      "personalTitle": "Personal Information",
+      "passportTitle": "Passport Details",
+      "edit": "Edit",
+      "nationality": "Nationality / Citizenship",
+      "documentType": "Document Type",
+      "arrivalDate": "Arrival Date",
+      "purposeOfVisit": "Purpose of Visit",
+      "fullName": "Full Name",
+      "dateOfBirth": "Date of Birth",
+      "countryOfBirth": "Country of Birth",
+      "sex": "Sex",
+      "occupation": "Occupation",
+      "email": "E-mail Address",
+      "passportNumber": "Passport Number",
+      "passportIssueDate": "Issue Date",
+      "passportExpiryDate": "Expiry Date",
+      "uploadedDoc": "Uploaded Document",
+      "addressInAzerbaijan": "Address in Azerbaijan",
+      "declarationLabel": "I hereby certify that all information provided in this application is true, complete, and accurate. I understand that providing false information may result in denial of visa or deportation.",
+      "back": "Back to Passport Details",
+      "next": "Continue to Payment"
+    },
+    "step6": {
+      "number": "06",
+      "title": "Payment",
+      "subtitle": "Complete your secure payment to finalise the application.",
+      "portalTitle": "Secure Payment Portal",
+      "cardTab": "Credit Card",
+      "paypalTab": "PayPal",
+      "cardName": "Cardholder Name",
+      "cardNamePlaceholder": "Name on card",
+      "cardNumber": "Card Number",
+      "cardNumberPlaceholder": "1234 5678 9012 3456",
+      "cardExpiry": "Expiry Date",
+      "cardExpiryPlaceholder": "MM/YY",
+      "cardCvv": "CVV / CVC",
+      "cardCvvPlaceholder": "123",
+      "agreementLabel": "I agree to the Terms & Conditions and Privacy Policy of this service.",
+      "orderTitle": "Order Summary",
+      "visaFeeLabel": "Standard e-Visa",
+      "serviceFeeLabel": "Service fee",
+      "totalLabel": "Total",
+      "supportText": "Need Assistance? Our support team is available 24/7 to help you with your application.",
+      "back": "Back to Review",
+      "submit": "Pay & Submit"
+    },
+    "validation": {
+      "required": "This field is required",
+      "email": "Enter a valid email address",
+      "passportFormat": "Invalid passport number format",
+      "fileRequired": "Please upload a copy of your passport",
+      "fileSize": "File size must be under 5MB",
+      "fileType": "Only JPG or PDF files are accepted",
+      "declarationRequired": "You must accept the declaration",
+      "paymentAgreementRequired": "You must agree to the terms"
     }
   }
 }

@@ -1,4 +1,116 @@
 {
+  "Home": {
+    "hero": {
+      "title": "Azərbaycan eVizanızı Onlayn İstifadə Edin",
+      "subtitle": "70-dən çox ölkənin vətəndaşları üçün sürətli, təhlükəsiz və asan viza müraciəti. Səfərinizə bu gündən başlayın.",
+      "applyNow": "İndi Müraciət Et",
+      "checkStatus": "Statusu Yoxla"
+    },
+    "steps": {
+      "title": "Necə İşləyir",
+      "step1": {
+        "num": "01",
+        "title": "Ərizəni doldurun",
+        "desc": "5 dəqiqədən az vaxt aparır. Şəxsi və səyahət məlumatlarınızı sadələşdirilmiş onlayn formaya daxil edin."
+      },
+      "step2": {
+        "num": "02",
+        "title": "Ödəniş edin",
+        "desc": "Kredit kartı və ya PayPal ilə viza rüsumunu təhlükəsiz ödəyin. Banka səviyyəli şifrashlanma istəklədiririk."
+      },
+      "step3": {
+        "num": "03",
+        "title": "eVizanızı alın",
+        "desc": "Təsdiqlənmiş eVizaniz birbaşa e-poçtunuza göndəriləcək. Pasportunuzla birlikdə çap edibçəkin."
+      }
+    },
+    "tiers": {
+      "title": "Xidmət Səviyyənizi Seçin",
+      "standard": {
+        "name": "Standart eViza",
+        "tagline": "Plan edilen səyahətə ideal",
+        "price": "$26",
+        "priceLabel": "EMAL HİYYASI",
+        "feature1": "3-5 iş günü",
+        "feature2": "E-poçtə istənir",
+        "cta": "Müraciət Et"
+      },
+      "urgent": {
+        "name": "Təcili eViza",
+        "badge": "ƎN ÇOX SEÇİLƎN",
+        "tagline": "Təz müddatlı səyahətlər üçün",
+        "price": "$55",
+        "priceLabel": "EMAL HİYYASI",
+        "feature1": "24 Saatda Emal",
+        "feature2": "Priorətət işləmə",
+        "cta": "Müraciət Et"
+      },
+      "superRush": {
+        "name": "Süper Cullɒ eViza",
+        "tagline": "Təcili səyahət dəstəyi",
+        "price": "$85",
+        "priceLabel": "EMAL HİYYASI",
+        "feature1": "3-5 Saatda Emal",
+        "feature2": "24/7 VIP Dəstək",
+        "cta": "Müraciət Et"
+      }
+    },
+    "stats": {
+      "visas": "50,000+",
+      "visasLabel": "VERİLƎN VİZALAR",
+      "approval": "98%",
+      "approvalLabel": "TƏSDİQ DƎRƎCƎSİ",
+      "countries": "70+",
+      "countriesLabel": "DƎSTEKLƎNƎN ÖLKƎLƎR",
+      "years": "5+",
+      "yearsLabel": "XİDMƎT İLLƎRİ"
+    },
+    "faq": {
+      "title": "Təz-təz Verilən Suallar",
+      "items": [
+        {
+          "q": "eViza üçün hansı sənədlər tələb olunur?",
+          "a": "Pasportunuzun məlumat səhifəsinin rəqəmsal sureti (səyahət tarixlərindən ən az 6 ay kerlə qeçərli) və etibərli e-poçt ünvanı kifayət edir."
+        },
+        {
+          "q": "eViza ilə nə qədər qala bilərəm?",
+          "a": "Standart Turizm eVizası 90 günlük geçərlilik müddətində 30 günə qədər qalmaq imìanı verir."
+        },
+        {
+          "q": "Qrup və ya ailə üçün müraciət edə bilərəm?",
+          "a": "Hər bir səyahətçi ayrıca müraciət etməlidir. Eyni e-poçt hesabından bir neçə müraciəti eyni vaxtda idař edə bilərsiniz."
+        },
+        {
+          "q": "eViza quru sərhəd keçidləriçün kerlərlidirmi?",
+          "a": "Bəli. Azərbaycan eVizası hava limanları, dəniz limanları və təyin edilmiş quru sərhəd keçidləri daxil olmaqla bütün beynəlxalq sərhəd keçid məntəqələrində qebul edilir."
+        },
+        {
+          "q": "Vizam rədd edilzə nə olar?",
+          "a": "Nadir hallarda rədd edilmə zamanı xidmət haqqimız tam gerəç qaytarariq. Hökumət viza rüsumu q qutarılmır."
+        }
+      ]
+    },
+    "testimonials": {
+      "title": "Səyahətçilərin Hekayələri",
+      "items": [
+        {
+          "quote": "\u201cHəyatımda yaşadığım ən sürətli viza prosesi. Təcili seçimi ilə müraciət etdim və 18 saat ərzində eVizanı aldım.\u201d",
+          "name": "Mark Sutherland",
+          "country": "BİRLEŞİK KRAOLLUQ"
+        },
+        {
+          "quote": "\u201cTəmiz interfeysis və izləməsi asan addimlar. Dəstək komandası pasport geçərlilik sualima dəqiqələr ərzində cavab verdi.\u201d",
+          "name": "Elena Rodriguez",
+          "country": "İSPANİYA"
+        },
+        {
+          "quote": "\u201cRahat ödəniş prosesi və status barədə dəvamlı yeniliklr. Azərbaycan gözəldir.\u201d",
+          "name": "James Chen",
+          "country": "SİNQAPUR"
+        }
+      ]
+    }
+  },
   "VisaRequirements": {
     "hero": {
       "badge": "Giriş Tələbləri",
