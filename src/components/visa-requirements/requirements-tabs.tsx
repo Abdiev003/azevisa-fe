@@ -155,7 +155,11 @@ export interface RequirementsTabsLabels {
 /*  Main component                                                       */
 /* ------------------------------------------------------------------ */
 
-export default function RequirementsTabs({ labels }: { labels: RequirementsTabsLabels }) {
+export default function RequirementsTabs({
+  labels,
+}: {
+  labels: RequirementsTabsLabels;
+}) {
   const [activeId, setActiveId] = useState<string>("tourism");
   const active = TABS.find((t) => t.id === activeId) ?? TABS[0];
 
@@ -243,7 +247,9 @@ export default function RequirementsTabs({ labels }: { labels: RequirementsTabsL
                 >
                   {i + 1}
                 </span>
-                <span className="text-sm text-[#1F2937] leading-relaxed">{req}</span>
+                <span className="text-sm text-[#1F2937] leading-relaxed">
+                  {req}
+                </span>
               </li>
             ))}
           </ul>

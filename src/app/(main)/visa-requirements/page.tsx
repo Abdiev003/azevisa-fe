@@ -34,7 +34,15 @@ export const metadata: Metadata = {
 
 function PassportIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-6 h-6"
+    >
       <rect x="4" y="2" width="16" height="20" rx="2" />
       <circle cx="12" cy="10" r="3" />
       <path d="M8 18h8" />
@@ -44,7 +52,15 @@ function PassportIcon() {
 
 function PhotoIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-6 h-6"
+    >
       <rect x="3" y="3" width="18" height="18" rx="2" />
       <circle cx="9" cy="9" r="2" />
       <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
@@ -54,7 +70,15 @@ function PhotoIcon() {
 
 function MailIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-6 h-6"
+    >
       <rect x="2" y="4" width="20" height="16" rx="2" />
       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
     </svg>
@@ -63,7 +87,15 @@ function MailIcon() {
 
 function CardIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-6 h-6"
+    >
       <rect x="2" y="5" width="20" height="14" rx="2" />
       <line x1="2" y1="10" x2="22" y2="10" />
     </svg>
@@ -72,7 +104,15 @@ function CardIcon() {
 
 function PlaneIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-6 h-6"
+    >
       <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4s-2 1-3.5 2.5L11 8.2l-8.2 1.8-.2.7 7.1 2.1 2.1 7.1.7-.2z" />
     </svg>
   );
@@ -80,7 +120,15 @@ function PlaneIcon() {
 
 function HotelIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-6 h-6"
+    >
       <path d="M3 22V3h18v19" />
       <path d="M3 12h18" />
       <path d="M9 22v-4h6v4" />
@@ -94,7 +142,15 @@ function HotelIcon() {
 
 function ClockIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-6 h-6"
+    >
       <circle cx="12" cy="12" r="10" />
       <polyline points="12 6 12 12 16 14" />
     </svg>
@@ -103,7 +159,15 @@ function ClockIcon() {
 
 function GlobeIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-6 h-6"
+    >
       <circle cx="12" cy="12" r="10" />
       <line x1="2" y1="12" x2="22" y2="12" />
       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
@@ -113,7 +177,15 @@ function GlobeIcon() {
 
 function ShieldIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-6 h-6"
+    >
       <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
     </svg>
   );
@@ -139,13 +211,19 @@ function ChevronDownIcon({ open }: { open: boolean }) {
 /*  Static FAQ/notes accordion (server, no interactivity needed)         */
 /* ------------------------------------------------------------------ */
 
-function InfoAccordion({ items }: { items: { heading: string; body: string }[] }) {
+function InfoAccordion({
+  items,
+}: {
+  items: { heading: string; body: string }[];
+}) {
   return (
     <div className="flex flex-col divide-y divide-gray-100 rounded-2xl border border-gray-100 bg-white shadow-sm overflow-hidden">
       {items.map((item, i) => (
         <details key={i} className="group">
           <summary className="flex items-center justify-between gap-4 px-6 py-5 cursor-pointer list-none select-none hover:bg-gray-50 transition-colors">
-            <span className="font-semibold text-[#1F2937] text-sm">{item.heading}</span>
+            <span className="font-semibold text-[#1F2937] text-sm">
+              {item.heading}
+            </span>
             <svg
               viewBox="0 0 24 24"
               fill="none"
@@ -243,7 +321,9 @@ export default async function VisaRequirementsPage() {
               >
                 <div className="text-white/60">{icon}</div>
                 <div>
-                  <p className="text-white font-bold text-lg leading-none">{value}</p>
+                  <p className="text-white font-bold text-lg leading-none">
+                    {value}
+                  </p>
                   <p className="text-white/50 text-xs mt-1">{label}</p>
                 </div>
               </div>
@@ -300,7 +380,9 @@ export default async function VisaRequirementsPage() {
             <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1F2937] mb-2">
               {t("tabs.title")}
             </h2>
-            <p className="text-[#6F7A72] text-sm sm:text-base">{t("tabs.subtitle")}</p>
+            <p className="text-[#6F7A72] text-sm sm:text-base">
+              {t("tabs.subtitle")}
+            </p>
           </div>
 
           <RequirementsTabs
@@ -318,7 +400,9 @@ export default async function VisaRequirementsPage() {
           <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1F2937] mb-2">
             {t("process.title")}
           </h2>
-          <p className="text-[#6F7A72] text-sm sm:text-base">{t("process.subtitle")}</p>
+          <p className="text-[#6F7A72] text-sm sm:text-base">
+            {t("process.subtitle")}
+          </p>
         </div>
 
         <div className="relative">
@@ -327,7 +411,10 @@ export default async function VisaRequirementsPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {STEPS.map(({ icon, key, num }, i) => (
-              <div key={key} className="relative flex flex-col items-center text-center">
+              <div
+                key={key}
+                className="relative flex flex-col items-center text-center"
+              >
                 {/* Number circle */}
                 <div className="relative w-16 h-16 rounded-full bg-[#004E34] flex items-center justify-center text-white mb-5 z-10">
                   {icon}
