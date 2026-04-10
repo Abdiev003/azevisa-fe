@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import FaqAccordion from "@/components/home/faq-accordion";
+import { getHomeFAQ } from "@/data/general";
 
 export const metadata: Metadata = {
   title: "Apply for Azerbaijan eVisa Online – Fast & Secure",
@@ -132,8 +133,8 @@ function StarIcon() {
 
 export default async function HomePage() {
   const t = await getTranslations("Home");
+  const faqsHome = await getHomeFAQ();
 
-  const faqItems = t.raw("faq.items") as { q: string; a: string }[];
   const testimonials = t.raw("testimonials.items") as {
     quote: string;
     name: string;
@@ -171,7 +172,7 @@ export default async function HomePage() {
   return (
     <div className="bg-[#F8F9FA]">
       {/* ══════════════════════ HERO ══════════════════════ */}
-      <section className="relative min-h-135 flex items-end sm:items-center">
+      <section className="relative flex items-end min-h-135 sm:items-center">
         {/* Background image */}
         <Image
           src="/home-banner.png"
@@ -184,12 +185,12 @@ export default async function HomePage() {
         <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/50 to-black/20" />
 
         {/* Content */}
-        <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 w-full">
+        <div className="relative z-10 w-full max-w-6xl px-4 py-20 mx-auto sm:px-6 lg:px-8">
           <div className="max-w-xl">
-            <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight mb-4">
+            <h1 className="mb-4 text-4xl font-extrabold leading-tight text-white sm:text-5xl">
               {t("hero.title")}
             </h1>
-            <p className="text-white/75 text-base sm:text-lg leading-relaxed mb-8">
+            <p className="mb-8 text-base leading-relaxed text-white/75 sm:text-lg">
               {t("hero.subtitle")}
             </p>
             <div className="flex flex-wrap gap-3">
@@ -212,9 +213,9 @@ export default async function HomePage() {
       </section>
 
       {/* ══════════════════════ HOW IT WORKS ══════════════════════ */}
-      <section className="bg-white py-16 sm:py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <section className="py-16 bg-white sm:py-20">
+        <div className="max-w-6xl px-4 mx-auto sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             {STEPS.map((step, i) => (
               <div key={step.num} className="relative">
                 {/* Connector line between steps — desktop */}
@@ -224,7 +225,7 @@ export default async function HomePage() {
                 <div className="flex flex-col gap-4">
                   {/* Number + icon row */}
                   <div className="flex items-center gap-3">
-                    <span className="text-4xl font-extrabold text-gray-100 leading-none select-none">
+                    <span className="text-4xl font-extrabold leading-none text-gray-100 select-none">
                       {step.num}
                     </span>
                     <div className="w-14 h-14 rounded-xl bg-[#F8F9FA] flex items-center justify-center text-[#004E34]">
@@ -248,7 +249,7 @@ export default async function HomePage() {
 
       {/* ══════════════════════ SERVICE TIERS ══════════════════════ */}
       <section className="py-16 sm:py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl px-4 mx-auto sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1F2937] text-center mb-3">
             {t("tiers.title")}
           </h2>
@@ -257,9 +258,9 @@ export default async function HomePage() {
             <span className="block w-12 h-1 rounded-full bg-[#C8A84B]" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             {/* Standard */}
-            <div className="relative bg-white rounded-2xl border border-gray-200 p-7 flex flex-col gap-5 shadow-sm">
+            <div className="relative flex flex-col gap-5 bg-white border border-gray-200 shadow-sm rounded-2xl p-7">
               <div>
                 <h3 className="font-bold text-[#1F2937] text-lg mb-1">
                   {t("tiers.standard.name")}
@@ -305,7 +306,7 @@ export default async function HomePage() {
                 {t("tiers.urgent.badge")}
               </span>
               <div>
-                <h3 className="font-bold text-white text-lg mb-1">
+                <h3 className="mb-1 text-lg font-bold text-white">
                   {t("tiers.urgent.name")}
                 </h3>
                 <p className="text-xs text-white/60">
@@ -316,7 +317,7 @@ export default async function HomePage() {
                 <span className="text-4xl font-extrabold text-white">
                   {t("tiers.urgent.price")}
                 </span>
-                <span className="ml-2 text-xs font-bold text-white/60 uppercase tracking-wider">
+                <span className="ml-2 text-xs font-bold tracking-wider uppercase text-white/60">
                   + {t("tiers.urgent.priceLabel")}
                 </span>
               </div>
@@ -343,7 +344,7 @@ export default async function HomePage() {
             </div>
 
             {/* Super Rush */}
-            <div className="relative bg-white rounded-2xl border border-gray-200 p-7 flex flex-col gap-5 shadow-sm">
+            <div className="relative flex flex-col gap-5 bg-white border border-gray-200 shadow-sm rounded-2xl p-7">
               <div>
                 <h3 className="font-bold text-[#1F2937] text-lg mb-1">
                   {t("tiers.superRush.name")}
@@ -387,11 +388,11 @@ export default async function HomePage() {
 
       {/* ══════════════════════ STATS BAR ══════════════════════ */}
       <section className="bg-[#004E34] py-12">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div className="max-w-6xl px-4 mx-auto sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 gap-8 text-center md:grid-cols-4">
             {STATS.map(({ value, label }) => (
               <div key={label}>
-                <p className="text-4xl font-extrabold text-white mb-1">
+                <p className="mb-1 text-4xl font-extrabold text-white">
                   {value}
                 </p>
                 <p className="text-xs font-bold tracking-widest uppercase text-white/50">
@@ -404,8 +405,8 @@ export default async function HomePage() {
       </section>
 
       {/* ══════════════════════ FAQ ══════════════════════ */}
-      <section className="bg-white py-16 sm:py-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-16 bg-white sm:py-20">
+        <div className="max-w-3xl px-4 mx-auto sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1F2937] text-center mb-3">
             {t("faq.title")}
           </h2>
@@ -413,13 +414,13 @@ export default async function HomePage() {
             <span className="block w-12 h-1 rounded-full bg-[#C8A84B]" />
           </div>
 
-          <FaqAccordion items={faqItems} />
+          <FaqAccordion items={faqsHome} />
         </div>
       </section>
 
       {/* ══════════════════════ TESTIMONIALS ══════════════════════ */}
       <section className="bg-[#F8F9FA] py-16 sm:py-20">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl px-4 mx-auto sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1F2937] text-center mb-3">
             {t("testimonials.title")}
           </h2>
@@ -427,11 +428,11 @@ export default async function HomePage() {
             <span className="block w-12 h-1 rounded-full bg-[#C8A84B]" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
             {testimonials.map((item, i) => (
               <div
                 key={i}
-                className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm flex flex-col gap-4"
+                className="flex flex-col gap-4 p-6 bg-white border border-gray-100 shadow-sm rounded-2xl"
               >
                 {/* Stars */}
                 <div className="flex gap-0.5">

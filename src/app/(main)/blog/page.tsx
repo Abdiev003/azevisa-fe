@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { BLOG_POSTS } from "@/data/blog";
+import { getBlogs, PAGE_SIZE, type ApiBlogCategory } from "@/data/blog";
 import { BlogList } from "@/components/blog/blog-list";
 
 export const metadata: Metadata = {
@@ -29,8 +29,27 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function BlogPage() {
+interface PageProps {
+  searchParams: Promise<{ page?: string; search?: string; category?: string }>;
+}
+
+export default async function BlogPage({ searchParams }: PageProps) {
   const t = await getTranslations("Blog");
+  const { page: pageParam, search, category } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+
+  const data = await getBlogs({ page: currentPage, search, category });
+  const totalPages = Math.ceil(data.count / PAGE_SIZE);
+
+  // Collect unique categories from results for filter buttons
+  const categories: ApiBlogCategory[] = [];
+  const seen = new Set<string>();
+  for (const post of data.results) {
+    if (post.category && !seen.has(post.category.slug)) {
+      seen.add(post.category.slug);
+      categories.push(post.category);
+    }
+  }
 
   return (
     <main>
@@ -53,7 +72,13 @@ export default async function BlogPage() {
       <section className="bg-[#F8F9FA] px-4 pb-20 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <BlogList
-            posts={BLOG_POSTS}
+            posts={data.results}
+            categories={categories}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalCount={data.count}
+            currentSearch={search ?? ""}
+            currentCategory={category ?? ""}
             readLabel={t("readMore")}
             readTimeLabel={t("minRead")}
           />

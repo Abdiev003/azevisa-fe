@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { cookies } from "next/headers";
+import { Toaster, toast } from "sonner";
 import "./globals.css";
 import { Header } from "@/layouts/header";
 import { Footer } from "@/layouts/footer";
@@ -126,6 +127,7 @@ export default async function RootLayout({
           <Header locale={locale} />
           <main className="flex-1">{children}</main>
           <Footer />
+          <Toaster position="top-right" />
         </NextIntlClientProvider>
       </body>
     </html>

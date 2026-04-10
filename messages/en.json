@@ -326,13 +326,8 @@
     "info": {
       "email": {
         "label": "Email Us",
-        "value": "support@azevisa.com",
+        "value": "support@azevisa.az",
         "description": "We respond within 2 hours"
-      },
-      "phone": {
-        "label": "Call Us",
-        "value": "+994 12 555 0199",
-        "description": "Mon – Fri, 09:00 – 18:00 AZT"
       },
       "address": {
         "label": "Visit Us",

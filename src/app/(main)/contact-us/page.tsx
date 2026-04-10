@@ -9,6 +9,7 @@ import {
   MapPinIcon,
   ClockIcon,
 } from "@/components/icons";
+import { getContactFAQ } from "@/data/general";
 
 export const metadata: Metadata = {
   title: "Contact AzEvisa Support – We're Here to Help 24/7",
@@ -35,16 +36,11 @@ export const metadata: Metadata = {
 };
 
 const INFO_ICONS = [MailIcon, PhoneIcon, MapPinIcon, ClockIcon];
-const INFO_KEYS = ["email", "phone", "address", "hours"] as const;
+const INFO_KEYS = ["email", "address", "hours"] as const;
 
 export default async function ContactUsPage() {
   const t = await getTranslations("ContactUs");
-
-  const faqItems = [
-    { q: t("faq.items.0.q"), a: t("faq.items.0.a") },
-    { q: t("faq.items.1.q"), a: t("faq.items.1.a") },
-    { q: t("faq.items.2.q"), a: t("faq.items.2.a") },
-  ];
+  const faqsContact = await getContactFAQ();
 
   return (
     <div className="min-h-screen bg-white">
@@ -76,7 +72,7 @@ export default async function ContactUsPage() {
 
       {/* Info cards */}
       <div className="max-w-6xl px-6 mx-auto -mt-6">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {INFO_KEYS.map((key, i) => {
             const Icon = INFO_ICONS[i];
             return (
@@ -119,21 +115,21 @@ export default async function ContactUsPage() {
         <div className="flex flex-col gap-6 lg:col-span-2">
           <p className="text-lg font-bold text-[#1F2937]">{t("faq.title")}</p>
           <div className="flex flex-col gap-4">
-            {faqItems.map(({ q, a }) => (
+            {faqsContact.map((faq) => (
               <details
-                key={q}
+                key={faq.id}
                 className="overflow-hidden border border-gray-200 group rounded-xl"
               >
                 <summary className="flex items-center justify-between gap-4 px-5 py-4 list-none cursor-pointer select-none">
                   <span className="text-sm font-semibold text-[#1F2937]">
-                    {q}
+                    {faq.question}
                   </span>
                   <span className="transition-transform shrink-0 group-open:rotate-180">
                     <ChevronIcon />
                   </span>
                 </summary>
                 <div className="px-5 pb-5 text-sm text-[#6F7A72] leading-6 border-t border-gray-100 pt-4">
-                  {a}
+                  {faq.answer}
                 </div>
               </details>
             ))}
@@ -149,10 +145,10 @@ export default async function ContactUsPage() {
               also check our Help Center for instant answers.
             </p>
             <a
-              href="mailto:support@azevisa.com"
+              href="mailto:support@azevisa.az"
               className="inline-flex items-center gap-2 mt-1 text-xs font-semibold text-white underline transition-opacity underline-offset-4 hover:opacity-70"
             >
-              support@azevisa.com
+              support@azevisa.az
             </a>
           </div>
         </div>

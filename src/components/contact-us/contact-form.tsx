@@ -8,6 +8,8 @@ import { Field } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { fetcher } from "@/lib/fetcher";
+import { toast } from "sonner";
 
 type FormValues = {
   firstName: string;
@@ -32,10 +34,29 @@ export function ContactForm() {
   async function onSubmit(_data: FormValues) {
     console.log(_data);
     setIsSubmitting(true);
-    // Simulate API call
-    await new Promise((r) => setTimeout(r, 1200));
-    setIsSubmitting(false);
-    setSubmitted(true);
+
+    try {
+      const res = await fetcher("/pages/contact/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${_data.firstName} ${_data.lastName}`,
+          email: _data.email,
+          subject: _data.subject,
+          message: _data.message,
+        }),
+      });
+
+      toast.success(res.message || "Your message has been sent successfully!");
+      setSubmitted(true);
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      toast.error(
+        "An error occurred while sending your message. Please try again later.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   if (submitted) {

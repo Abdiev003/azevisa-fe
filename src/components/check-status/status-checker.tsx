@@ -29,26 +29,63 @@ interface Decision {
 type ApplicationResult = ActiveApplication | Decision | null;
 
 /* ------------------------------------------------------------------ */
-/*  Mock data                                                            */
+/*  API types + mapper                                                   */
 /* ------------------------------------------------------------------ */
 
-const MOCK_DATA: Record<string, ApplicationResult> = {
-  "AZ-2024-88921": {
-    kind: "active",
-    id: "AZ-2024-88921",
-    applicant: "Alexander Mitchell",
-    visaType: "Tourist eVisa",
-    submissionDate: "14 Jun 2025",
-    status: "PROCESSING",
-    currentStep: 2,
-  },
-  "AZ-2024-88004": {
-    kind: "decision",
-    id: "AZ-2024-88004",
-    status: "APPROVED",
-    validUntil: "14 Dec 2025",
-  },
+interface ApiStatusResponse {
+  reference_number: string;
+  status: string;
+  applicant_name?: string;
+  visa_type?: string;
+  submitted_at?: string;
+  valid_until?: string;
+  /** 0 = Submitted, 1 = Under Review, 2 = Processing, 3 = Final Decision */
+  current_step?: number;
+}
+
+function fmtDate(iso?: string): string {
+  if (!iso) return "";
+  return new Date(iso).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+const STATUS_STEP_MAP: Record<string, 0 | 1 | 2 | 3> = {
+  SUBMITTED: 0,
+  UNDER_REVIEW: 1,
+  PROCESSING: 2,
+  FINAL_DECISION: 3,
 };
+
+function mapApiResponse(data: ApiStatusResponse): ApplicationResult {
+  const status = (data.status ?? "").toUpperCase();
+
+  if (status === "APPROVED" || status === "REJECTED") {
+    return {
+      kind: "decision",
+      id: data.reference_number,
+      status,
+      validUntil: fmtDate(data.valid_until),
+    };
+  }
+
+  const step: 0 | 1 | 2 | 3 =
+    typeof data.current_step === "number"
+      ? (Math.min(3, Math.max(0, data.current_step)) as 0 | 1 | 2 | 3)
+      : (STATUS_STEP_MAP[status] ?? 1);
+
+  return {
+    kind: "active",
+    id: data.reference_number,
+    applicant: data.applicant_name ?? "",
+    visaType: data.visa_type ?? "",
+    submissionDate: fmtDate(data.submitted_at),
+    status: "PROCESSING",
+    currentStep: step,
+  };
+}
 
 /* ------------------------------------------------------------------ */
 /*  Inline SVG icons                                                     */
@@ -385,18 +422,38 @@ export default function StatusChecker({
     notFound,
   } = labels;
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsChecking(true);
     setResult(null);
 
-    // Simulate async lookup
-    setTimeout(() => {
-      const normalised = refNumber.trim().toUpperCase();
-      const found = MOCK_DATA[normalised] ?? null;
-      setResult(found ?? "not-found");
+    try {
+      const res = await fetch("/api/check-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reference_number: refNumber.trim(),
+          email: email.trim(),
+        }),
+      });
+
+      if (res.status === 404 || res.status === 400) {
+        setResult("not-found");
+        return;
+      }
+
+      if (!res.ok) {
+        setResult("not-found");
+        return;
+      }
+
+      const data: ApiStatusResponse = await res.json();
+      setResult(mapApiResponse(data));
+    } catch {
+      setResult("not-found");
+    } finally {
       setIsChecking(false);
-    }, 900);
+    }
   }
 
   return (

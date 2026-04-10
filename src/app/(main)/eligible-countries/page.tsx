@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { CheckIcon } from "@/components/icons";
 import { CountriesList } from "@/components/eligible-countries/countries-list";
+import { getCountries, getRegions, COUNTRY_PAGE_SIZE } from "@/data/general";
 
 export const metadata: Metadata = {
   title: "Countries Eligible for Azerbaijan eVisa – 70+ Nations",
@@ -27,7 +28,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function EligibleCountriesPage() {
+interface PageProps {
+  searchParams: Promise<{ page?: string; search?: string; region?: string }>;
+}
+
+export default async function EligibleCountriesPage({
+  searchParams,
+}: PageProps) {
+  const { page: pageParam, search, region } = await searchParams;
+  const currentPage = Math.max(1, parseInt(pageParam ?? "1", 10) || 1);
+
+  const [regions, data] = await Promise.all([
+    getRegions(),
+    getCountries({ page: currentPage, search, region }),
+  ]);
+
+  const totalPages = Math.ceil(data.count / COUNTRY_PAGE_SIZE);
+
   return (
     <main>
       {/* ── Hero ──────────────────────────────────────── */}
@@ -50,7 +67,14 @@ export default function EligibleCountriesPage() {
 
       {/* ── Countries section ─────────────────────────── */}
       <section className="bg-[#F8F9FA]">
-        <CountriesList />
+        <CountriesList
+          countries={data.results}
+          regions={regions}
+          totalPages={totalPages}
+          currentPage={currentPage}
+          currentSearch={search ?? ""}
+          currentRegion={region ?? ""}
+        />
       </section>
 
       {/* ── Don't see your country ────────────────────── */}
