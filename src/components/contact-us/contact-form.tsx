@@ -32,7 +32,6 @@ export function ContactForm() {
   } = useForm<FormValues>({ mode: "onTouched" });
 
   async function onSubmit(_data: FormValues) {
-    console.log(_data);
     setIsSubmitting(true);
 
     try {

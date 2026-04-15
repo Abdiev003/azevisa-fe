@@ -299,7 +299,7 @@
       "official": "ОФИЦИАЛЬНЫЙ ПОСТАВЩИК УСЛУГ"
     },
     "bottom": {
-      "copyright": "© 2024 eViza Азербайджанской Республики. Все права защищены.",
+      "copyright": "© 2026 azEvisa Азербайджанской Республики. Все права защищены.",
       "privacyPolicy": "Политика конфиденциальности",
       "termsOfService": "Условия использования",
       "cookiePolicy": "Политика cookies"
@@ -314,7 +314,8 @@
       "blog": "Блог",
       "contact": "Контакты"
     },
-    "applyNow": "Подать заявку"
+    "applyNow": "Подать заявку",
+    "signIn": "Войти"
   },
   "ContactUs": {
     "breadcrumb": "Контакты",
@@ -326,7 +327,7 @@
     "info": {
       "email": {
         "label": "Написать нам",
-        "value": "support@azevisa.com",
+        "value": "support@azevisa.az",
         "description": "Отвечаем в течение 2 часов"
       },
       "phone": {
@@ -423,7 +424,8 @@
       "entryType": "Тип Въезда"
     },
     "secondary": {
-      "details": "Подробнее"
+      "details": "Подробнее",
+      "unavailable": "Недоступно"
     },
     "comparison": {
       "title": "Подробное Сравнение Виз",
@@ -505,6 +507,53 @@
         "processingTime": "15 – 30 Дней",
         "priceLabel": "Сбор за оформление"
       }
+    }
+  },
+  "Login": {
+    "meta": {
+      "title": "Войти – AzEvisa",
+      "description": "Войдите в свой аккаунт AzEvisa для управления заявками на визу."
+    },
+    "title": "С возвращением",
+    "subtitle": "Войдите в свой аккаунт",
+    "email": "Электронная почта",
+    "emailPlaceholder": "you@example.com",
+    "password": "Пароль",
+    "passwordPlaceholder": "Введите пароль",
+    "submit": "Войти",
+    "submitting": "Вход…",
+    "noAccount": "Нет аккаунта?",
+    "registerLink": "Создать",
+    "validation": {
+      "emailRequired": "Электронная почта обязательна",
+      "emailInvalid": "Введите корректный адрес электронной почты",
+      "passwordRequired": "Пароль обязателен"
+    }
+  },
+  "Register": {
+    "meta": {
+      "title": "Создать аккаунт – AzEvisa",
+      "description": "Создайте аккаунт AzEvisa для подачи заявки на электронную визу Азербайджана."
+    },
+    "title": "Создайте аккаунт",
+    "subtitle": "Зарегистрируйтесь для подачи заявки на визу",
+    "email": "Электронная почта",
+    "emailPlaceholder": "you@example.com",
+    "password": "Пароль",
+    "passwordPlaceholder": "Создайте пароль",
+    "confirmPassword": "Подтвердите пароль",
+    "confirmPasswordPlaceholder": "Введите пароль ещё раз",
+    "submit": "Создать аккаунт",
+    "submitting": "Создание аккаунта…",
+    "hasAccount": "Уже есть аккаунт?",
+    "loginLink": "Войти",
+    "validation": {
+      "emailRequired": "Электронная почта обязательна",
+      "emailInvalid": "Введите корректный адрес электронной почты",
+      "passwordRequired": "Пароль обязателен",
+      "passwordMinLength": "Пароль должен содержать не менее 8 символов",
+      "confirmPasswordRequired": "Подтвердите пароль",
+      "passwordsMismatch": "Пароли не совпадают"
     }
   }
 }

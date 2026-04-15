@@ -156,10 +156,10 @@ export function CountriesList({
                       <div className="flex flex-wrap gap-1.5">
                         {country.available_purposes.map((purpose) => (
                           <span
-                            key={purpose}
-                            className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full ${PURPOSE_STYLES[purpose] ?? "bg-gray-100 text-gray-600"}`}
+                            key={purpose.id}
+                            className={`text-[10px] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full ${PURPOSE_STYLES[purpose.slug] ?? "bg-gray-100 text-gray-600"}`}
                           >
-                            {purpose}
+                            {purpose.name}
                           </span>
                         ))}
                       </div>

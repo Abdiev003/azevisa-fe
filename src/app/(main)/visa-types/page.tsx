@@ -106,6 +106,7 @@ export default async function VisaTypesPage() {
       name: t(`visas.${id}.name`),
       description: t(`visas.${id}.description`),
       priceLabel: t(`visas.${id}.priceLabel`),
+      disabled: visa.disabled,
     };
   });
 
@@ -173,12 +174,18 @@ export default async function VisaTypesPage() {
                   {visa.priceLabel}
                 </span>
               </div>
-              <Link
-                href="#"
-                className="w-full py-2.5 border border-[#004E34] text-[#004E34] text-sm font-semibold rounded-lg hover:bg-[#004E34] hover:text-white transition-colors flex items-center justify-center"
-              >
-                {t("secondary.details")}
-              </Link>
+              {visa.disabled ? (
+                <span className="w-full py-2.5 border border-gray-300 text-gray-300 text-sm font-semibold rounded-lg flex items-center justify-center cursor-not-allowed">
+                  {t("secondary.unavailable")}
+                </span>
+              ) : (
+                <Link
+                  href="#"
+                  className="w-full py-2.5 border border-[#004E34] text-[#004E34] text-sm font-semibold rounded-lg hover:bg-[#004E34] hover:text-white transition-colors flex items-center justify-center"
+                >
+                  {t("secondary.details")}
+                </Link>
+              )}
             </div>
           ))}
         </div>

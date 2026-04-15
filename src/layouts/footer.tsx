@@ -130,12 +130,6 @@ export function Footer() {
                 {t("trust.ssl")}
               </span>
             </div>
-            <div className="flex items-center gap-3 bg-[#1E293B] rounded-md px-4 py-3">
-              <ShieldIcon />
-              <span className="text-xs font-semibold tracking-wide text-[#94A3B8] uppercase">
-                {t("trust.official")}
-              </span>
-            </div>
           </div>
         </div>
       </div>

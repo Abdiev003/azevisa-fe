@@ -299,7 +299,7 @@
       "official": "RƏSMİ XİDMƏT TƏMİNATÇISI"
     },
     "bottom": {
-      "copyright": "© 2026 Azərbaycan Respublikasının eVizası. Bütün hüquqlar qorunur.",
+      "copyright": "© 2026 Azərbaycan Respublikasının azEvisası. Bütün hüquqlar qorunur.",
       "privacyPolicy": "Məxfilik Siyasəti",
       "termsOfService": "İstifadə Şərtləri",
       "cookiePolicy": "Çərəz Siyasəti"
@@ -314,7 +314,8 @@
       "blog": "Bloq",
       "contact": "Əlaqə"
     },
-    "applyNow": "İndi Müraciət Edin"
+    "applyNow": "İndi Müraciət Edin",
+    "signIn": "Daxil ol"
   },
   "ContactUs": {
     "breadcrumb": "Bizimlə Əlaqə",
@@ -326,7 +327,7 @@
     "info": {
       "email": {
         "label": "Bizə Yazın",
-        "value": "support@azevisa.com",
+        "value": "support@azevisa.az",
         "description": "2 saat ərzində cavablayırıq"
       },
       "phone": {
@@ -423,7 +424,8 @@
       "entryType": "Giriş Növü"
     },
     "secondary": {
-      "details": "Ətraflı"
+      "details": "Ətraflı",
+      "unavailable": "Mövcud deyil"
     },
     "comparison": {
       "title": "Hərtərəfli Viza Müqayisəsi",
@@ -505,6 +507,53 @@
         "processingTime": "15 – 30 Gün",
         "priceLabel": "Emal Haqqı"
       }
+    }
+  },
+  "Login": {
+    "meta": {
+      "title": "Daxil ol – AzEvisa",
+      "description": "Viza müraciətlərinizi idarə etmək üçün AzEvisa hesabınıza daxil olun."
+    },
+    "title": "Xoş gəldiniz",
+    "subtitle": "Hesabınıza daxil olun",
+    "email": "E-poçt ünvanı",
+    "emailPlaceholder": "siz@nümunə.com",
+    "password": "Şifrə",
+    "passwordPlaceholder": "Şifrənizi daxil edin",
+    "submit": "Daxil ol",
+    "submitting": "Daxil olunur…",
+    "noAccount": "Hesabınız yoxdur?",
+    "registerLink": "Qeydiyyatdan keçin",
+    "validation": {
+      "emailRequired": "E-poçt ünvanı tələb olunur",
+      "emailInvalid": "Düzgün e-poçt ünvanı daxil edin",
+      "passwordRequired": "Şifrə tələb olunur"
+    }
+  },
+  "Register": {
+    "meta": {
+      "title": "Hesab yarat – AzEvisa",
+      "description": "Azərbaycan eVizası üçün müraciət etmək üçün AzEvisa hesabınızı yaradın."
+    },
+    "title": "Hesab yaradın",
+    "subtitle": "Viza müraciətinizə başlamaq üçün qeydiyyatdan keçin",
+    "email": "E-poçt ünvanı",
+    "emailPlaceholder": "siz@nümunə.com",
+    "password": "Şifrə",
+    "passwordPlaceholder": "Şifrə yaradın",
+    "confirmPassword": "Şifrəni təsdiqlə",
+    "confirmPasswordPlaceholder": "Şifrəni yenidən daxil edin",
+    "submit": "Hesab yarat",
+    "submitting": "Hesab yaradılır…",
+    "hasAccount": "Artıq hesabınız var?",
+    "loginLink": "Daxil olun",
+    "validation": {
+      "emailRequired": "E-poçt ünvanı tələb olunur",
+      "emailInvalid": "Düzgün e-poçt ünvanı daxil edin",
+      "passwordRequired": "Şifrə tələb olunur",
+      "passwordMinLength": "Şifrə ən azı 8 simvol olmalıdır",
+      "confirmPasswordRequired": "Şifrəni təsdiq edin",
+      "passwordsMismatch": "Şifrələr uyğun gəlmir"
     }
   }
 }

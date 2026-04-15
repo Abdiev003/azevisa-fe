@@ -30,6 +30,7 @@ export interface SecondaryVisa {
   description: string;
   priceLabel: string;
   price: string;
+  disabled: boolean;
 }
 
 export interface ComparisonRow {
@@ -102,6 +103,7 @@ export const SECONDARY_VISAS: SecondaryVisa[] = [
       "Short-term entry for travelers passing through Azerbaijan to a third destination.",
     priceLabel: "Starting at",
     price: "$15",
+    disabled: false,
   },
   {
     id: "student",
@@ -110,6 +112,7 @@ export const SECONDARY_VISAS: SecondaryVisa[] = [
       "For international students enrolled in recognized Azerbaijani educational institutions.",
     priceLabel: "Standard Fee",
     price: "$40",
+    disabled: false,
   },
   {
     id: "work",
@@ -118,6 +121,7 @@ export const SECONDARY_VISAS: SecondaryVisa[] = [
       "Official authorization for foreign nationals to engage in professional employment.",
     priceLabel: "Processing Fee",
     price: "$120",
+    disabled: true, // Not available for online application yet
   },
 ];
 

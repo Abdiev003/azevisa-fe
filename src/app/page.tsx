@@ -273,9 +273,6 @@ export default async function HomePage() {
                 <span className="text-4xl font-extrabold text-[#1F2937]">
                   {t("tiers.standard.price")}
                 </span>
-                <span className="ml-2 text-xs font-bold text-[#6F7A72] uppercase tracking-wider">
-                  + {t("tiers.standard.priceLabel")}
-                </span>
               </div>
               <ul className="flex flex-col gap-2.5">
                 <li className="flex items-center gap-2.5 text-sm text-[#1F2937]">
@@ -317,9 +314,6 @@ export default async function HomePage() {
                 <span className="text-4xl font-extrabold text-white">
                   {t("tiers.urgent.price")}
                 </span>
-                <span className="ml-2 text-xs font-bold tracking-wider uppercase text-white/60">
-                  + {t("tiers.urgent.priceLabel")}
-                </span>
               </div>
               <ul className="flex flex-col gap-2.5">
                 <li className="flex items-center gap-2.5 text-sm text-white">
@@ -356,9 +350,6 @@ export default async function HomePage() {
               <div>
                 <span className="text-4xl font-extrabold text-[#1F2937]">
                   {t("tiers.superRush.price")}
-                </span>
-                <span className="ml-2 text-xs font-bold text-[#6F7A72] uppercase tracking-wider">
-                  + {t("tiers.superRush.priceLabel")}
                 </span>
               </div>
               <ul className="flex flex-col gap-2.5">

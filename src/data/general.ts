@@ -25,7 +25,13 @@ export interface CountryItem {
   phone_code: string;
   flag_emoji: string;
   region_name: string;
-  available_purposes: string[];
+  available_purposes: {
+    id: number;
+    name: string;
+    slug: string;
+    purpose_type: string;
+    icon: string;
+  }[];
 }
 
 export interface CountryListResponse {

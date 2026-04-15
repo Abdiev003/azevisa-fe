@@ -6,6 +6,7 @@ import { twMerge } from "tailwind-merge";
 import { Field, inputClass } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { useUserStore } from "../providers/user-store-provider";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -245,7 +246,7 @@ function Sidebar({
   return (
     <aside className="hidden lg:flex flex-col w-56 shrink-0 bg-[#004E34] text-white rounded-xl overflow-hidden">
       <div className="px-5 py-6 border-b border-white/10">
-        <p className="text-xs font-semibold uppercase tracking-widest text-white/60 mb-1">
+        <p className="mb-1 text-xs font-semibold tracking-widest uppercase text-white/60">
           {labels.sidebar.title}
         </p>
         <p className="text-sm font-medium text-white/90">{stepOf}</p>
@@ -443,7 +444,7 @@ function Step1({
             hasError={!!errors.nationality}
           >
             <option value="">{l.nationalityPlaceholder}</option>
-            {COUNTRIES.map((c) => (
+            {EVISA_COUNTRIES.map((c) => (
               <option key={c} value={c}>
                 {c}
               </option>
@@ -532,7 +533,7 @@ function Step2({
 }
 
 // ---------------------------------------------------------------------------
-// Step 3 \u2014 Personal Information
+// Step 3 — Personal Information
 // ---------------------------------------------------------------------------
 
 function Step3({
@@ -602,13 +603,14 @@ function Step3({
             hasError={!!errors.dateOfBirth}
           />
         </Field>
+        {/* countryOfBirth uses ALL_COUNTRIES — a person can be born anywhere */}
         <Field label={l.countryOfBirth} error={errors.countryOfBirth?.message}>
           <Select
             {...register("countryOfBirth", { required: v.required })}
             hasError={!!errors.countryOfBirth}
           >
             <option value="">{l.countryOfBirthPlaceholder}</option>
-            {COUNTRIES.map((c) => (
+            {ALL_COUNTRIES.map((c) => (
               <option key={c} value={c}>
                 {c}
               </option>
@@ -713,7 +715,7 @@ function Step3({
 }
 
 // ---------------------------------------------------------------------------
-// Step 4 \u2014 Passport Details
+// Step 4 — Passport Details
 // ---------------------------------------------------------------------------
 
 function Step4({
@@ -792,8 +794,8 @@ function Step4({
       </div>
 
       {/* Passport copy upload */}
-      <div className="mt-6 rounded-xl border border-gray-200 bg-gray-50 overflow-hidden">
-        <div className="px-5 py-4 border-b border-gray-200 bg-white">
+      <div className="mt-6 overflow-hidden border border-gray-200 rounded-xl bg-gray-50">
+        <div className="px-5 py-4 bg-white border-b border-gray-200">
           <h3 className="text-sm font-semibold text-[#1F2937]">
             {l.passportCopyTitle}
           </h3>
@@ -805,7 +807,7 @@ function Step4({
             {l.passportCopyWarning}
           </span>
         </div>
-        <label className="flex flex-col items-center justify-center gap-3 px-6 py-8 cursor-pointer hover:bg-gray-100 transition-colors">
+        <label className="flex flex-col items-center justify-center gap-3 px-6 py-8 transition-colors cursor-pointer hover:bg-gray-100">
           <input
             {...register("passportCopy", {
               required: v.fileRequired,
@@ -848,7 +850,7 @@ function Step4({
         </label>
         {errors.passportCopy && (
           <p className="flex items-center gap-1 px-5 pb-3 text-xs text-red-500">
-            <span>\u26a0</span> {errors.passportCopy.message}
+            <span>⚠</span> {errors.passportCopy.message}
           </p>
         )}
       </div>
@@ -892,8 +894,8 @@ function ReviewSection({
   rows: { label: string; value: string }[];
 }) {
   return (
-    <div className="rounded-xl border border-gray-200 overflow-hidden">
-      <div className="flex items-center justify-between px-5 py-3 bg-gray-50 border-b border-gray-200">
+    <div className="overflow-hidden border border-gray-200 rounded-xl">
+      <div className="flex items-center justify-between px-5 py-3 border-b border-gray-200 bg-gray-50">
         <h3 className="text-sm font-semibold text-[#1F2937]">{title}</h3>
         <button
           type="button"
@@ -1011,7 +1013,7 @@ function Step5({
       </div>
 
       {/* Declaration */}
-      <div className="mt-5 rounded-xl border border-gray-200 bg-gray-50 px-5 py-4">
+      <div className="px-5 py-4 mt-5 border border-gray-200 rounded-xl bg-gray-50">
         <label className="flex items-start gap-3 cursor-pointer">
           <input
             {...register("declaration", {
@@ -1070,10 +1072,10 @@ function Step6({
   return (
     <div>
       <StepHeader num={l.number} title={l.title} subtitle={l.subtitle} />
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         {/* Payment form */}
         <div className="lg:col-span-3">
-          <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+          <div className="overflow-hidden bg-white border border-gray-200 rounded-xl">
             <div className="px-5 py-4 bg-[#004E34] text-white flex items-center gap-2">
               <svg viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
                 <path
@@ -1156,7 +1158,7 @@ function Step6({
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-8 gap-3">
+                <div className="flex flex-col items-center justify-center gap-3 py-8">
                   <svg viewBox="0 0 60 24" className="h-8" aria-label="PayPal">
                     <path
                       d="M22.9 6.5c-.6-3.3-3.5-4.8-7.1-4.8H8.4a1 1 0 0 0-1 .9L4.9 18.7a.6.6 0 0 0 .6.7h4.3l1.1-6.8v.2a1 1 0 0 1 1-.9h2.1c4 0 7.1-1.6 8-6.3v-.1z"
@@ -1178,7 +1180,7 @@ function Step6({
               )}
 
               {/* Agreement */}
-              <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="pt-4 mt-4 border-t border-gray-100">
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input
                     {...register("paymentAgreement", {
@@ -1194,7 +1196,7 @@ function Step6({
                   </span>
                 </label>
                 {errors.paymentAgreement && (
-                  <p className="mt-1 flex items-center gap-1 text-xs text-red-500">
+                  <p className="flex items-center gap-1 mt-1 text-xs text-red-500">
                     <span>⚠</span> {errors.paymentAgreement.message}
                   </p>
                 )}
@@ -1204,8 +1206,8 @@ function Step6({
         </div>
 
         {/* Order summary */}
-        <div className="lg:col-span-2 flex flex-col gap-4">
-          <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
+        <div className="flex flex-col gap-4 lg:col-span-2">
+          <div className="overflow-hidden bg-white border border-gray-200 rounded-xl">
             <div className="px-5 py-4 border-b border-gray-100">
               <h3 className="text-sm font-semibold text-[#1F2937]">
                 {l.orderTitle}
@@ -1270,6 +1272,8 @@ export function ApplyWizard({ labels }: { labels: ApplyLabels }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
+  const { user } = useUserStore();
+
   const methods = useForm<ApplicationFormData>({
     mode: "onBlur",
     defaultValues: {
@@ -1287,7 +1291,7 @@ export function ApplyWizard({ labels }: { labels: ApplyLabels }) {
       occupation: "",
       mobileNumber: "",
       address: "",
-      email: "",
+      email: user?.email || "",
       passportNumber: "",
       passportIssueDate: "",
       passportExpiryDate: "",
@@ -1318,9 +1322,9 @@ export function ApplyWizard({ labels }: { labels: ApplyLabels }) {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit} noValidate>
-        <div className="flex gap-6 items-start">
+        <div className="flex items-start gap-6">
           <Sidebar current={currentStep} labels={labels} />
-          <div className="flex-1 min-w-0 bg-white rounded-xl border border-gray-200 shadow-sm px-6 py-7">
+          <div className="flex-1 min-w-0 px-6 bg-white border border-gray-200 shadow-sm rounded-xl py-7">
             {currentStep === 0 && <Step1 labels={labels} onNext={next} />}
             {currentStep === 1 && (
               <Step2 labels={labels} onBack={back} onNext={next} />
@@ -1346,7 +1350,7 @@ export function ApplyWizard({ labels }: { labels: ApplyLabels }) {
         </div>
 
         {/* Mobile step indicator */}
-        <div className="lg:hidden flex items-center justify-center gap-2 mt-4">
+        <div className="flex items-center justify-center gap-2 mt-4 lg:hidden">
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
@@ -1367,92 +1371,95 @@ export function ApplyWizard({ labels }: { labels: ApplyLabels }) {
 }
 
 // ---------------------------------------------------------------------------
-// Country list
+// EVISA_COUNTRIES — Step 1: Nationality
+// Only countries eligible for Azerbaijan e-Visa (ASAN Visa system).
+// Visa-free countries (Turkey, Russia, Georgia, etc.) are intentionally excluded.
 // ---------------------------------------------------------------------------
 
-const COUNTRIES = [
-  "Afghanistan",
-  "Albania",
+const EVISA_COUNTRIES = [
   "Algeria",
-  "Andorra",
-  "Angola",
+  "Antigua and Barbuda",
   "Argentina",
-  "Armenia",
   "Australia",
   "Austria",
-  "Azerbaijan",
   "Bahamas",
   "Bahrain",
-  "Bangladesh",
-  "Belarus",
+  "Barbados",
   "Belgium",
+  "Belize",
   "Bolivia",
-  "Bosnia and Herzegovina",
   "Brazil",
+  "Brunei",
   "Bulgaria",
   "Cambodia",
   "Canada",
   "Chile",
   "China",
   "Colombia",
+  "Costa Rica",
   "Croatia",
   "Cuba",
   "Cyprus",
   "Czech Republic",
   "Denmark",
+  "Djibouti",
+  "Dominican Republic",
   "Ecuador",
   "Egypt",
+  "El Salvador",
   "Estonia",
-  "Ethiopia",
+  "Fiji",
   "Finland",
   "France",
-  "Georgia",
   "Germany",
-  "Ghana",
   "Greece",
   "Guatemala",
+  "Honduras",
+  "Hong Kong",
   "Hungary",
+  "Iceland",
   "India",
   "Indonesia",
   "Iran",
-  "Iraq",
   "Ireland",
   "Israel",
   "Italy",
+  "Jamaica",
   "Japan",
   "Jordan",
-  "Kazakhstan",
-  "Kenya",
   "Kuwait",
-  "Kyrgyzstan",
+  "Laos",
   "Latvia",
-  "Lebanon",
-  "Libya",
+  "Liechtenstein",
   "Lithuania",
   "Luxembourg",
   "Malaysia",
+  "Maldives",
+  "Malta",
   "Mexico",
-  "Moldova",
+  "Monaco",
   "Mongolia",
   "Montenegro",
   "Morocco",
-  "Myanmar",
+  "Nepal",
   "Netherlands",
   "New Zealand",
-  "Nigeria",
-  "North Korea",
+  "North Macedonia",
   "Norway",
   "Oman",
   "Pakistan",
+  "Panama",
+  "Papua New Guinea",
+  "Paraguay",
   "Peru",
   "Philippines",
   "Poland",
   "Portugal",
   "Qatar",
   "Romania",
-  "Russia",
+  "San Marino",
   "Saudi Arabia",
-  "Serbia",
+  "Seychelles",
   "Singapore",
   "Slovakia",
   "Slovenia",
@@ -1462,20 +1469,200 @@ const COUNTRIES = [
   "Sri Lanka",
   "Sweden",
   "Switzerland",
+  "Thailand",
+  "Trinidad and Tobago",
+  "Turkmenistan",
+  "United Arab Emirates",
+  "United Kingdom",
+  "United States",
+  "Uruguay",
+  "Vatican City",
+  "Venezuela",
+  "Vietnam",
+];
+
+// ---------------------------------------------------------------------------
+// ALL_COUNTRIES — Step 3: Country of Birth
+// Full world list — a person can be born in any country regardless of e-visa eligibility.
+// ---------------------------------------------------------------------------
+
+const ALL_COUNTRIES = [
+  "Afghanistan",
+  "Albania",
+  "Algeria",
+  "Andorra",
+  "Angola",
+  "Antigua and Barbuda",
+  "Argentina",
+  "Armenia",
+  "Australia",
+  "Austria",
+  "Azerbaijan",
+  "Bahamas",
+  "Bahrain",
+  "Bangladesh",
+  "Barbados",
+  "Belarus",
+  "Belgium",
+  "Belize",
+  "Benin",
+  "Bhutan",
+  "Bolivia",
+  "Bosnia and Herzegovina",
+  "Botswana",
+  "Brazil",
+  "Brunei",
+  "Bulgaria",
+  "Burkina Faso",
+  "Burundi",
+  "Cambodia",
+  "Cameroon",
+  "Canada",
+  "Cape Verde",
+  "Central African Republic",
+  "Chad",
+  "Chile",
+  "China",
+  "Colombia",
+  "Comoros",
+  "Congo",
+  "Costa Rica",
+  "Croatia",
+  "Cuba",
+  "Cyprus",
+  "Czech Republic",
+  "Denmark",
+  "Djibouti",
+  "Dominican Republic",
+  "Ecuador",
+  "Egypt",
+  "El Salvador",
+  "Equatorial Guinea",
+  "Eritrea",
+  "Estonia",
+  "Eswatini",
+  "Ethiopia",
+  "Fiji",
+  "Finland",
+  "France",
+  "Gabon",
+  "Gambia",
+  "Georgia",
+  "Germany",
+  "Ghana",
+  "Greece",
+  "Guatemala",
+  "Guinea",
+  "Guinea-Bissau",
+  "Guyana",
+  "Haiti",
+  "Honduras",
+  "Hong Kong",
+  "Hungary",
+  "Iceland",
+  "India",
+  "Indonesia",
+  "Iran",
+  "Iraq",
+  "Ireland",
+  "Israel",
+  "Italy",
+  "Ivory Coast",
+  "Jamaica",
+  "Japan",
+  "Jordan",
+  "Kazakhstan",
+  "Kenya",
+  "Kuwait",
+  "Kyrgyzstan",
+  "Laos",
+  "Latvia",
+  "Lebanon",
+  "Lesotho",
+  "Liberia",
+  "Libya",
+  "Liechtenstein",
+  "Lithuania",
+  "Luxembourg",
+  "Madagascar",
+  "Malawi",
+  "Malaysia",
+  "Maldives",
+  "Mali",
+  "Malta",
+  "Mauritania",
+  "Mauritius",
+  "Mexico",
+  "Moldova",
+  "Monaco",
+  "Mongolia",
+  "Montenegro",
+  "Morocco",
+  "Mozambique",
+  "Myanmar",
+  "Namibia",
+  "Nepal",
+  "Netherlands",
+  "New Zealand",
+  "Nicaragua",
+  "Niger",
+  "Nigeria",
+  "North Korea",
+  "North Macedonia",
+  "Norway",
+  "Oman",
+  "Pakistan",
+  "Panama",
+  "Papua New Guinea",
+  "Paraguay",
+  "Peru",
+  "Philippines",
+  "Poland",
+  "Portugal",
+  "Qatar",
+  "Romania",
+  "Russia",
+  "Rwanda",
+  "San Marino",
+  "Saudi Arabia",
+  "Senegal",
+  "Serbia",
+  "Seychelles",
+  "Sierra Leone",
+  "Singapore",
+  "Slovakia",
+  "Slovenia",
+  "Somalia",
+  "South Africa",
+  "South Korea",
+  "South Sudan",
+  "Spain",
+  "Sri Lanka",
+  "Sudan",
+  "Sweden",
+  "Switzerland",
   "Syria",
   "Taiwan",
   "Tajikistan",
+  "Tanzania",
   "Thailand",
+  "Timor-Leste",
+  "Togo",
+  "Trinidad and Tobago",
   "Tunisia",
   "Turkey",
   "Turkmenistan",
+  "Uganda",
   "Ukraine",
   "United Arab Emirates",
   "United Kingdom",
   "United States",
+  "Uruguay",
   "Uzbekistan",
+  "Vatican City",
   "Venezuela",
   "Vietnam",
   "Yemen",
+  "Zambia",
   "Zimbabwe",
 ];

@@ -299,7 +299,7 @@
       "official": "OFFICIAL SERVICE PROVIDER"
     },
     "bottom": {
-      "copyright": "© 2024 eViza Republic of Azerbaijan. All rights reserved.",
+      "copyright": "© 2026 azEvisa Republic of Azerbaijan. All rights reserved.",
       "privacyPolicy": "Privacy Policy",
       "termsOfService": "Terms of Service",
       "cookiePolicy": "Cookie Policy"
@@ -314,7 +314,8 @@
       "blog": "Blog",
       "contact": "Contact"
     },
-    "applyNow": "Apply Now"
+    "applyNow": "Apply Now",
+    "signIn": "Sign In"
   },
   "ContactUs": {
     "breadcrumb": "Contact Us",
@@ -418,7 +419,8 @@
       "entryType": "Entry Type"
     },
     "secondary": {
-      "details": "Details"
+      "details": "Details",
+      "unavailable": "Unavailable"
     },
     "comparison": {
       "title": "Comprehensive Visa Comparison",
@@ -667,6 +669,53 @@
       "fileType": "Only JPG or PDF files are accepted",
       "declarationRequired": "You must accept the declaration",
       "paymentAgreementRequired": "You must agree to the terms"
+    }
+  },
+  "Login": {
+    "meta": {
+      "title": "Sign In – AzEvisa",
+      "description": "Sign in to your AzEvisa account to manage your visa applications."
+    },
+    "title": "Welcome back",
+    "subtitle": "Sign in to your account",
+    "email": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "submit": "Sign In",
+    "submitting": "Signing in…",
+    "noAccount": "Don't have an account?",
+    "registerLink": "Create one",
+    "validation": {
+      "emailRequired": "Email address is required",
+      "emailInvalid": "Enter a valid email address",
+      "passwordRequired": "Password is required"
+    }
+  },
+  "Register": {
+    "meta": {
+      "title": "Create Account – AzEvisa",
+      "description": "Create your AzEvisa account to apply for and track your Azerbaijan eVisa."
+    },
+    "title": "Create your account",
+    "subtitle": "Register to start your visa application",
+    "email": "Email address",
+    "emailPlaceholder": "you@example.com",
+    "password": "Password",
+    "passwordPlaceholder": "Create a password",
+    "confirmPassword": "Confirm password",
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "submit": "Create Account",
+    "submitting": "Creating account…",
+    "hasAccount": "Already have an account?",
+    "loginLink": "Sign in",
+    "validation": {
+      "emailRequired": "Email address is required",
+      "emailInvalid": "Enter a valid email address",
+      "passwordRequired": "Password is required",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordsMismatch": "Passwords do not match"
     }
   }
 }
