@@ -45,6 +45,7 @@ export function LoginForm() {
 
       toast.success("Signed in successfully!");
       router.push("/");
+      router.refresh();
     } catch (error) {
       toast.error(
         typeof error === "string" ? error : "Invalid email or password.",

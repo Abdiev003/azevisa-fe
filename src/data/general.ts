@@ -91,3 +91,28 @@ export const getCountries = async (params?: {
     return { count: 0, next: null, previous: null, results: [] };
   }
 };
+
+export const getAllCountries = async (): Promise<CountryItem[]> => {
+  const results: CountryItem[] = [];
+  const seen = new Set<number>();
+  let page = 1;
+
+  while (true) {
+    const response = await getCountries({ page });
+
+    for (const country of response.results) {
+      if (!seen.has(country.id)) {
+        seen.add(country.id);
+        results.push(country);
+      }
+    }
+
+    if (!response.next) {
+      break;
+    }
+
+    page += 1;
+  }
+
+  return results;
+};

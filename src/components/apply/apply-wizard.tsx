@@ -2,10 +2,17 @@
 
 import { useState, useCallback } from "react";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
+import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import { Field, inputClass } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import {
+  createDraftApplication,
+  getLatestDraftApplication,
+  submitApplication,
+  updateApplicationStep,
+} from "@/actions/applications";
 import { useUserStore } from "../providers/user-store-provider";
 
 // ---------------------------------------------------------------------------
@@ -35,20 +42,22 @@ export interface ApplicationFormData {
   passportNumber: string;
   passportIssueDate: string;
   passportExpiryDate: string;
-  passportCopy: FileList | null;
+  passportIssuingCountry: string;
   addressInAzerbaijan: string;
+  passportCopy: FileList | null;
   // Step 5 — Review
   declaration: boolean;
-  // Step 6 — Payment
-  paymentMethod: "card" | "paypal";
-  cardName: string;
-  cardNumber: string;
-  cardExpiry: string;
-  cardCvv: string;
-  paymentAgreement: boolean;
+  // Step 6 — Visa Type
+  visaType: string;
+  stayDurationDays: string;
+  applicantNotes: string;
 }
 
-const VISA_PRICE = 26;
+const VISA_TYPE_FEES: Record<string, number> = {
+  "1": 20,
+  "2": 50,
+  "3": 80,
+};
 const SERVICE_FEE = 0;
 
 // ---------------------------------------------------------------------------
@@ -120,13 +129,11 @@ export interface ApplyLabels {
     occupationPlaceholder: string;
     occupationEmployed: string;
     occupationSelfEmployed: string;
+    occupationBusinessOwner: string;
     occupationStudent: string;
     occupationRetired: string;
     occupationUnemployed: string;
     occupationGovernment: string;
-    occupationMilitary: string;
-    occupationHealthcare: string;
-    occupationTeacher: string;
     occupationOther: string;
     mobileNumber: string;
     mobileNumberPlaceholder: string;
@@ -146,6 +153,8 @@ export interface ApplyLabels {
     passportNumberPlaceholder: string;
     passportIssueDate: string;
     passportExpiryDate: string;
+    passportIssuingCountry: string;
+    passportIssuingCountryPlaceholder: string;
     passportCopyTitle: string;
     passportCopyDesc: string;
     passportCopyWarning: string;
@@ -171,14 +180,17 @@ export interface ApplyLabels {
     fullName: string;
     dateOfBirth: string;
     countryOfBirth: string;
+    placeOfBirth: string;
     sex: string;
     occupation: string;
     email: string;
     passportNumber: string;
     passportIssueDate: string;
     passportExpiryDate: string;
+    passportIssuingCountry: string;
     uploadedDoc: string;
     addressInAzerbaijan: string;
+    emptyValue: string;
     declarationLabel: string;
     back: string;
     next: string;
@@ -187,18 +199,15 @@ export interface ApplyLabels {
     number: string;
     title: string;
     subtitle: string;
-    portalTitle: string;
-    cardTab: string;
-    paypalTab: string;
-    cardName: string;
-    cardNamePlaceholder: string;
-    cardNumber: string;
-    cardNumberPlaceholder: string;
-    cardExpiry: string;
-    cardExpiryPlaceholder: string;
-    cardCvv: string;
-    cardCvvPlaceholder: string;
-    agreementLabel: string;
+    visaType: string;
+    visaTypePlaceholder: string;
+    visaTypeStandard: string;
+    visaTypeUrgent: string;
+    visaTypeSuperRush: string;
+    stayDurationDays: string;
+    stayDurationDaysPlaceholder: string;
+    applicantNotes: string;
+    applicantNotesPlaceholder: string;
     orderTitle: string;
     visaFeeLabel: string;
     serviceFeeLabel: string;
@@ -206,6 +215,7 @@ export interface ApplyLabels {
     supportText: string;
     back: string;
     submit: string;
+    submissionSuccess: string;
   };
   validation: {
     required: string;
@@ -215,9 +225,18 @@ export interface ApplyLabels {
     fileSize: string;
     fileType: string;
     declarationRequired: string;
-    paymentAgreementRequired: string;
+    stayDurationMax: string;
   };
 }
+
+type CountryOption = {
+  id: number;
+  name: string;
+  availablePurposes: {
+    id: number;
+    name: string;
+  }[];
+};
 
 // ---------------------------------------------------------------------------
 // Sidebar
@@ -416,9 +435,11 @@ function StepHeader({
 function Step1({
   labels,
   onNext,
+  countryOptions,
 }: {
   labels: ApplyLabels;
-  onNext: () => void;
+  onNext: () => Promise<void>;
+  countryOptions: CountryOption[];
 }) {
   const {
     register,
@@ -428,7 +449,7 @@ function Step1({
 
   const handleNext = async () => {
     const ok = await trigger(["nationality", "documentType"]);
-    if (ok) onNext();
+    if (ok) await onNext();
   };
 
   const l = labels.step1;
@@ -444,9 +465,9 @@ function Step1({
             hasError={!!errors.nationality}
           >
             <option value="">{l.nationalityPlaceholder}</option>
-            {EVISA_COUNTRIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
+            {countryOptions.map((country) => (
+              <option key={country.id} value={String(country.id)}>
+                {country.name}
               </option>
             ))}
           </Select>
@@ -457,10 +478,10 @@ function Step1({
             hasError={!!errors.documentType}
           >
             <option value="">{l.documentTypePlaceholder}</option>
-            <option value="ordinary">{l.docOrdinary}</option>
-            <option value="official">{l.docOfficial}</option>
-            <option value="diplomatic">{l.docDiplomatic}</option>
-            <option value="emergency">{l.docEmergency}</option>
+            <option value="ordinary_passport">{l.docOrdinary}</option>
+            <option value="service_passport">{l.docOfficial}</option>
+            <option value="diplomatic_passport">{l.docDiplomatic}</option>
+            <option value="travel_document">{l.docEmergency}</option>
           </Select>
         </Field>
       </div>
@@ -477,24 +498,30 @@ function Step2({
   labels,
   onBack,
   onNext,
+  countryOptions,
 }: {
   labels: ApplyLabels;
   onBack: () => void;
-  onNext: () => void;
+  onNext: () => Promise<void>;
+  countryOptions: CountryOption[];
 }) {
   const {
     register,
     formState: { errors },
     trigger,
+    watch,
   } = useFormContext<ApplicationFormData>();
 
   const handleNext = async () => {
     const ok = await trigger(["arrivalDate", "purposeOfVisit"]);
-    if (ok) onNext();
+    if (ok) await onNext();
   };
 
   const l = labels.step2;
   const v = labels.validation;
+  const selectedCountry = countryOptions.find(
+    (country) => String(country.id) === watch("nationality"),
+  );
 
   return (
     <div>
@@ -514,11 +541,11 @@ function Step2({
             hasError={!!errors.purposeOfVisit}
           >
             <option value="">{l.purposePlaceholder}</option>
-            <option value="tourism">{l.purposeTourism}</option>
-            <option value="business">{l.purposeBusiness}</option>
-            <option value="transit">{l.purposeTransit}</option>
-            <option value="education">{l.purposeEducation}</option>
-            <option value="medical">{l.purposeMedical}</option>
+            {selectedCountry?.availablePurposes.map((purpose) => (
+              <option key={purpose.id} value={String(purpose.id)}>
+                {purpose.name}
+              </option>
+            ))}
           </Select>
         </Field>
       </div>
@@ -540,10 +567,12 @@ function Step3({
   labels,
   onBack,
   onNext,
+  countryOptions,
 }: {
   labels: ApplyLabels;
   onBack: () => void;
-  onNext: () => void;
+  onNext: () => Promise<void>;
+  countryOptions: CountryOption[];
 }) {
   const {
     register,
@@ -566,7 +595,7 @@ function Step3({
 
   const handleNext = async () => {
     const ok = await trigger(step3Fields);
-    if (ok) onNext();
+    if (ok) await onNext();
   };
 
   const l = labels.step3;
@@ -603,16 +632,15 @@ function Step3({
             hasError={!!errors.dateOfBirth}
           />
         </Field>
-        {/* countryOfBirth uses ALL_COUNTRIES — a person can be born anywhere */}
         <Field label={l.countryOfBirth} error={errors.countryOfBirth?.message}>
           <Select
             {...register("countryOfBirth", { required: v.required })}
             hasError={!!errors.countryOfBirth}
           >
             <option value="">{l.countryOfBirthPlaceholder}</option>
-            {ALL_COUNTRIES.map((c) => (
-              <option key={c} value={c}>
-                {c}
+            {countryOptions.map((country) => (
+              <option key={country.id} value={String(country.id)}>
+                {country.name}
               </option>
             ))}
           </Select>
@@ -641,14 +669,12 @@ function Step3({
           >
             <option value="">{l.occupationPlaceholder}</option>
             <option value="employed">{l.occupationEmployed}</option>
-            <option value="self-employed">{l.occupationSelfEmployed}</option>
+            <option value="self_employed">{l.occupationSelfEmployed}</option>
+            <option value="business_owner">{l.occupationBusinessOwner}</option>
             <option value="student">{l.occupationStudent}</option>
             <option value="retired">{l.occupationRetired}</option>
             <option value="unemployed">{l.occupationUnemployed}</option>
             <option value="government">{l.occupationGovernment}</option>
-            <option value="military">{l.occupationMilitary}</option>
-            <option value="healthcare">{l.occupationHealthcare}</option>
-            <option value="teacher">{l.occupationTeacher}</option>
             <option value="other">{l.occupationOther}</option>
           </Select>
         </Field>
@@ -722,10 +748,12 @@ function Step4({
   labels,
   onBack,
   onNext,
+  countryOptions,
 }: {
   labels: ApplyLabels;
   onBack: () => void;
-  onNext: () => void;
+  onNext: () => Promise<void>;
+  countryOptions: CountryOption[];
 }) {
   const {
     register,
@@ -738,13 +766,13 @@ function Step4({
     "passportNumber",
     "passportIssueDate",
     "passportExpiryDate",
-    "passportCopy",
+    "passportIssuingCountry",
     "addressInAzerbaijan",
   ];
 
   const handleNext = async () => {
     const ok = await trigger(step4Fields);
-    if (ok) onNext();
+    if (ok) await onNext();
   };
 
   const fileVal = watch("passportCopy");
@@ -770,7 +798,22 @@ function Step4({
             hasError={!!errors.passportNumber}
           />
         </Field>
-        <div />
+        <Field
+          label={l.passportIssuingCountry}
+          error={errors.passportIssuingCountry?.message}
+        >
+          <Select
+            {...register("passportIssuingCountry", { required: v.required })}
+            hasError={!!errors.passportIssuingCountry}
+          >
+            <option value="">{l.passportIssuingCountryPlaceholder}</option>
+            {countryOptions.map((country) => (
+              <option key={country.id} value={String(country.id)}>
+                {country.name}
+              </option>
+            ))}
+          </Select>
+        </Field>
         <Field
           label={l.passportIssueDate}
           error={errors.passportIssueDate?.message}
@@ -916,7 +959,7 @@ function ReviewSection({
           >
             <span className="text-xs text-[#6F7A72]">{row.label}</span>
             <span className="text-xs font-medium text-[#1F2937]">
-              {row.value || "—"}
+              {row.value}
             </span>
           </div>
         ))}
@@ -930,11 +973,13 @@ function Step5({
   onBack,
   onNext,
   goToStep,
+  countryOptions,
 }: {
   labels: ApplyLabels;
   onBack: () => void;
-  onNext: () => void;
+  onNext: () => Promise<void>;
   goToStep: (step: number) => void;
+  countryOptions: CountryOption[];
 }) {
   const {
     register,
@@ -947,10 +992,47 @@ function Step5({
 
   const handleNext = async () => {
     const ok = await trigger(["declaration"]);
-    if (ok) onNext();
+    if (ok) await onNext();
   };
 
   const l = labels.step5;
+  const selectedNationality =
+    countryOptions.find((country) => String(country.id) === values.nationality)
+      ?.name ?? l.emptyValue;
+  const selectedCountryOfBirth =
+    countryOptions.find(
+      (country) => String(country.id) === values.countryOfBirth,
+    )?.name ?? l.emptyValue;
+  const selectedPassportIssuingCountry =
+    countryOptions.find(
+      (country) => String(country.id) === values.passportIssuingCountry,
+    )?.name ?? l.emptyValue;
+  const selectedPurpose =
+    countryOptions
+      .find((country) => String(country.id) === values.nationality)
+      ?.availablePurposes.find(
+        (purpose) => String(purpose.id) === values.purposeOfVisit,
+      )?.name ?? l.emptyValue;
+  const documentTypeLabels: Record<string, string> = {
+    ordinary_passport: labels.step1.docOrdinary,
+    service_passport: labels.step1.docOfficial,
+    diplomatic_passport: labels.step1.docDiplomatic,
+    travel_document: labels.step1.docEmergency,
+  };
+  const genderLabels: Record<string, string> = {
+    male: labels.step3.sexMale,
+    female: labels.step3.sexFemale,
+  };
+  const occupationLabels: Record<string, string> = {
+    employed: labels.step3.occupationEmployed,
+    self_employed: labels.step3.occupationSelfEmployed,
+    business_owner: labels.step3.occupationBusinessOwner,
+    student: labels.step3.occupationStudent,
+    retired: labels.step3.occupationRetired,
+    unemployed: labels.step3.occupationUnemployed,
+    government: labels.step3.occupationGovernment,
+    other: labels.step3.occupationOther,
+  };
 
   return (
     <div>
@@ -961,8 +1043,11 @@ function Step5({
           editLabel={l.edit}
           onEdit={() => goToStep(0)}
           rows={[
-            { label: l.nationality, value: values.nationality },
-            { label: l.documentType, value: values.documentType },
+            { label: l.nationality, value: selectedNationality },
+            {
+              label: l.documentType,
+              value: documentTypeLabels[values.documentType] ?? l.emptyValue,
+            },
           ]}
         />
         <ReviewSection
@@ -971,7 +1056,7 @@ function Step5({
           onEdit={() => goToStep(1)}
           rows={[
             { label: l.arrivalDate, value: values.arrivalDate },
-            { label: l.purposeOfVisit, value: values.purposeOfVisit },
+            { label: l.purposeOfVisit, value: selectedPurpose },
           ]}
         />
         <ReviewSection
@@ -986,9 +1071,16 @@ function Step5({
                 .join(" "),
             },
             { label: l.dateOfBirth, value: values.dateOfBirth },
-            { label: l.countryOfBirth, value: values.countryOfBirth },
-            { label: l.sex, value: values.sex },
-            { label: l.occupation, value: values.occupation },
+            { label: l.countryOfBirth, value: selectedCountryOfBirth },
+            {
+              label: l.placeOfBirth,
+              value: values.placeOfBirth || l.emptyValue,
+            },
+            { label: l.sex, value: genderLabels[values.sex] ?? l.emptyValue },
+            {
+              label: l.occupation,
+              value: occupationLabels[values.occupation] ?? l.emptyValue,
+            },
             { label: l.email, value: values.email },
           ]}
         />
@@ -1001,11 +1093,15 @@ function Step5({
             { label: l.passportIssueDate, value: values.passportIssueDate },
             { label: l.passportExpiryDate, value: values.passportExpiryDate },
             {
+              label: l.passportIssuingCountry,
+              value: selectedPassportIssuingCountry,
+            },
+            {
               label: l.uploadedDoc,
               value:
                 values.passportCopy && values.passportCopy.length > 0
-                  ? (values.passportCopy[0]?.name ?? "—")
-                  : "—",
+                  ? (values.passportCopy[0]?.name ?? l.emptyValue)
+                  : l.emptyValue,
             },
             { label: l.addressInAzerbaijan, value: values.addressInAzerbaijan },
           ]}
@@ -1045,7 +1141,7 @@ function Step5({
 }
 
 // ---------------------------------------------------------------------------
-// Step 6 — Payment
+// Step 6 — Visa Type
 // ---------------------------------------------------------------------------
 
 function Step6({
@@ -1061,19 +1157,18 @@ function Step6({
     register,
     formState: { errors },
     watch,
-    setValue,
   } = useFormContext<ApplicationFormData>();
 
-  const paymentMethod = watch("paymentMethod");
-  const price = VISA_PRICE;
-
   const l = labels.step6;
+  const v = labels.validation;
+  const visaType = watch("visaType");
+  const price = VISA_TYPE_FEES[visaType] ?? 0;
 
   return (
     <div>
       <StepHeader num={l.number} title={l.title} subtitle={l.subtitle} />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-        {/* Payment form */}
+        {/* Visa type form */}
         <div className="lg:col-span-3">
           <div className="overflow-hidden bg-white border border-gray-200 rounded-xl">
             <div className="px-5 py-4 bg-[#004E34] text-white flex items-center gap-2">
@@ -1084,123 +1179,49 @@ function Step6({
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="text-sm font-semibold">{l.portalTitle}</span>
+              <span className="text-sm font-semibold">{l.visaType}</span>
             </div>
 
-            {/* Tabs */}
-            <div className="flex border-b border-gray-200">
-              {(["card", "paypal"] as const).map((method) => (
-                <button
-                  key={method}
-                  type="button"
-                  onClick={() => setValue("paymentMethod", method)}
-                  className={twMerge(
-                    "flex-1 py-3 text-sm font-semibold transition-colors",
-                    paymentMethod === method
-                      ? "border-b-2 border-[#004E34] text-[#004E34]"
-                      : "text-[#6F7A72] hover:text-[#1F2937]",
-                  )}
+            <div className="px-5 py-5 flex flex-col gap-4">
+              <Field label={l.visaType} error={errors.visaType?.message}>
+                <Select
+                  {...register("visaType", { required: v.required })}
+                  hasError={!!errors.visaType}
                 >
-                  {method === "card" ? l.cardTab : l.paypalTab}
-                </button>
-              ))}
-            </div>
-
-            <div className="px-5 py-5">
-              {paymentMethod === "card" ? (
-                <div className="flex flex-col gap-4">
-                  <Field label={l.cardName} error={errors.cardName?.message}>
-                    <Input
-                      {...register("cardName", {
-                        required: labels.validation.required,
-                      })}
-                      placeholder={l.cardNamePlaceholder}
-                      hasError={!!errors.cardName}
-                    />
-                  </Field>
-                  <Field
-                    label={l.cardNumber}
-                    error={errors.cardNumber?.message}
-                  >
-                    <Input
-                      {...register("cardNumber", {
-                        required: labels.validation.required,
-                      })}
-                      placeholder={l.cardNumberPlaceholder}
-                      hasError={!!errors.cardNumber}
-                      maxLength={19}
-                    />
-                  </Field>
-                  <div className="grid grid-cols-2 gap-4">
-                    <Field
-                      label={l.cardExpiry}
-                      error={errors.cardExpiry?.message}
-                    >
-                      <Input
-                        {...register("cardExpiry", {
-                          required: labels.validation.required,
-                        })}
-                        placeholder={l.cardExpiryPlaceholder}
-                        hasError={!!errors.cardExpiry}
-                        maxLength={5}
-                      />
-                    </Field>
-                    <Field label={l.cardCvv} error={errors.cardCvv?.message}>
-                      <Input
-                        {...register("cardCvv", {
-                          required: labels.validation.required,
-                        })}
-                        placeholder={l.cardCvvPlaceholder}
-                        hasError={!!errors.cardCvv}
-                        maxLength={4}
-                      />
-                    </Field>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center justify-center gap-3 py-8">
-                  <svg viewBox="0 0 60 24" className="h-8" aria-label="PayPal">
-                    <path
-                      d="M22.9 6.5c-.6-3.3-3.5-4.8-7.1-4.8H8.4a1 1 0 0 0-1 .9L4.9 18.7a.6.6 0 0 0 .6.7h4.3l1.1-6.8v.2a1 1 0 0 1 1-.9h2.1c4 0 7.1-1.6 8-6.3v-.1z"
-                      fill="#003087"
-                    />
-                    <path
-                      d="M33.9 6c0 0-.1 0 0 0-.7-3.5-3.6-5-7.2-5h-7.5a1 1 0 0 0-1 .9L15.6 19c-.1.4.2.8.6.8h4.6l1.2-7.5-.1.4a1 1 0 0 1 1-.9H25c4 0 7.1-1.6 8-6.4.1-.5.1-.9.1-1.3a4 4 0 0 0-.2-.1z"
-                      fill="#0070E0"
-                    />
-                    <path
-                      d="M22.9 6.5a7 7 0 0 0-.4 1c-.9 4.6-3.8 6.2-7.6 6.2H13a1 1 0 0 0-1 .9l-1.3 8a.6.6 0 0 0 .6.7h3.9a.9.9 0 0 0 .9-.8l.6-4 .9-5.7h1.5c3.4 0 6-.8 7-4.9z"
-                      fill="#00AAEE"
-                    />
-                  </svg>
-                  <p className="text-sm text-[#6F7A72]">
-                    You will be redirected to PayPal to complete payment.
-                  </p>
-                </div>
-              )}
-
-              {/* Agreement */}
-              <div className="pt-4 mt-4 border-t border-gray-100">
-                <label className="flex items-start gap-3 cursor-pointer">
-                  <input
-                    {...register("paymentAgreement", {
-                      validate: (v) =>
-                        v === true ||
-                        labels.validation.paymentAgreementRequired,
-                    })}
-                    type="checkbox"
-                    className="mt-0.5 w-4 h-4 accent-[#004E34] cursor-pointer"
-                  />
-                  <span className="text-xs text-[#6F7A72] leading-relaxed">
-                    {l.agreementLabel}
-                  </span>
-                </label>
-                {errors.paymentAgreement && (
-                  <p className="flex items-center gap-1 mt-1 text-xs text-red-500">
-                    <span>⚠</span> {errors.paymentAgreement.message}
-                  </p>
-                )}
-              </div>
+                  <option value="">{l.visaTypePlaceholder}</option>
+                  <option value="1">{l.visaTypeStandard}</option>
+                  <option value="2">{l.visaTypeUrgent}</option>
+                  <option value="3">{l.visaTypeSuperRush}</option>
+                </Select>
+              </Field>
+              <Field
+                label={l.stayDurationDays}
+                error={errors.stayDurationDays?.message}
+              >
+                <Input
+                  {...register("stayDurationDays", {
+                    required: v.required,
+                    validate: (value) =>
+                      Number(value) <= 30 || v.stayDurationMax,
+                  })}
+                  type="number"
+                  min={1}
+                  max={30}
+                  placeholder={l.stayDurationDaysPlaceholder}
+                  hasError={!!errors.stayDurationDays}
+                />
+              </Field>
+              <Field label={l.applicantNotes} error={undefined}>
+                <textarea
+                  {...register("applicantNotes")}
+                  rows={5}
+                  placeholder={l.applicantNotesPlaceholder}
+                  className={twMerge(
+                    inputClass(false),
+                    "min-h-28 resize-y py-3",
+                  )}
+                />
+              </Field>
             </div>
           </div>
         </div>
@@ -1268,9 +1289,16 @@ function Step6({
 // Main wizard
 // ---------------------------------------------------------------------------
 
-export function ApplyWizard({ labels }: { labels: ApplyLabels }) {
+export function ApplyWizard({
+  labels,
+  countryOptions,
+}: {
+  labels: ApplyLabels;
+  countryOptions: CountryOption[];
+}) {
   const [currentStep, setCurrentStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [referenceNumber, setReferenceNumber] = useState<string | null>(null);
 
   const { user } = useUserStore();
 
@@ -1295,15 +1323,13 @@ export function ApplyWizard({ labels }: { labels: ApplyLabels }) {
       passportNumber: "",
       passportIssueDate: "",
       passportExpiryDate: "",
-      passportCopy: null,
+      passportIssuingCountry: "",
       addressInAzerbaijan: "",
+      passportCopy: null,
       declaration: false,
-      paymentMethod: "card",
-      cardName: "",
-      cardNumber: "",
-      cardExpiry: "",
-      cardCvv: "",
-      paymentAgreement: false,
+      visaType: "",
+      stayDurationDays: "30",
+      applicantNotes: "",
     },
   });
 
@@ -1311,12 +1337,175 @@ export function ApplyWizard({ labels }: { labels: ApplyLabels }) {
   const back = useCallback(() => setCurrentStep((s) => Math.max(s - 1, 0)), []);
   const goToStep = useCallback((step: number) => setCurrentStep(step), []);
 
+  const extractReferenceNumber = useCallback((data: unknown): string | null => {
+    if (!data || typeof data !== "object") {
+      return null;
+    }
+
+    const source = data as Record<string, unknown>;
+
+    if (typeof source.reference_number === "string") {
+      return source.reference_number;
+    }
+
+    if (
+      source.application &&
+      typeof source.application === "object" &&
+      source.application !== null &&
+      typeof (source.application as Record<string, unknown>)
+        .reference_number === "string"
+    ) {
+      return (source.application as Record<string, string>).reference_number;
+    }
+
+    return null;
+  }, []);
+
+  const ensureDraftApplication = useCallback(async () => {
+    if (referenceNumber) {
+      return referenceNumber;
+    }
+
+    const nationalityId = Number(methods.getValues("nationality"));
+    if (!Number.isFinite(nationalityId) || nationalityId <= 0) {
+      throw new Error(labels.validation.required);
+    }
+
+    const created = await createDraftApplication({
+      nationality: nationalityId,
+    });
+
+    if (!created.success) {
+      throw new Error(created.error);
+    }
+
+    let nextReferenceNumber = extractReferenceNumber(created.data);
+
+    if (!nextReferenceNumber) {
+      const latestDraft = await getLatestDraftApplication();
+
+      if (!latestDraft.success) {
+        throw new Error(latestDraft.error);
+      }
+
+      nextReferenceNumber = extractReferenceNumber(latestDraft.data);
+    }
+
+    if (!nextReferenceNumber) {
+      throw new Error("Application reference number was not returned.");
+    }
+
+    setReferenceNumber(nextReferenceNumber);
+    return nextReferenceNumber;
+  }, [
+    extractReferenceNumber,
+    labels.validation.required,
+    methods,
+    referenceNumber,
+  ]);
+
+  const persistStep = useCallback(
+    async (
+      step: number,
+      payload: Record<string, string | number | boolean>,
+    ) => {
+      const currentReferenceNumber = await ensureDraftApplication();
+      const result = await updateApplicationStep(
+        currentReferenceNumber,
+        step,
+        payload,
+      );
+
+      if (!result.success) {
+        throw new Error(result.error);
+      }
+    },
+    [ensureDraftApplication],
+  );
+
+  const handleStep1Next = useCallback(async () => {
+    next();
+  }, [next]);
+
+  const handleStep2Next = useCallback(async () => {
+    try {
+      await persistStep(1, {
+        nationality: Number(methods.getValues("nationality")),
+        document_type: methods.getValues("documentType"),
+        arrival_date: methods.getValues("arrivalDate"),
+        visa_purpose: Number(methods.getValues("purposeOfVisit")),
+      });
+      next();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    }
+  }, [methods, next, persistStep]);
+
+  const handleStep3Next = useCallback(async () => {
+    try {
+      await persistStep(2, {
+        first_name: methods.getValues("firstName"),
+        last_name: methods.getValues("surname"),
+        other_names: methods.getValues("otherNames"),
+        date_of_birth: methods.getValues("dateOfBirth"),
+        country_of_birth: Number(methods.getValues("countryOfBirth")),
+        place_of_birth: methods.getValues("placeOfBirth"),
+        gender: methods.getValues("sex"),
+        occupation: methods.getValues("occupation"),
+        mobile_number: methods.getValues("mobileNumber"),
+        address: methods.getValues("address"),
+        email: methods.getValues("email"),
+      });
+      next();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    }
+  }, [methods, next, persistStep]);
+
+  const handleStep4Next = useCallback(async () => {
+    try {
+      await persistStep(3, {
+        passport_number: methods.getValues("passportNumber"),
+        passport_issue_date: methods.getValues("passportIssueDate"),
+        passport_expiry_date: methods.getValues("passportExpiryDate"),
+        passport_issuing_country: Number(
+          methods.getValues("passportIssuingCountry"),
+        ),
+        address_in_azerbaijan: methods.getValues("addressInAzerbaijan"),
+      });
+      next();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    }
+  }, [methods, next, persistStep]);
+
+  const handleStep5Next = useCallback(async () => {
+    next();
+  }, [next]);
+
   const handleSubmit = methods.handleSubmit(async () => {
     setSubmitting(true);
-    // Application submission logic goes here
-    await new Promise((r) => setTimeout(r, 1200));
-    setSubmitting(false);
-    alert("Application submitted successfully!");
+    try {
+      await persistStep(4, {
+        visa_type: Number(methods.getValues("visaType")),
+        stay_duration_days: Number(methods.getValues("stayDurationDays")),
+        applicant_notes: methods.getValues("applicantNotes"),
+      });
+
+      const currentReferenceNumber = await ensureDraftApplication();
+      const result = await submitApplication(currentReferenceNumber);
+
+      if (!result.success) {
+        toast.error(result.error);
+        return;
+      }
+
+      toast.success(labels.step6.submissionSuccess);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : String(error));
+    } finally {
+      setSubmitting(false);
+    }
   });
 
   return (
@@ -1325,22 +1514,44 @@ export function ApplyWizard({ labels }: { labels: ApplyLabels }) {
         <div className="flex items-start gap-6">
           <Sidebar current={currentStep} labels={labels} />
           <div className="flex-1 min-w-0 px-6 bg-white border border-gray-200 shadow-sm rounded-xl py-7">
-            {currentStep === 0 && <Step1 labels={labels} onNext={next} />}
+            {currentStep === 0 && (
+              <Step1
+                labels={labels}
+                onNext={handleStep1Next}
+                countryOptions={countryOptions}
+              />
+            )}
             {currentStep === 1 && (
-              <Step2 labels={labels} onBack={back} onNext={next} />
+              <Step2
+                labels={labels}
+                onBack={back}
+                onNext={handleStep2Next}
+                countryOptions={countryOptions}
+              />
             )}
             {currentStep === 2 && (
-              <Step3 labels={labels} onBack={back} onNext={next} />
+              <Step3
+                labels={labels}
+                onBack={back}
+                onNext={handleStep3Next}
+                countryOptions={countryOptions}
+              />
             )}
             {currentStep === 3 && (
-              <Step4 labels={labels} onBack={back} onNext={next} />
+              <Step4
+                labels={labels}
+                onBack={back}
+                onNext={handleStep4Next}
+                countryOptions={countryOptions}
+              />
             )}
             {currentStep === 4 && (
               <Step5
                 labels={labels}
                 onBack={back}
-                onNext={next}
+                onNext={handleStep5Next}
                 goToStep={goToStep}
+                countryOptions={countryOptions}
               />
             )}
             {currentStep === 5 && (
@@ -1369,300 +1580,3 @@ export function ApplyWizard({ labels }: { labels: ApplyLabels }) {
     </FormProvider>
   );
 }
-
-// ---------------------------------------------------------------------------
-// EVISA_COUNTRIES — Step 1: Nationality
-// Only countries eligible for Azerbaijan e-Visa (ASAN Visa system).
-// Visa-free countries (Turkey, Russia, Georgia, etc.) are intentionally excluded.
-// ---------------------------------------------------------------------------
-
-const EVISA_COUNTRIES = [
-  "Algeria",
-  "Antigua and Barbuda",
-  "Argentina",
-  "Australia",
-  "Austria",
-  "Bahamas",
-  "Bahrain",
-  "Barbados",
-  "Belgium",
-  "Belize",
-  "Bolivia",
-  "Brazil",
-  "Brunei",
-  "Bulgaria",
-  "Cambodia",
-  "Canada",
-  "Chile",
-  "China",
-  "Colombia",
-  "Costa Rica",
-  "Croatia",
-  "Cuba",
-  "Cyprus",
-  "Czech Republic",
-  "Denmark",
-  "Djibouti",
-  "Dominican Republic",
-  "Ecuador",
-  "Egypt",
-  "El Salvador",
-  "Estonia",
-  "Fiji",
-  "Finland",
-  "France",
-  "Germany",
-  "Greece",
-  "Guatemala",
-  "Honduras",
-  "Hong Kong",
-  "Hungary",
-  "Iceland",
-  "India",
-  "Indonesia",
-  "Iran",
-  "Ireland",
-  "Israel",
-  "Italy",
-  "Jamaica",
-  "Japan",
-  "Jordan",
-  "Kuwait",
-  "Laos",
-  "Latvia",
-  "Liechtenstein",
-  "Lithuania",
-  "Luxembourg",
-  "Malaysia",
-  "Maldives",
-  "Malta",
-  "Mexico",
-  "Monaco",
-  "Mongolia",
-  "Montenegro",
-  "Morocco",
-  "Nepal",
-  "Netherlands",
-  "New Zealand",
-  "North Macedonia",
-  "Norway",
-  "Oman",
-  "Pakistan",
-  "Panama",
-  "Papua New Guinea",
-  "Paraguay",
-  "Peru",
-  "Philippines",
-  "Poland",
-  "Portugal",
-  "Qatar",
-  "Romania",
-  "San Marino",
-  "Saudi Arabia",
-  "Seychelles",
-  "Singapore",
-  "Slovakia",
-  "Slovenia",
-  "South Africa",
-  "South Korea",
-  "Spain",
-  "Sri Lanka",
-  "Sweden",
-  "Switzerland",
-  "Thailand",
-  "Trinidad and Tobago",
-  "Turkmenistan",
-  "United Arab Emirates",
-  "United Kingdom",
-  "United States",
-  "Uruguay",
-  "Vatican City",
-  "Venezuela",
-  "Vietnam",
-];
-
-// ---------------------------------------------------------------------------
-// ALL_COUNTRIES — Step 3: Country of Birth
-// Full world list — a person can be born in any country regardless of e-visa eligibility.
-// ---------------------------------------------------------------------------
-
-const ALL_COUNTRIES = [
-  "Afghanistan",
-  "Albania",
-  "Algeria",
-  "Andorra",
-  "Angola",
-  "Antigua and Barbuda",
-  "Argentina",
-  "Armenia",
-  "Australia",
-  "Austria",
-  "Azerbaijan",
-  "Bahamas",
-  "Bahrain",
-  "Bangladesh",
-  "Barbados",
-  "Belarus",
-  "Belgium",
-  "Belize",
-  "Benin",
-  "Bhutan",
-  "Bolivia",
-  "Bosnia and Herzegovina",
-  "Botswana",
-  "Brazil",
-  "Brunei",
-  "Bulgaria",
-  "Burkina Faso",
-  "Burundi",
-  "Cambodia",
-  "Cameroon",
-  "Canada",
-  "Cape Verde",
-  "Central African Republic",
-  "Chad",
-  "Chile",
-  "China",
-  "Colombia",
-  "Comoros",
-  "Congo",
-  "Costa Rica",
-  "Croatia",
-  "Cuba",
-  "Cyprus",
-  "Czech Republic",
-  "Denmark",
-  "Djibouti",
-  "Dominican Republic",
-  "Ecuador",
-  "Egypt",
-  "El Salvador",
-  "Equatorial Guinea",
-  "Eritrea",
-  "Estonia",
-  "Eswatini",
-  "Ethiopia",
-  "Fiji",
-  "Finland",
-  "France",
-  "Gabon",
-  "Gambia",
-  "Georgia",
-  "Germany",
-  "Ghana",
-  "Greece",
-  "Guatemala",
-  "Guinea",
-  "Guinea-Bissau",
-  "Guyana",
-  "Haiti",
-  "Honduras",
-  "Hong Kong",
-  "Hungary",
-  "Iceland",
-  "India",
-  "Indonesia",
-  "Iran",
-  "Iraq",
-  "Ireland",
-  "Israel",
-  "Italy",
-  "Ivory Coast",
-  "Jamaica",
-  "Japan",
-  "Jordan",
-  "Kazakhstan",
-  "Kenya",
-  "Kuwait",
-  "Kyrgyzstan",
-  "Laos",
-  "Latvia",
-  "Lebanon",
-  "Lesotho",
-  "Liberia",
-  "Libya",
-  "Liechtenstein",
-  "Lithuania",
-  "Luxembourg",
-  "Madagascar",
-  "Malawi",
-  "Malaysia",
-  "Maldives",
-  "Mali",
-  "Malta",
-  "Mauritania",
-  "Mauritius",
-  "Mexico",
-  "Moldova",
-  "Monaco",
-  "Mongolia",
-  "Montenegro",
-  "Morocco",
-  "Mozambique",
-  "Myanmar",
-  "Namibia",
-  "Nepal",
-  "Netherlands",
-  "New Zealand",
-  "Nicaragua",
-  "Niger",
-  "Nigeria",
-  "North Korea",
-  "North Macedonia",
-  "Norway",
-  "Oman",
-  "Pakistan",
-  "Panama",
-  "Papua New Guinea",
-  "Paraguay",
-  "Peru",
-  "Philippines",
-  "Poland",
-  "Portugal",
-  "Qatar",
-  "Romania",
-  "Russia",
-  "Rwanda",
-  "San Marino",
-  "Saudi Arabia",
-  "Senegal",
-  "Serbia",
-  "Seychelles",
-  "Sierra Leone",
-  "Singapore",
-  "Slovakia",
-  "Slovenia",
-  "Somalia",
-  "South Africa",
-  "South Korea",
-  "South Sudan",
-  "Spain",
-  "Sri Lanka",
-  "Sudan",
-  "Sweden",
-  "Switzerland",
-  "Syria",
-  "Taiwan",
-  "Tajikistan",
-  "Tanzania",
-  "Thailand",
-  "Timor-Leste",
-  "Togo",
-  "Trinidad and Tobago",
-  "Tunisia",
-  "Turkey",
-  "Turkmenistan",
-  "Uganda",
-  "Ukraine",
-  "United Arab Emirates",
-  "United Kingdom",
-  "United States",
-  "Uruguay",
-  "Uzbekistan",
-  "Vatican City",
-  "Venezuela",
-  "Vietnam",
-  "Yemen",
-  "Zambia",
-  "Zimbabwe",
-];

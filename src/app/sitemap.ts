@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
-import { getBlogs } from "@/data/blog";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://azevisa.online";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL!;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -67,18 +66,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  let blogRoutes: MetadataRoute.Sitemap = [];
-  try {
-    const data = await getBlogs(1);
-    blogRoutes = data.results.map((post) => ({
-      url: `${SITE_URL}/blog/${post.slug}`,
-      lastModified: new Date(post.published_at),
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
-    }));
-  } catch {
-    // If the API is unavailable, skip blog routes
-  }
-
-  return [...staticRoutes, ...blogRoutes];
+  return [...staticRoutes];
 }

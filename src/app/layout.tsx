@@ -8,6 +8,7 @@ import { Header } from "@/layouts/header";
 import { Footer } from "@/layouts/footer";
 import { getUser } from "@/data/user";
 import { UserStoreProvider } from "@/components/providers/user-store-provider";
+import { isTokenValid } from "@/lib/auth-token";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -110,9 +111,10 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const store = await cookies();
-  const user = await getUser();
   const locale = store.get("locale")?.value ?? "en";
-  const isLoggedIn = !!store.get("access_token")?.value;
+  const accessToken = store.get("access_token")?.value;
+  const isLoggedIn = isTokenValid(accessToken);
+  const user = isLoggedIn ? await getUser() : null;
 
   return (
     <html lang={locale} className={`${manrope.variable} h-full antialiased`}>

@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { ApplyWizard } from "@/components/apply/apply-wizard";
+import { getAllCountries } from "@/data/general";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Apply.meta");
@@ -12,6 +13,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ApplyPage() {
   const t = await getTranslations("Apply");
+  const countries = await getAllCountries();
 
   const labels = {
     sidebar: {
@@ -78,13 +80,11 @@ export default async function ApplyPage() {
       occupationPlaceholder: t("step3.occupationPlaceholder"),
       occupationEmployed: t("step3.occupationEmployed"),
       occupationSelfEmployed: t("step3.occupationSelfEmployed"),
+      occupationBusinessOwner: t("step3.occupationBusinessOwner"),
       occupationStudent: t("step3.occupationStudent"),
       occupationRetired: t("step3.occupationRetired"),
       occupationUnemployed: t("step3.occupationUnemployed"),
       occupationGovernment: t("step3.occupationGovernment"),
-      occupationMilitary: t("step3.occupationMilitary"),
-      occupationHealthcare: t("step3.occupationHealthcare"),
-      occupationTeacher: t("step3.occupationTeacher"),
       occupationOther: t("step3.occupationOther"),
       mobileNumber: t("step3.mobileNumber"),
       mobileNumberPlaceholder: t("step3.mobileNumberPlaceholder"),
@@ -104,6 +104,10 @@ export default async function ApplyPage() {
       passportNumberPlaceholder: t("step4.passportNumberPlaceholder"),
       passportIssueDate: t("step4.passportIssueDate"),
       passportExpiryDate: t("step4.passportExpiryDate"),
+      passportIssuingCountry: t("step4.passportIssuingCountry"),
+      passportIssuingCountryPlaceholder: t(
+        "step4.passportIssuingCountryPlaceholder",
+      ),
       passportCopyTitle: t("step4.passportCopyTitle"),
       passportCopyDesc: t("step4.passportCopyDesc"),
       passportCopyWarning: t("step4.passportCopyWarning"),
@@ -129,14 +133,17 @@ export default async function ApplyPage() {
       fullName: t("step5.fullName"),
       dateOfBirth: t("step5.dateOfBirth"),
       countryOfBirth: t("step5.countryOfBirth"),
+      placeOfBirth: t("step5.placeOfBirth"),
       sex: t("step5.sex"),
       occupation: t("step5.occupation"),
       email: t("step5.email"),
       passportNumber: t("step5.passportNumber"),
       passportIssueDate: t("step5.passportIssueDate"),
       passportExpiryDate: t("step5.passportExpiryDate"),
+      passportIssuingCountry: t("step5.passportIssuingCountry"),
       uploadedDoc: t("step5.uploadedDoc"),
       addressInAzerbaijan: t("step5.addressInAzerbaijan"),
+      emptyValue: t("step5.emptyValue"),
       declarationLabel: t("step5.declarationLabel"),
       back: t("step5.back"),
       next: t("step5.next"),
@@ -145,18 +152,15 @@ export default async function ApplyPage() {
       number: t("step6.number"),
       title: t("step6.title"),
       subtitle: t("step6.subtitle"),
-      portalTitle: t("step6.portalTitle"),
-      cardTab: t("step6.cardTab"),
-      paypalTab: t("step6.paypalTab"),
-      cardName: t("step6.cardName"),
-      cardNamePlaceholder: t("step6.cardNamePlaceholder"),
-      cardNumber: t("step6.cardNumber"),
-      cardNumberPlaceholder: t("step6.cardNumberPlaceholder"),
-      cardExpiry: t("step6.cardExpiry"),
-      cardExpiryPlaceholder: t("step6.cardExpiryPlaceholder"),
-      cardCvv: t("step6.cardCvv"),
-      cardCvvPlaceholder: t("step6.cardCvvPlaceholder"),
-      agreementLabel: t("step6.agreementLabel"),
+      visaType: t("step6.visaType"),
+      visaTypePlaceholder: t("step6.visaTypePlaceholder"),
+      visaTypeStandard: t("step6.visaTypeStandard"),
+      visaTypeUrgent: t("step6.visaTypeUrgent"),
+      visaTypeSuperRush: t("step6.visaTypeSuperRush"),
+      stayDurationDays: t("step6.stayDurationDays"),
+      stayDurationDaysPlaceholder: t("step6.stayDurationDaysPlaceholder"),
+      applicantNotes: t("step6.applicantNotes"),
+      applicantNotesPlaceholder: t("step6.applicantNotesPlaceholder"),
       orderTitle: t("step6.orderTitle"),
       visaFeeLabel: t("step6.visaFeeLabel"),
       serviceFeeLabel: t("step6.serviceFeeLabel"),
@@ -164,6 +168,7 @@ export default async function ApplyPage() {
       supportText: t("step6.supportText"),
       back: t("step6.back"),
       submit: t("step6.submit"),
+      submissionSuccess: t("step6.submissionSuccess"),
     },
     validation: {
       required: t("validation.required"),
@@ -173,14 +178,24 @@ export default async function ApplyPage() {
       fileSize: t("validation.fileSize"),
       fileType: t("validation.fileType"),
       declarationRequired: t("validation.declarationRequired"),
-      paymentAgreementRequired: t("validation.paymentAgreementRequired"),
+      stayDurationMax: t("validation.stayDurationMax"),
     },
   };
 
   return (
     <main className="min-h-screen bg-[#F8F9FA] py-10 px-4">
       <div className="max-w-5xl mx-auto">
-        <ApplyWizard labels={labels} />
+        <ApplyWizard
+          labels={labels}
+          countryOptions={countries.map((country) => ({
+            id: country.id,
+            name: country.name,
+            availablePurposes: country.available_purposes.map((purpose) => ({
+              id: purpose.id,
+              name: purpose.name,
+            })),
+          }))}
+        />
       </div>
     </main>
   );
