@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import { ApplyWizard } from "@/components/apply/apply-wizard";
-import { getAllCountries } from "@/data/general";
+import { getAllCountries, getVisaTypes } from "@/data/general";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("Apply.meta");
@@ -13,7 +13,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function ApplyPage() {
   const t = await getTranslations("Apply");
-  const countries = await getAllCountries();
+  const [countries, visaTypes] = await Promise.all([
+    getAllCountries(),
+    getVisaTypes(),
+  ]);
 
   const labels = {
     sidebar: {
@@ -154,9 +157,6 @@ export default async function ApplyPage() {
       subtitle: t("step6.subtitle"),
       visaType: t("step6.visaType"),
       visaTypePlaceholder: t("step6.visaTypePlaceholder"),
-      visaTypeStandard: t("step6.visaTypeStandard"),
-      visaTypeUrgent: t("step6.visaTypeUrgent"),
-      visaTypeSuperRush: t("step6.visaTypeSuperRush"),
       stayDurationDays: t("step6.stayDurationDays"),
       stayDurationDaysPlaceholder: t("step6.stayDurationDaysPlaceholder"),
       applicantNotes: t("step6.applicantNotes"),
@@ -193,6 +193,19 @@ export default async function ApplyPage() {
             availablePurposes: country.available_purposes.map((purpose) => ({
               id: purpose.id,
               name: purpose.name,
+            })),
+          }))}
+          visaTypes={visaTypes.map((vt) => ({
+            id: vt.id,
+            name: vt.name,
+            processingTimeText: vt.processing_time_text,
+            maxStayDays: vt.max_stay_days,
+            validityDays: vt.validity_days,
+            prices: vt.prices.map((p) => ({
+              purposeId: p.visa_purpose.id,
+              purposeType: p.visa_purpose.purpose_type,
+              totalPrice: Number(p.total_price),
+              currency: p.currency,
             })),
           }))}
         />

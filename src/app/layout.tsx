@@ -6,9 +6,6 @@ import { Toaster } from "sonner";
 import "./globals.css";
 import { Header } from "@/layouts/header";
 import { Footer } from "@/layouts/footer";
-import { getUser } from "@/data/user";
-import { UserStoreProvider } from "@/components/providers/user-store-provider";
-import { isTokenValid } from "@/lib/auth-token";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -112,9 +109,6 @@ export default async function RootLayout({
 }>) {
   const store = await cookies();
   const locale = store.get("locale")?.value ?? "en";
-  const accessToken = store.get("access_token")?.value;
-  const isLoggedIn = isTokenValid(accessToken);
-  const user = isLoggedIn ? await getUser() : null;
 
   return (
     <html lang={locale} className={`${manrope.variable} h-full antialiased`}>
@@ -130,12 +124,10 @@ export default async function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
         <NextIntlClientProvider>
-          <UserStoreProvider user={user}>
-            <Header locale={locale} isLoggedIn={isLoggedIn} user={user} />
-            <main className="flex-1">{children}</main>
-            <Footer />
-            <Toaster position="top-right" />
-          </UserStoreProvider>
+          <Header locale={locale} />
+          <main className="flex-1">{children}</main>
+          <Footer />
+          <Toaster position="top-right" />
         </NextIntlClientProvider>
       </body>
     </html>

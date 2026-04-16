@@ -1,6 +1,5 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { fetcher } from "@/lib/fetcher";
 
 type CreateDraftPayload = {
@@ -21,14 +20,9 @@ type ApplicationListItem = {
   created_at?: string;
 };
 
-async function listApplications(
-  accessToken: string | undefined,
-): Promise<ApplicationListItem[]> {
+async function listApplications(): Promise<ApplicationListItem[]> {
   const data = (await fetcher("/applications/", {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
   })) as { results?: ApplicationListItem[] } | ApplicationListItem[];
 
   if (Array.isArray(data)) {
@@ -41,18 +35,8 @@ async function listApplications(
 export async function createDraftApplication(
   payload: CreateDraftPayload,
 ): Promise<ActionResult> {
-  const store = await cookies();
-  const accessToken = store.get("access_token")?.value;
-
-  if (!accessToken) {
-    return {
-      success: false,
-      error: "You must be signed in to create an application.",
-    };
-  }
-
   try {
-    const previousApplications = await listApplications(accessToken);
+    const previousApplications = await listApplications();
     const previousReferences = new Set(
       previousApplications
         .map((application) => application.reference_number)
@@ -65,12 +49,11 @@ export async function createDraftApplication(
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(payload),
     });
 
-    const nextApplications = await listApplications(accessToken);
+    const nextApplications = await listApplications();
     const createdApplication =
       nextApplications.find(
         (application) =>
@@ -104,18 +87,8 @@ export async function createDraftApplication(
 }
 
 export async function getLatestDraftApplication(): Promise<ActionResult> {
-  const store = await cookies();
-  const accessToken = store.get("access_token")?.value;
-
-  if (!accessToken) {
-    return {
-      success: false,
-      error: "You must be signed in to load applications.",
-    };
-  }
-
   try {
-    const applications = await listApplications(accessToken);
+    const applications = await listApplications();
     const latestDraft = [...applications]
       .filter(
         (application) =>
@@ -152,16 +125,6 @@ export async function updateApplicationStep(
   step: number,
   payload: UpdateStepPayload,
 ): Promise<ActionResult> {
-  const store = await cookies();
-  const accessToken = store.get("access_token")?.value;
-
-  if (!accessToken) {
-    return {
-      success: false,
-      error: "You must be signed in to update the application.",
-    };
-  }
-
   try {
     const data = await fetcher(
       `/applications/${referenceNumber}/step/${step}/`,
@@ -169,7 +132,6 @@ export async function updateApplicationStep(
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
         },
         body: JSON.stringify(payload),
       },
@@ -187,25 +149,33 @@ export async function updateApplicationStep(
   }
 }
 
+export async function uploadDocument(
+  referenceNumber: string,
+  formData: FormData,
+): Promise<ActionResult> {
+  try {
+    const data = await fetcher(`/documents/${referenceNumber}/upload/`, {
+      method: "POST",
+      body: formData,
+    });
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        typeof error === "string" ? error : "Could not upload the document.",
+    };
+  }
+}
+
 export async function submitApplication(
   referenceNumber: string,
 ): Promise<ActionResult> {
-  const store = await cookies();
-  const accessToken = store.get("access_token")?.value;
-
-  if (!accessToken) {
-    return {
-      success: false,
-      error: "You must be signed in to submit the application.",
-    };
-  }
-
   try {
     const data = await fetcher(`/applications/${referenceNumber}/submit/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
       },
     });
 

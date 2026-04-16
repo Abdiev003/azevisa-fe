@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import {
-  FEATURED_VISAS,
-  SECONDARY_VISAS,
-  COMPARISON_ROWS,
-} from "@/data/visa-types";
+import { getVisaPurposes, getVisaTypes } from "@/data/general";
+import type { ProcessingTier, FeaturedVisa } from "@/data/visa-types";
 import { FeaturedVisaCard } from "@/components/visa-types/featured-visa-card";
 
 export const metadata: Metadata = {
@@ -34,8 +31,140 @@ export const metadata: Metadata = {
   },
 };
 
+const FEATURED_PURPOSE_TYPES = ["tourism", "business"] as const;
+
+const PURPOSE_STATIC: Record<
+  string,
+  { image?: string; imageBg: string; badge?: string }
+> = {
+  tourism: {
+    image:
+      "/AB6AXuC1CHP2C3Iv0QwVQWoVH9139-WbguvSO32lucaHyBovTtiWXTh27SfgsWe7RB9CrCQGfhT8GDftNt_60iXSKXTYOlmspNRaCNlANlau0Xp.png",
+    imageBg: "bg-[#1a3a2a]",
+  },
+  business: {
+    imageBg: "bg-[#0f2235]",
+  },
+};
+
 export default async function VisaTypesPage() {
   const t = await getTranslations("VisaTypes");
+
+  const [purposes, visaTypes] = await Promise.all([
+    getVisaPurposes(),
+    getVisaTypes(),
+  ]);
+
+  /* ── Build fee tiers for a given purpose_type ── */
+  function buildFeeTiers(purposeType: string): ProcessingTier[] {
+    return visaTypes.map((vt) => {
+      const priceEntry = vt.prices.find(
+        (p) => p.visa_purpose.purpose_type === purposeType,
+      );
+      return {
+        label: vt.name,
+        price: priceEntry ? `$${Number(priceEntry.total_price).toFixed(0)}` : "—",
+        time: vt.processing_time_text,
+        highlighted: vt.speed_type === "urgent",
+      };
+    });
+  }
+
+  /* ── Standard visa type for validity/maxStay ─── */
+  const stdType =
+    visaTypes.find((vt) => vt.speed_type === "standard") ?? visaTypes[0];
+
+  /* ── Featured visa cards ─────────────────────── */
+  const featuredPurposes = purposes.filter((p) =>
+    (FEATURED_PURPOSE_TYPES as readonly string[]).includes(p.purpose_type),
+  );
+
+  const translatedFeaturedVisas: FeaturedVisa[] = featuredPurposes.map(
+    (purpose) => {
+      const id = purpose.purpose_type as "tourism" | "business";
+      const staticData = PURPOSE_STATIC[id] ?? { imageBg: "bg-[#1a3a2a]" };
+      const requirements = t.raw(`visas.${id}.requirements`) as string[];
+
+      return {
+        id: purpose.slug,
+        name: purpose.name,
+        badge: id === "tourism" ? t("visas.tourism.badge") : undefined,
+        image: staticData.image,
+        imageBg: staticData.imageBg,
+        description: purpose.description,
+        details: {
+          validity: stdType
+            ? `${stdType.validity_days} Days`
+            : t(`visas.${id}.validity`),
+          maxStay: stdType
+            ? `${stdType.max_stay_days} Days`
+            : t(`visas.${id}.maxStay`),
+          entryType: t(`visas.${id}.entryType`),
+        },
+        requirements,
+        fees: buildFeeTiers(id),
+        applyLabel: t(`visas.${id}.applyLabel`),
+      };
+    },
+  );
+
+  /* ── Price range helper for a purpose_type ─────── */
+  function getPriceRange(purposeType: string): string {
+    const prices = visaTypes
+      .flatMap((vt) => vt.prices)
+      .filter((p) => p.visa_purpose.purpose_type === purposeType)
+      .map((p) => Number(p.total_price))
+      .filter((n) => !isNaN(n));
+    if (prices.length === 0) return "—";
+    const min = Math.min(...prices);
+    const max = Math.max(...prices);
+    return min === max ? `$${min}` : `$${min} – $${max}`;
+  }
+
+  /* ── Secondary visa cards ────────────────────── */
+  const secondaryPurposes = purposes.filter(
+    (p) =>
+      !(FEATURED_PURPOSE_TYPES as readonly string[]).includes(p.purpose_type),
+  );
+
+  const translatedSecondaryVisas = secondaryPurposes.map((purpose) => {
+    const id = purpose.purpose_type as "transit" | "student" | "work";
+    return {
+      id: purpose.slug,
+      name: purpose.name,
+      description: purpose.description,
+      priceLabel: t(`visas.${id}.priceLabel`),
+      price: getPriceRange(purpose.purpose_type),
+      disabled: id === "work",
+    };
+  });
+
+  /* ── Comparison rows ─────────────────────────── */
+  const processingRange =
+    visaTypes.length >= 2
+      ? `${visaTypes[visaTypes.length - 1].processing_time_text} – ${visaTypes[0].processing_time_text}`
+      : null;
+
+  const translatedComparisonRows = purposes.map((purpose) => {
+    const id = purpose.purpose_type as
+      | "tourism"
+      | "business"
+      | "transit"
+      | "student"
+      | "work";
+    return {
+      id: purpose.slug,
+      name: purpose.name,
+      validity: stdType
+        ? `${stdType.validity_days} Days`
+        : t(`visas.${id}.validity`),
+      maxStay: stdType
+        ? `${stdType.max_stay_days} Days`
+        : t(`visas.${id}.maxStay`),
+      priceRange: getPriceRange(purpose.purpose_type),
+      processingTime: processingRange ?? t(`visas.${id}.processingTime`),
+    };
+  });
 
   /* ── Card internal labels ─────────────────────── */
   const cardLabels = {
@@ -47,85 +176,6 @@ export default async function VisaTypesPage() {
     entryType: t("card.entryType"),
   };
 
-  /* ── Translated featured visas ───────────────── */
-  const [tourismMock, businessMock] = FEATURED_VISAS;
-  const tourismReqs = t.raw("visas.tourism.requirements") as string[];
-  const tourismFees = t.raw("visas.tourism.fees") as Array<{
-    label: string;
-    time: string;
-  }>;
-  const businessReqs = t.raw("visas.business.requirements") as string[];
-  const businessFees = t.raw("visas.business.fees") as Array<{
-    label: string;
-    time: string;
-  }>;
-
-  const translatedFeaturedVisas = [
-    {
-      ...tourismMock,
-      name: t("visas.tourism.name"),
-      badge: t("visas.tourism.badge"),
-      description: t("visas.tourism.description"),
-      details: {
-        validity: t("visas.tourism.validity"),
-        maxStay: t("visas.tourism.maxStay"),
-        entryType: t("visas.tourism.entryType"),
-      },
-      requirements: tourismReqs,
-      fees: tourismMock.fees.map((f, i) => ({
-        ...f,
-        label: tourismFees[i]?.label ?? f.label,
-        time: tourismFees[i]?.time ?? f.time,
-      })),
-      applyLabel: t("visas.tourism.applyLabel"),
-    },
-    {
-      ...businessMock,
-      name: t("visas.business.name"),
-      description: t("visas.business.description"),
-      details: {
-        validity: t("visas.business.validity"),
-        maxStay: t("visas.business.maxStay"),
-        entryType: t("visas.business.entryType"),
-      },
-      requirements: businessReqs,
-      fees: businessMock.fees.map((f, i) => ({
-        ...f,
-        label: businessFees[i]?.label ?? f.label,
-        time: businessFees[i]?.time ?? f.time,
-      })),
-      applyLabel: t("visas.business.applyLabel"),
-    },
-  ];
-
-  /* ── Translated secondary visas ─────────────── */
-  const translatedSecondaryVisas = SECONDARY_VISAS.map((visa) => {
-    const id = visa.id as "transit" | "student" | "work";
-    return {
-      ...visa,
-      name: t(`visas.${id}.name`),
-      description: t(`visas.${id}.description`),
-      priceLabel: t(`visas.${id}.priceLabel`),
-      disabled: visa.disabled,
-    };
-  });
-
-  /* ── Translated comparison rows ─────────────── */
-  const translatedComparisonRows = COMPARISON_ROWS.map((row) => {
-    const id = row.id as
-      | "tourism"
-      | "business"
-      | "transit"
-      | "student"
-      | "work";
-    return {
-      ...row,
-      name: t(`visas.${id}.name`),
-      validity: t(`visas.${id}.validity`),
-      maxStay: t(`visas.${id}.maxStay`),
-      processingTime: t(`visas.${id}.processingTime`),
-    };
-  });
   return (
     <main>
       {/* ── Hero ──────────────────────────────────────── */}
@@ -257,7 +307,7 @@ export default async function VisaTypesPage() {
             </div>
             <div className="flex items-center gap-3 shrink-0">
               <Link
-                href="#"
+                href="/apply"
                 className="px-6 py-2.5 bg-[#004E34] text-white text-sm font-semibold rounded-lg hover:bg-[#003322] transition-colors"
               >
                 {t("cta.startWizard")}

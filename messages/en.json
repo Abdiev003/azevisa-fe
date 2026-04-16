@@ -48,7 +48,7 @@
       "superRush": {
         "name": "Super Rush eVisa",
         "tagline": "Emergency travel support",
-        "price": "$85",
+        "price": "$156",
         "priceLabel": "PROCESSING FEE",
         "feature1": "3-5 Hours Processing",
         "feature2": "24/7 VIP Support",
@@ -260,8 +260,7 @@
       "approved": "Approved",
       "rejected": "Rejected",
       "cancelled": "Cancelled",
-      "download": "Download eVisa PDF"
-      ,
+      "download": "Download eVisa PDF",
       "nonApprovedMessage": "This application is no longer active. Please contact support if you need help or want to review your options."
     },
     "help": {

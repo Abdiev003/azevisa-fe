@@ -65,6 +65,7 @@ export const FEATURED_VISAS: FeaturedVisa[] = [
     fees: [
       { label: "STANDARD", price: "$66", time: "3-5 days" },
       { label: "URGENT", price: "$126", time: "3-5 Hours", highlighted: true },
+      { label: "SUPER FAST", price: "$156", time: "3-5 Hours" },
     ],
     applyLabel: "Apply for Tourism Visa",
   },
@@ -88,6 +89,7 @@ export const FEATURED_VISAS: FeaturedVisa[] = [
     fees: [
       { label: "STANDARD", price: "$66", time: "3-5 days" },
       { label: "URGENT", price: "$126", time: "3-5 Hours", highlighted: true },
+      { label: "SUPER FAST", price: "$156", time: "3-5 Hours" },
     ],
     applyLabel: "Apply for Business Visa",
   },

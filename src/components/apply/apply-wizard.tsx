@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useForm, FormProvider, useFormContext } from "react-hook-form";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
@@ -12,8 +12,8 @@ import {
   getLatestDraftApplication,
   submitApplication,
   updateApplicationStep,
+  uploadDocument,
 } from "@/actions/applications";
-import { useUserStore } from "../providers/user-store-provider";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -53,12 +53,6 @@ export interface ApplicationFormData {
   applicantNotes: string;
 }
 
-const VISA_TYPE_FEES: Record<string, number> = {
-  "1": 20,
-  "2": 50,
-  "3": 80,
-};
-const SERVICE_FEE = 0;
 
 // ---------------------------------------------------------------------------
 // Labels
@@ -201,9 +195,6 @@ export interface ApplyLabels {
     subtitle: string;
     visaType: string;
     visaTypePlaceholder: string;
-    visaTypeStandard: string;
-    visaTypeUrgent: string;
-    visaTypeSuperRush: string;
     stayDurationDays: string;
     stayDurationDaysPlaceholder: string;
     applicantNotes: string;
@@ -236,6 +227,22 @@ type CountryOption = {
     id: number;
     name: string;
   }[];
+};
+
+type VisaTypePrice = {
+  purposeId: number;
+  purposeType: string;
+  totalPrice: number;
+  currency: string;
+};
+
+type VisaTypeOption = {
+  id: number;
+  name: string;
+  processingTimeText: string;
+  maxStayDays: number;
+  validityDays: number;
+  prices: VisaTypePrice[];
 };
 
 // ---------------------------------------------------------------------------
@@ -445,7 +452,15 @@ function Step1({
     register,
     formState: { errors },
     trigger,
+    watch,
+    setValue,
   } = useFormContext<ApplicationFormData>();
+
+  const nationality = watch("nationality");
+
+  useEffect(() => {
+    setValue("purposeOfVisit", "");
+  }, [nationality, setValue]);
 
   const handleNext = async () => {
     const ok = await trigger(["nationality", "documentType"]);
@@ -863,12 +878,14 @@ function Step4({
                 type: (files) =>
                   !files ||
                   files.length === 0 ||
-                  ["image/jpeg", "application/pdf"].includes(files[0].type) ||
+                  ["image/jpeg", "image/png", "application/pdf"].includes(
+                    files[0].type,
+                  ) ||
                   v.fileType,
               },
             })}
             type="file"
-            accept=".jpg,.jpeg,.pdf"
+            accept=".jpg,.jpeg,.png,.pdf"
             className="sr-only"
           />
           <svg
@@ -1148,10 +1165,12 @@ function Step6({
   labels,
   onBack,
   loading,
+  visaTypes,
 }: {
   labels: ApplyLabels;
   onBack: () => void;
   loading: boolean;
+  visaTypes: VisaTypeOption[];
 }) {
   const {
     register,
@@ -1162,7 +1181,11 @@ function Step6({
   const l = labels.step6;
   const v = labels.validation;
   const visaType = watch("visaType");
-  const price = VISA_TYPE_FEES[visaType] ?? 0;
+  const purposeOfVisit = watch("purposeOfVisit");
+  const selectedVisaType = visaTypes.find((vt) => String(vt.id) === visaType) ?? null;
+  const selectedPrice = selectedVisaType?.prices.find(
+    (p) => String(p.purposeId) === purposeOfVisit,
+  ) ?? null;
 
   return (
     <div>
@@ -1189,9 +1212,11 @@ function Step6({
                   hasError={!!errors.visaType}
                 >
                   <option value="">{l.visaTypePlaceholder}</option>
-                  <option value="1">{l.visaTypeStandard}</option>
-                  <option value="2">{l.visaTypeUrgent}</option>
-                  <option value="3">{l.visaTypeSuperRush}</option>
+                  {visaTypes.map((vt) => (
+                    <option key={vt.id} value={String(vt.id)}>
+                      {vt.name}
+                    </option>
+                  ))}
                 </Select>
               </Field>
               <Field
@@ -1237,20 +1262,42 @@ function Step6({
             <div className="px-5 py-4 flex flex-col gap-2.5">
               <div className="flex items-center justify-between text-sm">
                 <span className="text-[#6F7A72]">{l.visaFeeLabel}</span>
-                <span className="font-medium text-[#1F2937]">${price}.00</span>
+                <span className="font-medium text-[#1F2937]">
+                  {selectedPrice ? `$${selectedPrice.totalPrice}` : "—"}
+                </span>
               </div>
               <div className="flex items-center justify-between text-sm">
                 <span className="text-[#6F7A72]">{l.serviceFeeLabel}</span>
-                <span className="font-medium text-[#1F2937]">
-                  ${SERVICE_FEE}.00
-                </span>
+                <span className="font-medium text-[#1F2937]">—</span>
               </div>
+              {selectedVisaType && (
+                <>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#6F7A72]">Processing time</span>
+                    <span className="font-medium text-[#1F2937]">
+                      {selectedVisaType.processingTimeText}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#6F7A72]">Validity</span>
+                    <span className="font-medium text-[#1F2937]">
+                      {selectedVisaType.validityDays} days
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#6F7A72]">Max stay</span>
+                    <span className="font-medium text-[#1F2937]">
+                      {selectedVisaType.maxStayDays} days
+                    </span>
+                  </div>
+                </>
+              )}
               <div className="pt-2.5 mt-1 border-t border-gray-100 flex items-center justify-between">
                 <span className="text-sm font-bold text-[#1F2937]">
                   {l.totalLabel}
                 </span>
                 <span className="text-xl font-black text-[#004E34]">
-                  ${price + SERVICE_FEE}.00
+                  {selectedPrice ? `$${selectedPrice.totalPrice}` : "—"}
                 </span>
               </div>
             </div>
@@ -1286,21 +1333,136 @@ function Step6({
 }
 
 // ---------------------------------------------------------------------------
+// Success screen
+// ---------------------------------------------------------------------------
+
+function SuccessScreen({ referenceNumber }: { referenceNumber: string }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+      <div className="flex items-center justify-center w-20 h-20 rounded-full bg-[#004E34]/10 mb-6">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="w-10 h-10 text-[#004E34]"
+        >
+          <path d="M20 6L9 17l-5-5" />
+        </svg>
+      </div>
+
+      <h2 className="text-2xl font-bold text-[#1F2937] mb-2">
+        Application Submitted!
+      </h2>
+      <p className="text-[#6F7A72] text-sm max-w-sm mb-6">
+        Your application has been received. We will review it and send updates
+        to your email address.
+      </p>
+
+      <div className="bg-[#004E34]/5 border border-[#004E34]/20 rounded-xl px-6 py-4 mb-8">
+        <p className="text-xs text-[#6F7A72] mb-1">Reference Number</p>
+        <p className="text-xl font-bold tracking-widest text-[#004E34]">
+          {referenceNumber}
+        </p>
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-3">
+        <a
+          href="/check-status"
+          className="px-6 py-2.5 rounded-lg bg-[#004E34] text-white text-sm font-semibold hover:bg-[#003322] transition-colors"
+        >
+          Check Status
+        </a>
+        <a
+          href="/"
+          className="px-6 py-2.5 rounded-lg border border-gray-200 text-[#6F7A72] text-sm font-semibold hover:bg-gray-50 transition-colors"
+        >
+          Back to Home
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Failed screen
+// ---------------------------------------------------------------------------
+
+function FailedScreen({
+  errorMessage,
+  onRetry,
+}: {
+  errorMessage: string;
+  onRetry: () => void;
+}) {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+      <div className="flex items-center justify-center w-20 h-20 rounded-full bg-red-50 mb-6">
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={2}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="w-10 h-10 text-red-500"
+        >
+          <circle cx="12" cy="12" r="10" />
+          <path d="M15 9l-6 6M9 9l6 6" />
+        </svg>
+      </div>
+
+      <h2 className="text-2xl font-bold text-[#1F2937] mb-2">
+        Submission Failed
+      </h2>
+      <p className="text-[#6F7A72] text-sm max-w-sm mb-3">
+        Something went wrong while submitting your application.
+      </p>
+      {errorMessage && (
+        <p className="text-red-500 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-2.5 max-w-sm mb-8">
+          {errorMessage}
+        </p>
+      )}
+
+      <div className="flex flex-col sm:flex-row gap-3">
+        <button
+          type="button"
+          onClick={onRetry}
+          className="px-6 py-2.5 rounded-lg bg-[#004E34] text-white text-sm font-semibold hover:bg-[#003322] transition-colors"
+        >
+          Try Again
+        </button>
+        <a
+          href="/contact-us"
+          className="px-6 py-2.5 rounded-lg border border-gray-200 text-[#6F7A72] text-sm font-semibold hover:bg-gray-50 transition-colors"
+        >
+          Contact Support
+        </a>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Main wizard
 // ---------------------------------------------------------------------------
 
 export function ApplyWizard({
   labels,
   countryOptions,
+  visaTypes,
 }: {
   labels: ApplyLabels;
   countryOptions: CountryOption[];
+  visaTypes: VisaTypeOption[];
 }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [referenceNumber, setReferenceNumber] = useState<string | null>(null);
-
-  const { user } = useUserStore();
+  const [submissionStatus, setSubmissionStatus] = useState<"idle" | "success" | "failed">("idle");
+  const [submissionError, setSubmissionError] = useState("");
 
   const methods = useForm<ApplicationFormData>({
     mode: "onBlur",
@@ -1319,7 +1481,7 @@ export function ApplyWizard({
       occupation: "",
       mobileNumber: "",
       address: "",
-      email: user?.email || "",
+      email: "",
       passportNumber: "",
       passportIssueDate: "",
       passportExpiryDate: "",
@@ -1464,6 +1626,8 @@ export function ApplyWizard({
 
   const handleStep4Next = useCallback(async () => {
     try {
+      const ref = await ensureDraftApplication();
+
       await persistStep(3, {
         passport_number: methods.getValues("passportNumber"),
         passport_issue_date: methods.getValues("passportIssueDate"),
@@ -1473,11 +1637,24 @@ export function ApplyWizard({
         ),
         address_in_azerbaijan: methods.getValues("addressInAzerbaijan"),
       });
+
+      const files = methods.getValues("passportCopy");
+      if (files && files.length > 0) {
+        const formData = new FormData();
+        formData.append("file", files[0]);
+        formData.append("document_type", "passport_photo");
+        const result = await uploadDocument(ref, formData);
+        if (!result.success) {
+          toast.error(result.error);
+          return;
+        }
+      }
+
       next();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
     }
-  }, [methods, next, persistStep]);
+  }, [ensureDraftApplication, methods, next, persistStep]);
 
   const handleStep5Next = useCallback(async () => {
     next();
@@ -1496,17 +1673,41 @@ export function ApplyWizard({
       const result = await submitApplication(currentReferenceNumber);
 
       if (!result.success) {
-        toast.error(result.error);
+        setSubmissionError(result.error);
+        setSubmissionStatus("failed");
         return;
       }
 
-      toast.success(labels.step6.submissionSuccess);
+      setSubmissionStatus("success");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : String(error));
+      setSubmissionError(error instanceof Error ? error.message : String(error));
+      setSubmissionStatus("failed");
     } finally {
       setSubmitting(false);
     }
   });
+
+  if (submissionStatus === "success") {
+    return (
+      <div className="bg-white border border-gray-200 shadow-sm rounded-xl">
+        <SuccessScreen referenceNumber={referenceNumber ?? ""} />
+      </div>
+    );
+  }
+
+  if (submissionStatus === "failed") {
+    return (
+      <div className="bg-white border border-gray-200 shadow-sm rounded-xl">
+        <FailedScreen
+          errorMessage={submissionError}
+          onRetry={() => {
+            setSubmissionStatus("idle");
+            setSubmissionError("");
+          }}
+        />
+      </div>
+    );
+  }
 
   return (
     <FormProvider {...methods}>
@@ -1555,7 +1756,12 @@ export function ApplyWizard({
               />
             )}
             {currentStep === 5 && (
-              <Step6 labels={labels} onBack={back} loading={submitting} />
+              <Step6
+                labels={labels}
+                onBack={back}
+                loading={submitting}
+                visaTypes={visaTypes}
+              />
             )}
           </div>
         </div>

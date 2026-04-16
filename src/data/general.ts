@@ -92,6 +92,67 @@ export const getCountries = async (params?: {
   }
 };
 
+export interface VisaPurpose {
+  id: number;
+  name: string;
+  slug: string;
+  purpose_type: "tourism" | "business" | "transit" | "student" | "work";
+  description: string;
+  icon: string;
+  is_active: boolean;
+  order: number;
+}
+
+export const getVisaPurposes = async (): Promise<VisaPurpose[]> => {
+  try {
+    const res = await fetcher("/countries/visa-purposes/");
+    return Array.isArray(res) ? res : (res?.results ?? []);
+  } catch (error) {
+    console.error("Error fetching visa purposes:", error);
+    return [];
+  }
+};
+
+export interface VisaTypePrice {
+  id: number;
+  visa_purpose: {
+    id: number;
+    name: string;
+    slug: string;
+    purpose_type: string;
+    icon: string;
+  };
+  government_fee: string;
+  service_fee: string;
+  total_price: string;
+  currency: string;
+}
+
+export interface VisaType {
+  id: number;
+  name: string;
+  slug: string;
+  speed_type: "standard" | "urgent" | "super_rush";
+  description: string;
+  processing_time_text: string;
+  processing_hours_min: number;
+  processing_hours_max: number;
+  validity_days: number;
+  max_stay_days: number;
+  is_active: boolean;
+  prices: VisaTypePrice[];
+}
+
+export const getVisaTypes = async (): Promise<VisaType[]> => {
+  try {
+    const res = await fetcher("/countries/visa-types/");
+    return Array.isArray(res) ? res : (res?.results ?? []);
+  } catch (error) {
+    console.error("Error fetching visa types:", error);
+    return [];
+  }
+};
+
 export const getAllCountries = async (): Promise<CountryItem[]> => {
   const results: CountryItem[] = [];
   const seen = new Set<number>();
