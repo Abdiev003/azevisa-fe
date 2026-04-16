@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import type { CountryItem, Region } from "@/data/general";
 import { SearchIcon } from "@/components/icons";
 
@@ -31,6 +32,7 @@ export function CountriesList({
   currentSearch,
   currentRegion,
 }: Props) {
+  const t = useTranslations("EligibleCountries.list");
   const router = useRouter();
   const searchParams = useSearchParams();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -96,7 +98,7 @@ export function CountriesList({
             type="text"
             defaultValue={currentSearch}
             onChange={(e) => handleSearch(e.target.value)}
-            placeholder="Search your country..."
+            placeholder={t("searchPlaceholder")}
             className="w-full pl-11 pr-4 py-3 rounded-full border border-gray-200 bg-white text-sm text-gray-800 placeholder:text-gray-400 focus:outline-none focus:border-[#004E34] focus:ring-2 focus:ring-[#004E34]/10 shadow-sm"
           />
         </div>
@@ -117,7 +119,7 @@ export function CountriesList({
                     : "border border-gray-200 text-gray-600 hover:border-[#004E34] hover:text-[#004E34]"
                 }`}
               >
-                All
+                {t("allRegions")}
               </button>
               {regions
                 .sort((a, b) => a.order - b.order)
@@ -169,10 +171,8 @@ export function CountriesList({
               </div>
             ) : (
               <div className="text-center py-20 text-[#6F7A72]">
-                <p className="text-lg font-medium">No countries found</p>
-                <p className="mt-1 text-sm">
-                  Try adjusting your search or filters
-                </p>
+                <p className="text-lg font-medium">{t("emptyTitle")}</p>
+                <p className="mt-1 text-sm">{t("emptyDescription")}</p>
               </div>
             )}
 
@@ -183,6 +183,7 @@ export function CountriesList({
                   href={buildUrl({ page: String(currentPage - 1) })}
                   disabled={currentPage <= 1}
                   direction="prev"
+                  label={t("previous")}
                 />
                 <div className="flex gap-1">
                   {Array.from({ length: totalPages }, (_, i) => i + 1).map(
@@ -208,6 +209,7 @@ export function CountriesList({
                   href={buildUrl({ page: String(currentPage + 1) })}
                   disabled={currentPage >= totalPages}
                   direction="next"
+                  label={t("next")}
                 />
               </div>
             )}
@@ -249,10 +251,12 @@ function PaginationLink({
   href,
   disabled,
   direction,
+  label,
 }: {
   href: string;
   disabled: boolean;
   direction: "prev" | "next";
+  label: string;
 }) {
   const isPrev = direction === "prev";
   return (
@@ -279,7 +283,7 @@ function PaginationLink({
           <path d="M19 12H5M12 5l-7 7 7 7" />
         </svg>
       )}
-      {isPrev ? "Previous" : "Next"}
+      {label}
       {!isPrev && (
         <svg
           width="14"

@@ -29,7 +29,7 @@
       "standard": {
         "name": "Standard eVisa",
         "tagline": "Ideal for planned travel",
-        "price": "$26",
+        "price": "$66",
         "priceLabel": "PROCESSING FEE",
         "feature1": "3-5 Business Days",
         "feature2": "Email Delivery",
@@ -39,7 +39,7 @@
         "name": "Urgent eVisa",
         "badge": "MOST POPULAR",
         "tagline": "For quick travel needs",
-        "price": "$55",
+        "price": "$126",
         "priceLabel": "PROCESSING FEE",
         "feature1": "24 Hours Processing",
         "feature2": "Priority Handling",
@@ -258,7 +258,11 @@
       "status": "STATUS",
       "validUntil": "VALID UNTIL",
       "approved": "Approved",
+      "rejected": "Rejected",
+      "cancelled": "Cancelled",
       "download": "Download eVisa PDF"
+      ,
+      "nonApprovedMessage": "This application is no longer active. Please contact support if you need help or want to review your options."
     },
     "help": {
       "title": "Need help with your application?",
@@ -455,8 +459,7 @@
         "applyLabel": "Apply for Tourism Visa",
         "fees": [
           { "label": "STANDARD", "time": "3-5 days" },
-          { "label": "URGENT", "time": "3 Hours" },
-          { "label": "SUPER RUSH", "time": "Immediate" }
+          { "label": "URGENT", "time": "3-5 Hours" }
         ]
       },
       "business": {
@@ -474,8 +477,7 @@
         "applyLabel": "Apply for Business Visa",
         "fees": [
           { "label": "STANDARD", "time": "3-5 days" },
-          { "label": "URGENT", "time": "3 Hours" },
-          { "label": "RUSH", "time": "Immediate" }
+          { "label": "URGENT", "time": "3-5 Hours" }
         ]
       },
       "transit": {
@@ -717,6 +719,41 @@
       "passwordMinLength": "Password must be at least 8 characters",
       "confirmPasswordRequired": "Please confirm your password",
       "passwordsMismatch": "Passwords do not match"
+    }
+  },
+  "EligibleCountries": {
+    "meta": {
+      "title": "Countries Eligible for Azerbaijan eVisa – 70+ Nations",
+      "description": "Check if your country is eligible for the Azerbaijan electronic visa. Citizens of 70+ nations can apply online for the ASAN Visa without visiting an embassy.",
+      "ogDescription": "Check if your country qualifies for the Azerbaijan eVisa. 70+ nations can apply online.",
+      "keywords": [
+        "Azerbaijan eVisa eligible countries",
+        "ASAN Visa countries",
+        "who can get Azerbaijan visa online",
+        "Azerbaijan visa eligible nationalities"
+      ]
+    },
+    "hero": {
+      "badge": "Global Access",
+      "titleLine1": "Countries Eligible for",
+      "titleLine2": "Azerbaijan eVisa",
+      "subtitle": "Citizens of 70+ countries can apply online. Check if your nationality qualifies for our streamlined electronic visa process."
+    },
+    "list": {
+      "searchPlaceholder": "Search your country...",
+      "allRegions": "All",
+      "emptyTitle": "No countries found",
+      "emptyDescription": "Try adjusting your search or filters",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "consulate": {
+      "title": "Don’t see your country?",
+      "description": "If your country is not on the list for the ASAN Visa (eVisa), you may still be able to apply for a traditional visa through an Azerbaijani embassy or consulate in your region.",
+      "item1": "Check Traditional Visa Requirements",
+      "item2": "Find Nearest Consulate",
+      "cta": "View Consulate Directory",
+      "imageAlt": "Azerbaijan landmark building"
     }
   }
 }

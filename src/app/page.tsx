@@ -258,7 +258,7 @@ export default async function HomePage() {
             <span className="block w-12 h-1 rounded-full bg-[#C8A84B]" />
           </div>
 
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 max-w-2xl mx-auto w-full">
             {/* Standard */}
             <div className="relative flex flex-col gap-5 bg-white border border-gray-200 shadow-sm rounded-2xl p-7">
               <div>
@@ -337,42 +337,6 @@ export default async function HomePage() {
               </Link>
             </div>
 
-            {/* Super Rush */}
-            <div className="relative flex flex-col gap-5 bg-white border border-gray-200 shadow-sm rounded-2xl p-7">
-              <div>
-                <h3 className="font-bold text-[#1F2937] text-lg mb-1">
-                  {t("tiers.superRush.name")}
-                </h3>
-                <p className="text-xs text-[#6F7A72]">
-                  {t("tiers.superRush.tagline")}
-                </p>
-              </div>
-              <div>
-                <span className="text-4xl font-extrabold text-[#1F2937]">
-                  {t("tiers.superRush.price")}
-                </span>
-              </div>
-              <ul className="flex flex-col gap-2.5">
-                <li className="flex items-center gap-2.5 text-sm text-[#1F2937]">
-                  <span className="text-[#004E34]">
-                    <CheckIcon />
-                  </span>
-                  {t("tiers.superRush.feature1")}
-                </li>
-                <li className="flex items-center gap-2.5 text-sm text-[#1F2937]">
-                  <span className="text-[#004E34]">
-                    <CheckIcon />
-                  </span>
-                  {t("tiers.superRush.feature2")}
-                </li>
-              </ul>
-              <Link
-                href="/apply"
-                className="mt-auto block text-center border border-gray-300 hover:border-[#004E34] hover:text-[#004E34] text-[#1F2937] font-semibold text-sm py-3 rounded-xl transition-colors"
-              >
-                {t("tiers.superRush.cta")}
-              </Link>
-            </div>
           </div>
         </div>
       </section>

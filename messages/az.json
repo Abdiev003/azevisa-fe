@@ -29,7 +29,7 @@
       "standard": {
         "name": "Standart eViza",
         "tagline": "Plan edilen səyahətə ideal",
-        "price": "$26",
+        "price": "$66",
         "priceLabel": "EMAL HİYYASI",
         "feature1": "3-5 iş günü",
         "feature2": "E-poçtə istənir",
@@ -39,7 +39,7 @@
         "name": "Təcili eViza",
         "badge": "ƎN ÇOX SEÇİLƎN",
         "tagline": "Təz müddatlı səyahətlər üçün",
-        "price": "$55",
+        "price": "$126",
         "priceLabel": "EMAL HİYYASI",
         "feature1": "24 Saatda Emal",
         "feature2": "Priorətət işləmə",
@@ -258,7 +258,10 @@
       "status": "STATUS",
       "validUntil": "GEÇERLİLİK TARİXİ",
       "approved": "Təsdiqlənib",
-      "download": "eVizanı PDF Yüklə"
+      "rejected": "Rədd edilib",
+      "cancelled": "Ləğv edilib",
+      "download": "eVizanı PDF Yüklə",
+      "nonApprovedMessage": "Bu müraciət artıq aktiv deyil. Köməyə ehtiyacınız varsa və ya seçimlərinizi nəzərdən keçirmək istəyirsinizsə, dəstək xidməti ilə əlaqə saxlayın."
     },
     "help": {
       "title": "Müraciətinizlə bağlı köməyə ehtiyacınız var?",
@@ -460,8 +463,7 @@
         "applyLabel": "Turizm Vizası üçün Müraciət",
         "fees": [
           { "label": "STANDART", "time": "3-5 gün" },
-          { "label": "TƏCİLİ", "time": "3 Saat" },
-          { "label": "SUPER TƏCİLİ", "time": "Dərhal" }
+          { "label": "TƏCİLİ", "time": "3-5 Saat" }
         ]
       },
       "business": {
@@ -479,8 +481,7 @@
         "applyLabel": "Biznes Vizası üçün Müraciət",
         "fees": [
           { "label": "STANDART", "time": "3-5 gün" },
-          { "label": "TƏCİLİ", "time": "3 Saat" },
-          { "label": "TƏLƏSİK", "time": "Dərhal" }
+          { "label": "TƏCİLİ", "time": "3-5 Saat" }
         ]
       },
       "transit": {
@@ -722,6 +723,41 @@
       "passwordMinLength": "Şifrə ən azı 8 simvol olmalıdır",
       "confirmPasswordRequired": "Şifrəni təsdiq edin",
       "passwordsMismatch": "Şifrələr uyğun gəlmir"
+    }
+  },
+  "EligibleCountries": {
+    "meta": {
+      "title": "Azərbaycan eVizası üçün Uyğun Ölkələr – 70+ Dövlət",
+      "description": "Ölkənizin Azərbaycan elektron vizası üçün uyğun olub-olmadığını yoxlayın. 70-dən çox ölkənin vətəndaşı ASAN Visa üçün səfirliyə getmədən onlayn müraciət edə bilər.",
+      "ogDescription": "Ölkənizin Azərbaycan eVizası üçün uyğun olub-olmadığını yoxlayın. 70-dən çox ölkə onlayn müraciət edə bilər.",
+      "keywords": [
+        "Azərbaycan eVizası uyğun ölkələr",
+        "ASAN Visa ölkələri",
+        "Azərbaycan vizasına kim onlayn müraciət edə bilər",
+        "Azərbaycan vizasına uyğun vətəndaşlıqlar"
+      ]
+    },
+    "hero": {
+      "badge": "Qlobal Giriş",
+      "titleLine1": "Azərbaycan eVizası üçün",
+      "titleLine2": "Uyğun Ölkələr",
+      "subtitle": "70-dən çox ölkənin vətəndaşı onlayn müraciət edə bilər. Vətəndaşlığınızın sadələşdirilmiş elektron viza prosesimizə uyğun olub-olmadığını yoxlayın."
+    },
+    "list": {
+      "searchPlaceholder": "Ölkənizi axtarın...",
+      "allRegions": "Hamısı",
+      "emptyTitle": "Ölkə tapılmadı",
+      "emptyDescription": "Axtarışınızı və ya filtrlərinizi dəyişməyə çalışın",
+      "previous": "Əvvəlki",
+      "next": "Növbəti"
+    },
+    "consulate": {
+      "title": "Ölkənizi görmürsünüz?",
+      "description": "Əgər ölkəniz ASAN Visa (eVisa) siyahısında yoxdursa, yenə də regionunuzdakı Azərbaycan səfirliyi və ya konsulluğu vasitəsilə ənənəvi viza üçün müraciət edə bilərsiniz.",
+      "item1": "Ənənəvi viza tələblərini yoxlayın",
+      "item2": "Ən yaxın konsulluğu tapın",
+      "cta": "Konsulluq siyahısına baxın",
+      "imageAlt": "Azərbaycanın simvolik binası"
     }
   }
 }

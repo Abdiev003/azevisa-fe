@@ -48,8 +48,23 @@ function extractErrorMessage(payload: ApiErrorPayload) {
 
 export const fetcher = async (url: string, options?: RequestInit) => {
   const BASE_URL = process.env.API_URL || process.env.NEXT_PUBLIC_API_URL;
+
+  let locale = "az";
   try {
-    const response = await fetch(`${BASE_URL}${url}`, options);
+    const { getLocale } = await import("next-intl/server");
+    locale = await getLocale();
+  } catch {
+    // client-side or locale unavailable — keep default
+  }
+
+  try {
+    const response = await fetch(`${BASE_URL}${url}`, {
+      ...options,
+      headers: {
+        "Accept-Language": locale,
+        ...options?.headers,
+      },
+    });
     if (!response.ok) {
       const contentType = response.headers.get("content-type") ?? "";
 

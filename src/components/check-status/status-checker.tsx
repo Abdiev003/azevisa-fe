@@ -7,7 +7,7 @@ import Link from "next/link";
 /*  Types                                                                */
 /* ------------------------------------------------------------------ */
 
-type AppStatus = "PROCESSING" | "APPROVED" | "REJECTED";
+type AppStatus = "PROCESSING" | "APPROVED" | "REJECTED" | "CANCELLED";
 
 interface ActiveApplication {
   kind: "active";
@@ -22,7 +22,7 @@ interface ActiveApplication {
 interface Decision {
   kind: "decision";
   id: string;
-  status: "APPROVED" | "REJECTED";
+  status: "APPROVED" | "REJECTED" | "CANCELLED";
   validUntil: string;
 }
 
@@ -35,8 +35,9 @@ type ApplicationResult = ActiveApplication | Decision | null;
 interface ApiStatusResponse {
   reference_number: string;
   status: string;
-  applicant_name?: string;
-  visa_type?: string;
+  first_name: string;
+  last_name: string;
+  visa_type_name?: string;
   submitted_at?: string;
   valid_until?: string;
   /** 0 = Submitted, 1 = Under Review, 2 = Processing, 3 = Final Decision */
@@ -62,11 +63,15 @@ const STATUS_STEP_MAP: Record<string, 0 | 1 | 2 | 3> = {
 function mapApiResponse(data: ApiStatusResponse): ApplicationResult {
   const status = (data.status ?? "").toUpperCase();
 
-  if (status === "APPROVED" || status === "REJECTED") {
+  if (
+    status === "APPROVED" ||
+    status === "REJECTED" ||
+    status === "CANCELLED"
+  ) {
     return {
       kind: "decision",
       id: data.reference_number,
-      status,
+      status: status as Decision["status"],
       validUntil: fmtDate(data.valid_until),
     };
   }
@@ -79,8 +84,8 @@ function mapApiResponse(data: ApiStatusResponse): ApplicationResult {
   return {
     kind: "active",
     id: data.reference_number,
-    applicant: data.applicant_name ?? "",
-    visaType: data.visa_type ?? "",
+    applicant: data.first_name + " " + data.last_name,
+    visaType: data.visa_type_name ?? "",
     submissionDate: fmtDate(data.submitted_at),
     status: "PROCESSING",
     currentStep: step,
@@ -229,7 +234,10 @@ export interface StatusCheckerLabels {
     status: string;
     validUntil: string;
     approved: string;
+    rejected: string;
+    cancelled: string;
     download: string;
+    nonApprovedMessage: string;
   };
   help: {
     title: string;
@@ -421,6 +429,27 @@ export default function StatusChecker({
     waitTimes,
     notFound,
   } = labels;
+
+  const decisionBadge =
+    result !== "not-found" && result?.kind === "decision"
+      ? {
+          APPROVED: {
+            label: recentDecisions.approved,
+            className: "text-emerald-700 bg-emerald-50",
+            dotClassName: "bg-emerald-500",
+          },
+          REJECTED: {
+            label: recentDecisions.rejected,
+            className: "text-red-700 bg-red-50",
+            dotClassName: "bg-red-500",
+          },
+          CANCELLED: {
+            label: recentDecisions.cancelled,
+            className: "text-gray-700 bg-gray-100",
+            dotClassName: "bg-gray-500",
+          },
+        }[result.status]
+      : null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -629,9 +658,13 @@ export default function StatusChecker({
                           {recentDecisions.status}
                         </dt>
                         <dd>
-                          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-700 bg-emerald-50 rounded-full px-3 py-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-                            {recentDecisions.approved}
+                          <span
+                            className={`inline-flex items-center gap-1.5 text-sm font-semibold rounded-full px-3 py-1 ${decisionBadge?.className ?? "text-gray-700 bg-gray-100"}`}
+                          >
+                            <span
+                              className={`w-1.5 h-1.5 rounded-full shrink-0 ${decisionBadge?.dotClassName ?? "bg-gray-500"}`}
+                            />
+                            {decisionBadge?.label ?? result.status}
                           </span>
                         </dd>
                       </div>
@@ -640,19 +673,26 @@ export default function StatusChecker({
                           {recentDecisions.validUntil}
                         </dt>
                         <dd className="text-sm font-semibold text-[#1F2937]">
-                          {result.validUntil}
+                          {result.validUntil || "—"}
                         </dd>
                       </div>
                     </dl>
 
-                    {/* Download */}
-                    <button
-                      type="button"
-                      className="flex items-center gap-2 bg-[#004E34] hover:bg-[#003322] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors cursor-pointer shrink-0"
-                    >
-                      <DownloadIcon className="w-4 h-4" />
-                      {recentDecisions.download}
-                    </button>
+                    {/* Approved applications can download the visa. Other final
+                        states should guide the user toward support instead. */}
+                    {result.status === "APPROVED" ? (
+                      <button
+                        type="button"
+                        className="flex items-center gap-2 bg-[#004E34] hover:bg-[#003322] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors cursor-pointer shrink-0"
+                      >
+                        <DownloadIcon className="w-4 h-4" />
+                        {recentDecisions.download}
+                      </button>
+                    ) : (
+                      <p className="max-w-xs text-sm leading-relaxed text-[#6F7A72] shrink-0">
+                        {recentDecisions.nonApprovedMessage}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

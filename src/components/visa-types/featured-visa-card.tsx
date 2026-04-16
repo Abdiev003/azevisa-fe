@@ -126,7 +126,7 @@ export function FeaturedVisaCard({ visa, labels }: Props) {
               {labels.processingFees}
             </p>
           </div>
-          <div className="grid grid-cols-3 divide-x divide-gray-100">
+          <div className="grid grid-cols-2 divide-x divide-gray-100">
             {visa.fees.map((tier) => (
               <div
                 key={tier.label}

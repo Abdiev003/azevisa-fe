@@ -63,9 +63,8 @@ export const FEATURED_VISAS: FeaturedVisa[] = [
       "Proof of Stay (Hotel Booking)",
     ],
     fees: [
-      { label: "STANDARD", price: "$20", time: "3-5 days" },
-      { label: "URGENT", price: "$50", time: "3 Hours", highlighted: true },
-      { label: "SUPER RUSH", price: "$80", time: "Immediate" },
+      { label: "STANDARD", price: "$66", time: "3-5 days" },
+      { label: "URGENT", price: "$126", time: "3-5 Hours", highlighted: true },
     ],
     applyLabel: "Apply for Tourism Visa",
   },
@@ -87,9 +86,8 @@ export const FEATURED_VISAS: FeaturedVisa[] = [
       "Company Credentials",
     ],
     fees: [
-      { label: "STANDARD", price: "$30", time: "3-5 days" },
-      { label: "URGENT", price: "$60", time: "3 Hours" },
-      { label: "RUSH", price: "$90", time: "Immediate" },
+      { label: "STANDARD", price: "$66", time: "3-5 days" },
+      { label: "URGENT", price: "$126", time: "3-5 Hours", highlighted: true },
     ],
     applyLabel: "Apply for Business Visa",
   },
@@ -131,7 +129,7 @@ export const COMPARISON_ROWS: ComparisonRow[] = [
     name: "Tourism eVisa",
     validity: "90 Days",
     maxStay: "30 Days",
-    priceRange: "$20 – $80",
+    priceRange: "$66 – $126",
     processingTime: "3 Hours – 5 Days",
   },
   {
@@ -139,7 +137,7 @@ export const COMPARISON_ROWS: ComparisonRow[] = [
     name: "Business eVisa",
     validity: "90 Days",
     maxStay: "30 Days",
-    priceRange: "$30 – $90",
+    priceRange: "$66 – $126",
     processingTime: "3 Hours – 5 Days",
   },
   {

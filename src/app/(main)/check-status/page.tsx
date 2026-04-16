@@ -64,7 +64,10 @@ export default async function CheckStatusPage() {
       status: t("recentDecisions.status"),
       validUntil: t("recentDecisions.validUntil"),
       approved: t("recentDecisions.approved"),
+      rejected: t("recentDecisions.rejected"),
+      cancelled: t("recentDecisions.cancelled"),
       download: t("recentDecisions.download"),
+      nonApprovedMessage: t("recentDecisions.nonApprovedMessage"),
     },
     help: {
       title: t("help.title"),
@@ -86,7 +89,7 @@ export default async function CheckStatusPage() {
     <main className="bg-[#F8F9FA] min-h-screen">
       {/* Hero */}
       <section className="bg-white border-b border-gray-100">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 text-center">
+        <div className="max-w-3xl px-4 mx-auto text-center sm:px-6 lg:px-8 py-14 sm:py-20">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1F2937] leading-tight mb-4">
             {t("hero.title")}
           </h1>

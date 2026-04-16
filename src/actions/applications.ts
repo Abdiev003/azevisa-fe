@@ -22,7 +22,7 @@ type ApplicationListItem = {
 };
 
 async function listApplications(
-  accessToken: string,
+  accessToken: string | undefined,
 ): Promise<ApplicationListItem[]> {
   const data = (await fetcher("/applications/", {
     method: "GET",
@@ -56,7 +56,9 @@ export async function createDraftApplication(
     const previousReferences = new Set(
       previousApplications
         .map((application) => application.reference_number)
-        .filter((reference): reference is string => typeof reference === "string"),
+        .filter(
+          (reference): reference is string => typeof reference === "string",
+        ),
     );
 
     const data = await fetcher("/applications/create/", {
