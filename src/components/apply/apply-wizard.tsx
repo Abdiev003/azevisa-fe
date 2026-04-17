@@ -14,6 +14,7 @@ import {
   updateApplicationStep,
   uploadDocument,
 } from "@/actions/applications";
+import Link from "next/link";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -52,7 +53,6 @@ export interface ApplicationFormData {
   stayDurationDays: string;
   applicantNotes: string;
 }
-
 
 // ---------------------------------------------------------------------------
 // Labels
@@ -260,14 +260,13 @@ function Sidebar({
     labels.sidebar.steps.countryRegion,
     labels.sidebar.steps.arrivalDate,
     labels.sidebar.steps.personalInfo,
-    labels.sidebar.steps.passportDetails,
     labels.sidebar.steps.review,
     labels.sidebar.steps.payment,
   ];
 
   const stepOf = labels.sidebar.stepOf
     .replace("{current}", String(current + 1))
-    .replace("{total}", "6");
+    .replace("{total}", "5");
 
   return (
     <aside className="hidden lg:flex flex-col w-56 shrink-0 bg-[#004E34] text-white rounded-xl overflow-hidden">
@@ -280,7 +279,7 @@ function Sidebar({
         <div className="mt-3 h-1.5 w-full rounded-full bg-white/20">
           <div
             className="h-1.5 rounded-full bg-[#C8A84B] transition-all duration-500"
-            style={{ width: `${((current + 1) / 6) * 100}%` }}
+            style={{ width: `${((current + 1) / 5) * 100}%` }}
           />
         </div>
       </div>
@@ -593,6 +592,7 @@ function Step3({
     register,
     formState: { errors },
     trigger,
+    watch,
   } = useFormContext<ApplicationFormData>();
 
   const step3Fields: (keyof ApplicationFormData)[] = [
@@ -606,6 +606,12 @@ function Step3({
     "mobileNumber",
     "address",
     "email",
+    "passportNumber",
+    "passportIssueDate",
+    "passportExpiryDate",
+    "passportIssuingCountry",
+    "addressInAzerbaijan",
+    "passportCopy",
   ];
 
   const handleNext = async () => {
@@ -614,7 +620,10 @@ function Step3({
   };
 
   const l = labels.step3;
+  const passport = labels.step4;
   const v = labels.validation;
+  const fileVal = watch("passportCopy");
+  const fileName = fileVal && fileVal.length > 0 ? fileVal[0]?.name : null;
 
   return (
     <div>
@@ -745,189 +754,146 @@ function Step3({
           {l.emailNote}
         </p>
       </div>
-      <NavButtons
-        onBack={onBack}
-        onNext={handleNext}
-        backLabel={l.back}
-        nextLabel={l.next}
-      />
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Step 4 — Passport Details
-// ---------------------------------------------------------------------------
-
-function Step4({
-  labels,
-  onBack,
-  onNext,
-  countryOptions,
-}: {
-  labels: ApplyLabels;
-  onBack: () => void;
-  onNext: () => Promise<void>;
-  countryOptions: CountryOption[];
-}) {
-  const {
-    register,
-    formState: { errors },
-    trigger,
-    watch,
-  } = useFormContext<ApplicationFormData>();
-
-  const step4Fields: (keyof ApplicationFormData)[] = [
-    "passportNumber",
-    "passportIssueDate",
-    "passportExpiryDate",
-    "passportIssuingCountry",
-    "addressInAzerbaijan",
-  ];
-
-  const handleNext = async () => {
-    const ok = await trigger(step4Fields);
-    if (ok) await onNext();
-  };
-
-  const fileVal = watch("passportCopy");
-  const fileName = fileVal && fileVal.length > 0 ? fileVal[0]?.name : null;
-
-  const l = labels.step4;
-  const v = labels.validation;
-
-  return (
-    <div>
-      <StepHeader num={l.number} title={l.title} subtitle={l.subtitle} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
-        <Field label={l.passportNumber} error={errors.passportNumber?.message}>
-          <Input
-            {...register("passportNumber", {
-              required: v.required,
-              pattern: {
-                value: /^[A-Z0-9]{6,12}$/i,
-                message: v.passportFormat,
-              },
-            })}
-            placeholder={l.passportNumberPlaceholder}
-            hasError={!!errors.passportNumber}
-          />
-        </Field>
-        <Field
-          label={l.passportIssuingCountry}
-          error={errors.passportIssuingCountry?.message}
-        >
-          <Select
-            {...register("passportIssuingCountry", { required: v.required })}
-            hasError={!!errors.passportIssuingCountry}
-          >
-            <option value="">{l.passportIssuingCountryPlaceholder}</option>
-            {countryOptions.map((country) => (
-              <option key={country.id} value={String(country.id)}>
-                {country.name}
-              </option>
-            ))}
-          </Select>
-        </Field>
-        <Field
-          label={l.passportIssueDate}
-          error={errors.passportIssueDate?.message}
-        >
-          <Input
-            {...register("passportIssueDate", { required: v.required })}
-            type="date"
-            hasError={!!errors.passportIssueDate}
-          />
-        </Field>
-        <Field
-          label={l.passportExpiryDate}
-          error={errors.passportExpiryDate?.message}
-        >
-          <Input
-            {...register("passportExpiryDate", { required: v.required })}
-            type="date"
-            hasError={!!errors.passportExpiryDate}
-          />
-        </Field>
-      </div>
-
-      {/* Passport copy upload */}
-      <div className="mt-6 overflow-hidden border border-gray-200 rounded-xl bg-gray-50">
-        <div className="px-5 py-4 bg-white border-b border-gray-200">
-          <h3 className="text-sm font-semibold text-[#1F2937]">
-            {l.passportCopyTitle}
-          </h3>
-          <p className="text-xs text-[#6F7A72] mt-0.5">{l.passportCopyDesc}</p>
-          <span className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#004E34] bg-[#004E34]/8 px-2 py-0.5 rounded-full">
-            <svg viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3">
-              <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h7A2.5 2.5 0 0 1 14 2.5v11a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5V2.5z" />
-            </svg>
-            {l.passportCopyWarning}
-          </span>
+      <div className="mt-8 border-t border-gray-200 pt-8">
+        <div className="mb-6">
+          <h3 className="text-lg font-bold text-[#1F2937]">{passport.title}</h3>
+          <p className="mt-1 text-sm text-[#6F7A72]">{passport.subtitle}</p>
         </div>
-        <label className="flex flex-col items-center justify-center gap-3 px-6 py-8 transition-colors cursor-pointer hover:bg-gray-100">
-          <input
-            {...register("passportCopy", {
-              required: v.fileRequired,
-              validate: {
-                size: (files) =>
-                  !files ||
-                  files.length === 0 ||
-                  files[0].size <= 5 * 1024 * 1024 ||
-                  v.fileSize,
-                type: (files) =>
-                  !files ||
-                  files.length === 0 ||
-                  ["image/jpeg", "image/png", "application/pdf"].includes(
-                    files[0].type,
-                  ) ||
-                  v.fileType,
-              },
-            })}
-            type="file"
-            accept=".jpg,.jpeg,.png,.pdf"
-            className="sr-only"
-          />
-          <svg
-            viewBox="0 0 48 48"
-            fill="none"
-            className="w-12 h-12 text-[#004E34]/30"
-            stroke="currentColor"
-            strokeWidth={1.5}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
+          <Field
+            label={passport.passportNumber}
+            error={errors.passportNumber?.message}
           >
-            <rect x="8" y="4" width="32" height="40" rx="3" />
-            <path d="M16 14h16M16 20h16M16 26h10" />
-          </svg>
-          {fileName ? (
-            <span className="text-sm font-medium text-[#004E34]">
-              {fileName}
+            <Input
+              {...register("passportNumber", {
+                required: v.required,
+                pattern: {
+                  value: /^[A-Z0-9]{6,12}$/i,
+                  message: v.passportFormat,
+                },
+              })}
+              placeholder={passport.passportNumberPlaceholder}
+              hasError={!!errors.passportNumber}
+            />
+          </Field>
+          <Field
+            label={passport.passportIssuingCountry}
+            error={errors.passportIssuingCountry?.message}
+          >
+            <Select
+              {...register("passportIssuingCountry", { required: v.required })}
+              hasError={!!errors.passportIssuingCountry}
+            >
+              <option value="">
+                {passport.passportIssuingCountryPlaceholder}
+              </option>
+              {countryOptions.map((country) => (
+                <option key={country.id} value={String(country.id)}>
+                  {country.name}
+                </option>
+              ))}
+            </Select>
+          </Field>
+          <Field
+            label={passport.passportIssueDate}
+            error={errors.passportIssueDate?.message}
+          >
+            <Input
+              {...register("passportIssueDate", { required: v.required })}
+              type="date"
+              hasError={!!errors.passportIssueDate}
+            />
+          </Field>
+          <Field
+            label={passport.passportExpiryDate}
+            error={errors.passportExpiryDate?.message}
+          >
+            <Input
+              {...register("passportExpiryDate", { required: v.required })}
+              type="date"
+              hasError={!!errors.passportExpiryDate}
+            />
+          </Field>
+        </div>
+
+        <div className="mt-6 overflow-hidden border border-gray-200 rounded-xl bg-gray-50">
+          <div className="px-5 py-4 bg-white border-b border-gray-200">
+            <h3 className="text-sm font-semibold text-[#1F2937]">
+              {passport.passportCopyTitle}
+            </h3>
+            <p className="text-xs text-[#6F7A72] mt-0.5">
+              {passport.passportCopyDesc}
+            </p>
+            <span className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#004E34] bg-[#004E34]/8 px-2 py-0.5 rounded-full">
+              <svg viewBox="0 0 16 16" fill="currentColor" className="w-3 h-3">
+                <path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h7A2.5 2.5 0 0 1 14 2.5v11a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5V2.5z" />
+              </svg>
+              {passport.passportCopyWarning}
             </span>
-          ) : (
-            <span className="text-sm text-[#6F7A72] text-center">
-              {l.passportCopyDrop}
-            </span>
+          </div>
+          <label className="flex flex-col items-center justify-center gap-3 px-6 py-8 transition-colors cursor-pointer hover:bg-gray-100">
+            <input
+              {...register("passportCopy", {
+                required: v.fileRequired,
+                validate: {
+                  size: (files) =>
+                    !files ||
+                    files.length === 0 ||
+                    files[0].size <= 5 * 1024 * 1024 ||
+                    v.fileSize,
+                  type: (files) =>
+                    !files ||
+                    files.length === 0 ||
+                    ["image/jpeg", "image/png", "application/pdf"].includes(
+                      files[0].type,
+                    ) ||
+                    v.fileType,
+                },
+              })}
+              type="file"
+              accept=".jpg,.jpeg,.png,.pdf"
+              className="sr-only"
+            />
+            <svg
+              viewBox="0 0 48 48"
+              fill="none"
+              className="w-12 h-12 text-[#004E34]/30"
+              stroke="currentColor"
+              strokeWidth={1.5}
+            >
+              <rect x="8" y="4" width="32" height="40" rx="3" />
+              <path d="M16 14h16M16 20h16M16 26h10" />
+            </svg>
+            {fileName ? (
+              <span className="text-sm font-medium text-[#004E34]">
+                {fileName}
+              </span>
+            ) : (
+              <span className="text-sm text-[#6F7A72] text-center">
+                {passport.passportCopyDrop}
+              </span>
+            )}
+          </label>
+          {errors.passportCopy && (
+            <p className="flex items-center gap-1 px-5 pb-3 text-xs text-red-500">
+              <span>!</span> {errors.passportCopy.message}
+            </p>
           )}
-        </label>
-        {errors.passportCopy && (
-          <p className="flex items-center gap-1 px-5 pb-3 text-xs text-red-500">
-            <span>⚠</span> {errors.passportCopy.message}
-          </p>
-        )}
-      </div>
+        </div>
 
-      <div className="mt-4">
-        <Field
-          label={l.addressInAzerbaijan}
-          error={errors.addressInAzerbaijan?.message}
-        >
-          <Input
-            {...register("addressInAzerbaijan", { required: v.required })}
-            placeholder={l.addressInAzerbaijanPlaceholder}
-            hasError={!!errors.addressInAzerbaijan}
-          />
-        </Field>
+        <div className="mt-4">
+          <Field
+            label={passport.addressInAzerbaijan}
+            error={errors.addressInAzerbaijan?.message}
+          >
+            <Input
+              {...register("addressInAzerbaijan", { required: v.required })}
+              placeholder={passport.addressInAzerbaijanPlaceholder}
+              hasError={!!errors.addressInAzerbaijan}
+            />
+          </Field>
+        </div>
       </div>
-
       <NavButtons
         onBack={onBack}
         onNext={handleNext}
@@ -1053,7 +1019,7 @@ function Step5({
 
   return (
     <div>
-      <StepHeader num={l.number} title={l.title} subtitle={l.subtitle} />
+      <StepHeader num="04" title={l.title} subtitle={l.subtitle} />
       <div className="flex flex-col gap-4">
         <ReviewSection
           title={l.countryRegionTitle}
@@ -1104,7 +1070,7 @@ function Step5({
         <ReviewSection
           title={l.passportTitle}
           editLabel={l.edit}
-          onEdit={() => goToStep(3)}
+          onEdit={() => goToStep(2)}
           rows={[
             { label: l.passportNumber, value: values.passportNumber },
             { label: l.passportIssueDate, value: values.passportIssueDate },
@@ -1182,14 +1148,16 @@ function Step6({
   const v = labels.validation;
   const visaType = watch("visaType");
   const purposeOfVisit = watch("purposeOfVisit");
-  const selectedVisaType = visaTypes.find((vt) => String(vt.id) === visaType) ?? null;
-  const selectedPrice = selectedVisaType?.prices.find(
-    (p) => String(p.purposeId) === purposeOfVisit,
-  ) ?? null;
+  const selectedVisaType =
+    visaTypes.find((vt) => String(vt.id) === visaType) ?? null;
+  const selectedPrice =
+    selectedVisaType?.prices.find(
+      (p) => String(p.purposeId) === purposeOfVisit,
+    ) ?? null;
 
   return (
     <div>
-      <StepHeader num={l.number} title={l.title} subtitle={l.subtitle} />
+      <StepHeader num="05" title={l.title} subtitle={l.subtitle} />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         {/* Visa type form */}
         <div className="lg:col-span-3">
@@ -1369,18 +1337,18 @@ function SuccessScreen({ referenceNumber }: { referenceNumber: string }) {
       </div>
 
       <div className="flex flex-col sm:flex-row gap-3">
-        <a
+        <Link
           href="/check-status"
           className="px-6 py-2.5 rounded-lg bg-[#004E34] text-white text-sm font-semibold hover:bg-[#003322] transition-colors"
         >
           Check Status
-        </a>
-        <a
+        </Link>
+        <Link
           href="/"
           className="px-6 py-2.5 rounded-lg border border-gray-200 text-[#6F7A72] text-sm font-semibold hover:bg-gray-50 transition-colors"
         >
           Back to Home
-        </a>
+        </Link>
       </div>
     </div>
   );
@@ -1461,7 +1429,9 @@ export function ApplyWizard({
   const [currentStep, setCurrentStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [referenceNumber, setReferenceNumber] = useState<string | null>(null);
-  const [submissionStatus, setSubmissionStatus] = useState<"idle" | "success" | "failed">("idle");
+  const [submissionStatus, setSubmissionStatus] = useState<
+    "idle" | "success" | "failed"
+  >("idle");
   const [submissionError, setSubmissionError] = useState("");
 
   const methods = useForm<ApplicationFormData>({
@@ -1495,7 +1465,7 @@ export function ApplyWizard({
     },
   });
 
-  const next = useCallback(() => setCurrentStep((s) => Math.min(s + 1, 5)), []);
+  const next = useCallback(() => setCurrentStep((s) => Math.min(s + 1, 4)), []);
   const back = useCallback(() => setCurrentStep((s) => Math.max(s - 1, 0)), []);
   const goToStep = useCallback((step: number) => setCurrentStep(step), []);
 
@@ -1618,16 +1588,7 @@ export function ApplyWizard({
         address: methods.getValues("address"),
         email: methods.getValues("email"),
       });
-      next();
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : String(error));
-    }
-  }, [methods, next, persistStep]);
-
-  const handleStep4Next = useCallback(async () => {
-    try {
       const ref = await ensureDraftApplication();
-
       await persistStep(3, {
         passport_number: methods.getValues("passportNumber"),
         passport_issue_date: methods.getValues("passportIssueDate"),
@@ -1656,7 +1617,7 @@ export function ApplyWizard({
     }
   }, [ensureDraftApplication, methods, next, persistStep]);
 
-  const handleStep5Next = useCallback(async () => {
+  const handleStep4Next = useCallback(async () => {
     next();
   }, [next]);
 
@@ -1680,7 +1641,9 @@ export function ApplyWizard({
 
       setSubmissionStatus("success");
     } catch (error) {
-      setSubmissionError(error instanceof Error ? error.message : String(error));
+      setSubmissionError(
+        error instanceof Error ? error.message : String(error),
+      );
       setSubmissionStatus("failed");
     } finally {
       setSubmitting(false);
@@ -1739,23 +1702,15 @@ export function ApplyWizard({
               />
             )}
             {currentStep === 3 && (
-              <Step4
-                labels={labels}
-                onBack={back}
-                onNext={handleStep4Next}
-                countryOptions={countryOptions}
-              />
-            )}
-            {currentStep === 4 && (
               <Step5
                 labels={labels}
                 onBack={back}
-                onNext={handleStep5Next}
+                onNext={handleStep4Next}
                 goToStep={goToStep}
                 countryOptions={countryOptions}
               />
             )}
-            {currentStep === 5 && (
+            {currentStep === 4 && (
               <Step6
                 labels={labels}
                 onBack={back}
@@ -1768,7 +1723,7 @@ export function ApplyWizard({
 
         {/* Mobile step indicator */}
         <div className="flex items-center justify-center gap-2 mt-4 lg:hidden">
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
               className={twMerge(
