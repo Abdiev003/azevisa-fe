@@ -121,7 +121,7 @@ export function CountriesList({
               >
                 {t("allRegions")}
               </button>
-              {regions
+              {[...regions]
                 .sort((a, b) => a.order - b.order)
                 .map((r) => (
                   <button
@@ -186,21 +186,28 @@ export function CountriesList({
                   label={t("previous")}
                 />
                 <div className="flex gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                    (n) => (
+                  {buildPageItems(currentPage, totalPages).map((item, idx) =>
+                    item === "..." ? (
+                      <span
+                        key={`ellipsis-${idx}`}
+                        className="w-9 h-9 flex items-center justify-center text-sm text-[#6F7A72]"
+                      >
+                        …
+                      </span>
+                    ) : (
                       <Link
-                        key={n}
+                        key={item}
                         href={buildUrl({
-                          page: n === 1 ? undefined : String(n),
+                          page: item === 1 ? undefined : String(item),
                         })}
                         onClick={() => setActiveLetter(null)}
                         className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-semibold transition-colors ${
-                          n === currentPage
+                          item === currentPage
                             ? "bg-[#004E34] text-white"
                             : "border border-gray-200 text-[#6F7A72] hover:border-[#004E34] hover:text-[#004E34]"
                         }`}
                       >
-                        {n}
+                        {item}
                       </Link>
                     ),
                   )}
@@ -245,6 +252,35 @@ export function CountriesList({
       </div>
     </>
   );
+}
+
+function buildPageItems(
+  current: number,
+  total: number,
+): (number | "...")[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1);
+  }
+
+  const items: (number | "...")[] = [];
+  const delta = 1; // siblings on each side of current
+
+  const rangeStart = Math.max(2, current - delta);
+  const rangeEnd = Math.min(total - 1, current + delta);
+
+  items.push(1);
+
+  if (rangeStart > 2) items.push("...");
+
+  for (let i = rangeStart; i <= rangeEnd; i++) {
+    items.push(i);
+  }
+
+  if (rangeEnd < total - 1) items.push("...");
+
+  items.push(total);
+
+  return items;
 }
 
 function PaginationLink({

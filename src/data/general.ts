@@ -153,12 +153,13 @@ export const getVisaTypes = async (): Promise<VisaType[]> => {
   }
 };
 
+const MAX_PAGES = 50;
+
 export const getAllCountries = async (): Promise<CountryItem[]> => {
   const results: CountryItem[] = [];
   const seen = new Set<number>();
-  let page = 1;
 
-  while (true) {
+  for (let page = 1; page <= MAX_PAGES; page++) {
     const response = await getCountries({ page });
 
     for (const country of response.results) {
@@ -168,11 +169,9 @@ export const getAllCountries = async (): Promise<CountryItem[]> => {
       }
     }
 
-    if (!response.next) {
+    if (!response.next || response.results.length === 0) {
       break;
     }
-
-    page += 1;
   }
 
   return results;

@@ -96,12 +96,12 @@ export default async function EligibleCountriesPage({
                   {t("consulate.item2")}
                 </li>
               </ul>
-              <a
+              {/* <a
                 href="#"
                 className="inline-flex items-center px-6 py-3 bg-[#4A3A14] text-white text-sm font-semibold rounded-lg hover:bg-[#3D3010] transition-colors"
               >
                 {t("consulate.cta")}
-              </a>
+              </a> */}
             </div>
 
             {/* Right — building image */}

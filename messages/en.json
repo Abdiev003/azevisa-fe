@@ -514,7 +514,7 @@
       "title": "Application Progress",
       "stepOf": "Step {current} of {total}",
       "steps": {
-        "countryRegion": "Country / Region",
+        "countryRegion": "Trip Details",
         "arrivalDate": "Arrival Date",
         "personalInfo": "Personal Information",
         "passportDetails": "Passport Details",
@@ -524,8 +524,8 @@
     },
     "step1": {
       "number": "01",
-      "title": "Country / Region",
-      "subtitle": "Select your nationality and the type of travel document you will use.",
+      "title": "Trip Details",
+      "subtitle": "Select your nationality, travel document, arrival date, purpose of visit, and provide your email address.",
       "nationality": "Nationality / Citizenship",
       "nationalityPlaceholder": "Choose from list",
       "documentType": "Document Type",
@@ -670,7 +670,10 @@
       "fileSize": "File size must be under 5MB",
       "fileType": "Only JPG or PDF files are accepted",
       "declarationRequired": "You must accept the declaration",
-      "stayDurationMax": "Maximum stay duration is 30 days"
+      "stayDurationMax": "Maximum stay duration is 30 days",
+      "arrivalDatePast": "Arrival date cannot be in the past",
+      "passportIssueFuture": "Passport issue date cannot be in the future",
+      "passportExpiryMin": "Passport must be valid for at least 30 days"
     }
   },
   "Login": {

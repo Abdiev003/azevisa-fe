@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
-import { useForm, FormProvider, useFormContext } from "react-hook-form";
+import { useForm, FormProvider, useFormContext, Controller } from "react-hook-form";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 import { toast } from "sonner";
 import { twMerge } from "tailwind-merge";
 import { Field, inputClass } from "@/components/ui/field";
@@ -217,6 +219,9 @@ export interface ApplyLabels {
     fileType: string;
     declarationRequired: string;
     stayDurationMax: string;
+    arrivalDatePast: string;
+    passportIssueFuture: string;
+    passportExpiryMin: string;
   };
 }
 
@@ -258,7 +263,6 @@ function Sidebar({
 }) {
   const stepLabels = [
     labels.sidebar.steps.countryRegion,
-    labels.sidebar.steps.arrivalDate,
     labels.sidebar.steps.personalInfo,
     labels.sidebar.steps.review,
     labels.sidebar.steps.payment,
@@ -266,7 +270,7 @@ function Sidebar({
 
   const stepOf = labels.sidebar.stepOf
     .replace("{current}", String(current + 1))
-    .replace("{total}", "5");
+    .replace("{total}", "4");
 
   return (
     <aside className="hidden lg:flex flex-col w-56 shrink-0 bg-[#004E34] text-white rounded-xl overflow-hidden">
@@ -279,7 +283,7 @@ function Sidebar({
         <div className="mt-3 h-1.5 w-full rounded-full bg-white/20">
           <div
             className="h-1.5 rounded-full bg-[#C8A84B] transition-all duration-500"
-            style={{ width: `${((current + 1) / 5) * 100}%` }}
+            style={{ width: `${((current + 1) / 4) * 100}%` }}
           />
         </div>
       </div>
@@ -435,7 +439,7 @@ function StepHeader({
 }
 
 // ---------------------------------------------------------------------------
-// Step 1 — Country / Region
+// Step 1 — Country / Region + Arrival Date + Email
 // ---------------------------------------------------------------------------
 
 function Step1({
@@ -462,23 +466,34 @@ function Step1({
   }, [nationality, setValue]);
 
   const handleNext = async () => {
-    const ok = await trigger(["nationality", "documentType"]);
+    const ok = await trigger([
+      "nationality",
+      "documentType",
+      "arrivalDate",
+      "purposeOfVisit",
+      "email",
+    ]);
     if (ok) await onNext();
   };
 
-  const l = labels.step1;
+  const l1 = labels.step1;
+  const l2 = labels.step2;
+  const l3 = labels.step3;
   const v = labels.validation;
+  const selectedCountry = countryOptions.find(
+    (country) => String(country.id) === nationality,
+  );
 
   return (
     <div>
-      <StepHeader num={l.number} title={l.title} subtitle={l.subtitle} />
+      <StepHeader num={l1.number} title={l1.title} subtitle={l1.subtitle} />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-5">
-        <Field label={l.nationality} error={errors.nationality?.message}>
+        <Field label={l1.nationality} error={errors.nationality?.message}>
           <Select
             {...register("nationality", { required: v.required })}
             hasError={!!errors.nationality}
           >
-            <option value="">{l.nationalityPlaceholder}</option>
+            <option value="">{l1.nationalityPlaceholder}</option>
             {countryOptions.map((country) => (
               <option key={country.id} value={String(country.id)}>
                 {country.name}
@@ -486,75 +501,39 @@ function Step1({
             ))}
           </Select>
         </Field>
-        <Field label={l.documentType} error={errors.documentType?.message}>
+        <Field label={l1.documentType} error={errors.documentType?.message}>
           <Select
             {...register("documentType", { required: v.required })}
             hasError={!!errors.documentType}
           >
-            <option value="">{l.documentTypePlaceholder}</option>
-            <option value="ordinary_passport">{l.docOrdinary}</option>
-            <option value="service_passport">{l.docOfficial}</option>
-            <option value="diplomatic_passport">{l.docDiplomatic}</option>
-            <option value="travel_document">{l.docEmergency}</option>
+            <option value="">{l1.documentTypePlaceholder}</option>
+            <option value="ordinary_passport">{l1.docOrdinary}</option>
+            <option value="service_passport">{l1.docOfficial}</option>
+            <option value="diplomatic_passport">{l1.docDiplomatic}</option>
+            <option value="travel_document">{l1.docEmergency}</option>
           </Select>
         </Field>
-      </div>
-      <NavButtons nextLabel={l.next} backLabel="" onNext={handleNext} />
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Step 2 — Arrival Date
-// ---------------------------------------------------------------------------
-
-function Step2({
-  labels,
-  onBack,
-  onNext,
-  countryOptions,
-}: {
-  labels: ApplyLabels;
-  onBack: () => void;
-  onNext: () => Promise<void>;
-  countryOptions: CountryOption[];
-}) {
-  const {
-    register,
-    formState: { errors },
-    trigger,
-    watch,
-  } = useFormContext<ApplicationFormData>();
-
-  const handleNext = async () => {
-    const ok = await trigger(["arrivalDate", "purposeOfVisit"]);
-    if (ok) await onNext();
-  };
-
-  const l = labels.step2;
-  const v = labels.validation;
-  const selectedCountry = countryOptions.find(
-    (country) => String(country.id) === watch("nationality"),
-  );
-
-  return (
-    <div>
-      <StepHeader num={l.number} title={l.title} subtitle={l.subtitle} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-5">
-        <Field label={l.arrivalDate} error={errors.arrivalDate?.message}>
+        <Field label={l2.arrivalDate} error={errors.arrivalDate?.message}>
           <Input
-            {...register("arrivalDate", { required: v.required })}
+            {...register("arrivalDate", {
+              required: v.required,
+              validate: (value) => {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                return new Date(value) >= today || v.arrivalDatePast;
+              },
+            })}
             type="date"
             hasError={!!errors.arrivalDate}
             className="text-[#1F2937]"
           />
         </Field>
-        <Field label={l.purposeOfVisit} error={errors.purposeOfVisit?.message}>
+        <Field label={l2.purposeOfVisit} error={errors.purposeOfVisit?.message}>
           <Select
             {...register("purposeOfVisit", { required: v.required })}
             hasError={!!errors.purposeOfVisit}
           >
-            <option value="">{l.purposePlaceholder}</option>
+            <option value="">{l2.purposePlaceholder}</option>
             {selectedCountry?.availablePurposes.map((purpose) => (
               <option key={purpose.id} value={String(purpose.id)}>
                 {purpose.name}
@@ -562,13 +541,34 @@ function Step2({
             ))}
           </Select>
         </Field>
+        <div className="sm:col-span-2">
+          <Field label={l3.email} error={errors.email?.message}>
+            <Input
+              {...register("email", {
+                required: v.required,
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: v.email,
+                },
+              })}
+              type="email"
+              placeholder={l3.emailPlaceholder}
+              hasError={!!errors.email}
+            />
+          </Field>
+          <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[#6F7A72]">
+            <svg
+              viewBox="0 0 16 16"
+              fill="currentColor"
+              className="w-3.5 h-3.5 text-[#004E34] shrink-0"
+            >
+              <path d="M8 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1zm.75 4.25a.75.75 0 0 0-1.5 0v3.5a.75.75 0 0 0 .75.75h2.5a.75.75 0 0 0 0-1.5H8.75V5.25z" />
+            </svg>
+            {l3.emailNote}
+          </p>
+        </div>
       </div>
-      <NavButtons
-        onBack={onBack}
-        onNext={handleNext}
-        backLabel={l.back}
-        nextLabel={l.next}
-      />
+      <NavButtons nextLabel={l1.next} backLabel="" onNext={handleNext} />
     </div>
   );
 }
@@ -590,6 +590,7 @@ function Step3({
 }) {
   const {
     register,
+    control,
     formState: { errors },
     trigger,
     watch,
@@ -605,7 +606,6 @@ function Step3({
     "occupation",
     "mobileNumber",
     "address",
-    "email",
     "passportNumber",
     "passportIssueDate",
     "passportExpiryDate",
@@ -703,22 +703,33 @@ function Step3({
           </Select>
         </Field>
         <Field label={l.mobileNumber} error={errors.mobileNumber?.message}>
-          <div className="flex">
-            <span
-              className={twMerge(
-                inputClass(!!errors.mobileNumber),
-                "rounded-r-none border-r-0 w-auto px-3 bg-gray-50 text-[#6F7A72] shrink-0",
-              )}
-            >
-              +
-            </span>
-            <Input
-              {...register("mobileNumber", { required: v.required })}
-              placeholder={l.mobileNumberPlaceholder}
-              hasError={!!errors.mobileNumber}
-              className="rounded-l-none"
-            />
-          </div>
+          <Controller
+            name="mobileNumber"
+            control={control}
+            rules={{ required: v.required }}
+            render={({ field }) => (
+              <PhoneInput
+                defaultCountry="az"
+                value={field.value}
+                onChange={field.onChange}
+                inputStyle={{
+                  width: "100%",
+                  height: "42px",
+                  fontSize: "14px",
+                  borderColor: errors.mobileNumber ? "#ef4444" : "#e5e7eb",
+                  borderRadius: "0 8px 8px 0",
+                }}
+                countrySelectorStyleProps={{
+                  buttonStyle: {
+                    height: "42px",
+                    borderColor: errors.mobileNumber ? "#ef4444" : "#e5e7eb",
+                    borderRadius: "8px 0 0 8px",
+                    backgroundColor: "#f9fafb",
+                  },
+                }}
+              />
+            )}
+          />
         </Field>
         <Field label={l.address} error={errors.address?.message}>
           <Input
@@ -727,32 +738,6 @@ function Step3({
             hasError={!!errors.address}
           />
         </Field>
-      </div>
-      <div className="mt-4">
-        <Field label={l.email} error={errors.email?.message}>
-          <Input
-            {...register("email", {
-              required: v.required,
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: v.email,
-              },
-            })}
-            type="email"
-            placeholder={l.emailPlaceholder}
-            hasError={!!errors.email}
-          />
-        </Field>
-        <p className="mt-1.5 flex items-center gap-1.5 text-xs text-[#6F7A72]">
-          <svg
-            viewBox="0 0 16 16"
-            fill="currentColor"
-            className="w-3.5 h-3.5 text-[#004E34] shrink-0"
-          >
-            <path d="M8 1a7 7 0 1 1 0 14A7 7 0 0 1 8 1zm.75 4.25a.75.75 0 0 0-1.5 0v3.5a.75.75 0 0 0 .75.75h2.5a.75.75 0 0 0 0-1.5H8.75V5.25z" />
-          </svg>
-          {l.emailNote}
-        </p>
       </div>
       <div className="mt-8 border-t border-gray-200 pt-8">
         <div className="mb-6">
@@ -799,7 +784,14 @@ function Step3({
             error={errors.passportIssueDate?.message}
           >
             <Input
-              {...register("passportIssueDate", { required: v.required })}
+              {...register("passportIssueDate", {
+                required: v.required,
+                validate: (value) => {
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                  return new Date(value) <= today || v.passportIssueFuture;
+                },
+              })}
               type="date"
               hasError={!!errors.passportIssueDate}
             />
@@ -809,7 +801,15 @@ function Step3({
             error={errors.passportExpiryDate?.message}
           >
             <Input
-              {...register("passportExpiryDate", { required: v.required })}
+              {...register("passportExpiryDate", {
+                required: v.required,
+                validate: (value) => {
+                  const minDate = new Date();
+                  minDate.setDate(minDate.getDate() + 30);
+                  minDate.setHours(0, 0, 0, 0);
+                  return new Date(value) >= minDate || v.passportExpiryMin;
+                },
+              })}
               type="date"
               hasError={!!errors.passportExpiryDate}
             />
@@ -1019,7 +1019,7 @@ function Step5({
 
   return (
     <div>
-      <StepHeader num="04" title={l.title} subtitle={l.subtitle} />
+      <StepHeader num="03" title={l.title} subtitle={l.subtitle} />
       <div className="flex flex-col gap-4">
         <ReviewSection
           title={l.countryRegionTitle}
@@ -1036,7 +1036,7 @@ function Step5({
         <ReviewSection
           title={l.arrivalDateTitle}
           editLabel={l.edit}
-          onEdit={() => goToStep(1)}
+          onEdit={() => goToStep(0)}
           rows={[
             { label: l.arrivalDate, value: values.arrivalDate },
             { label: l.purposeOfVisit, value: selectedPurpose },
@@ -1045,7 +1045,7 @@ function Step5({
         <ReviewSection
           title={l.personalTitle}
           editLabel={l.edit}
-          onEdit={() => goToStep(2)}
+          onEdit={() => goToStep(1)}
           rows={[
             {
               label: l.fullName,
@@ -1070,7 +1070,7 @@ function Step5({
         <ReviewSection
           title={l.passportTitle}
           editLabel={l.edit}
-          onEdit={() => goToStep(2)}
+          onEdit={() => goToStep(1)}
           rows={[
             { label: l.passportNumber, value: values.passportNumber },
             { label: l.passportIssueDate, value: values.passportIssueDate },
@@ -1157,7 +1157,7 @@ function Step6({
 
   return (
     <div>
-      <StepHeader num="05" title={l.title} subtitle={l.subtitle} />
+      <StepHeader num="04" title={l.title} subtitle={l.subtitle} />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         {/* Visa type form */}
         <div className="lg:col-span-3">
@@ -1233,10 +1233,6 @@ function Step6({
                 <span className="font-medium text-[#1F2937]">
                   {selectedPrice ? `$${selectedPrice.totalPrice}` : "—"}
                 </span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-[#6F7A72]">{l.serviceFeeLabel}</span>
-                <span className="font-medium text-[#1F2937]">—</span>
               </div>
               {selectedVisaType && (
                 <>
@@ -1465,7 +1461,7 @@ export function ApplyWizard({
     },
   });
 
-  const next = useCallback(() => setCurrentStep((s) => Math.min(s + 1, 4)), []);
+  const next = useCallback(() => setCurrentStep((s) => Math.min(s + 1, 3)), []);
   const back = useCallback(() => setCurrentStep((s) => Math.max(s - 1, 0)), []);
   const goToStep = useCallback((step: number) => setCurrentStep(step), []);
 
@@ -1556,10 +1552,6 @@ export function ApplyWizard({
   );
 
   const handleStep1Next = useCallback(async () => {
-    next();
-  }, [next]);
-
-  const handleStep2Next = useCallback(async () => {
     try {
       await persistStep(1, {
         nationality: Number(methods.getValues("nationality")),
@@ -1686,14 +1678,6 @@ export function ApplyWizard({
               />
             )}
             {currentStep === 1 && (
-              <Step2
-                labels={labels}
-                onBack={back}
-                onNext={handleStep2Next}
-                countryOptions={countryOptions}
-              />
-            )}
-            {currentStep === 2 && (
               <Step3
                 labels={labels}
                 onBack={back}
@@ -1701,7 +1685,7 @@ export function ApplyWizard({
                 countryOptions={countryOptions}
               />
             )}
-            {currentStep === 3 && (
+            {currentStep === 2 && (
               <Step5
                 labels={labels}
                 onBack={back}
@@ -1710,7 +1694,7 @@ export function ApplyWizard({
                 countryOptions={countryOptions}
               />
             )}
-            {currentStep === 4 && (
+            {currentStep === 3 && (
               <Step6
                 labels={labels}
                 onBack={back}
@@ -1723,7 +1707,7 @@ export function ApplyWizard({
 
         {/* Mobile step indicator */}
         <div className="flex items-center justify-center gap-2 mt-4 lg:hidden">
-          {Array.from({ length: 5 }).map((_, i) => (
+          {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
               className={twMerge(

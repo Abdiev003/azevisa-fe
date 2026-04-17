@@ -61,7 +61,7 @@ export default async function ApplyPage() {
       next: t("step2.next"),
     },
     step3: {
-      number: t("step3.number"),
+      number: t("step2.number"),
       title: t("step3.title"),
       subtitle: t("step3.subtitle"),
       firstName: t("step3.firstName"),
@@ -179,6 +179,9 @@ export default async function ApplyPage() {
       fileType: t("validation.fileType"),
       declarationRequired: t("validation.declarationRequired"),
       stayDurationMax: t("validation.stayDurationMax"),
+      arrivalDatePast: t("validation.arrivalDatePast"),
+      passportIssueFuture: t("validation.passportIssueFuture"),
+      passportExpiryMin: t("validation.passportExpiryMin"),
     },
   };
 

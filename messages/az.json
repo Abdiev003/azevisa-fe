@@ -519,7 +519,7 @@
       "title": "Müraciət Gedişatı",
       "stepOf": "{total} addımdan {current}-ci addım",
       "steps": {
-        "countryRegion": "Ölkə / Region",
+        "countryRegion": "Səyahət Məlumatları",
         "arrivalDate": "Gəliş Tarixi",
         "personalInfo": "Şəxsi Məlumatlar",
         "passportDetails": "Pasport Məlumatları",
@@ -529,8 +529,8 @@
     },
     "step1": {
       "number": "01",
-      "title": "Ölkə / Region",
-      "subtitle": "Vətəndaşlığınızı və istifadə edəcəyiniz səyahət sənədinin növünü seçin.",
+      "title": "Səyahət Məlumatları",
+      "subtitle": "Vətəndaşlığınızı, sənəd növünü, gəliş tarixini, ziyarətin məqsədini və e-poçt ünvanınızı daxil edin.",
       "nationality": "Vətəndaşlıq",
       "nationalityPlaceholder": "Siyahıdan seçin",
       "documentType": "Sənədin Növü",
@@ -675,7 +675,10 @@
       "fileSize": "Faylın ölçüsü 5MB-dan az olmalıdır",
       "fileType": "Yalnız JPG və ya PDF faylları qəbul edilir",
       "declarationRequired": "Bəyannaməni qəbul etməlisiniz",
-      "stayDurationMax": "Maksimum qalma müddəti 30 gündür"
+      "stayDurationMax": "Maksimum qalma müddəti 30 gündür",
+      "arrivalDatePast": "Gəliş tarixi keçmiş tarix ola bilməz",
+      "passportIssueFuture": "Pasportunun verilmə tarixi gələcək tarix ola bilməz",
+      "passportExpiryMin": "Pasportunun etibarlılıq müddəti ən az 30 gün olmalıdır"
     }
   },
   "Login": {
