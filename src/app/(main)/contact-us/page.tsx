@@ -35,8 +35,8 @@ export const metadata: Metadata = {
   },
 };
 
-const INFO_ICONS = [MailIcon, PhoneIcon, MapPinIcon, ClockIcon];
-const INFO_KEYS = ["email", "address", "hours"] as const;
+const INFO_ICONS = [MailIcon, PhoneIcon];
+const INFO_KEYS = ["email", "hours"] as const;
 
 export default async function ContactUsPage() {
   const t = await getTranslations("ContactUs");
@@ -72,7 +72,7 @@ export default async function ContactUsPage() {
 
       {/* Info cards */}
       <div className="max-w-6xl px-6 mx-auto -mt-6">
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {INFO_KEYS.map((key, i) => {
             const Icon = INFO_ICONS[i];
             return (

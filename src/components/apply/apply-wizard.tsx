@@ -1357,9 +1357,11 @@ function SuccessScreen({ referenceNumber }: { referenceNumber: string }) {
 function FailedScreen({
   errorMessage,
   onRetry,
+  referenceNumber,
 }: {
   errorMessage: string;
   onRetry: () => void;
+  referenceNumber: string | null;
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
@@ -1385,9 +1387,21 @@ function FailedScreen({
         Something went wrong while submitting your application.
       </p>
       {errorMessage && (
-        <p className="text-red-500 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-2.5 max-w-sm mb-8">
+        <p className="text-red-500 text-sm bg-red-50 border border-red-100 rounded-lg px-4 py-2.5 max-w-sm mb-6">
           {errorMessage}
         </p>
+      )}
+
+      {referenceNumber && (
+        <div className="bg-[#004E34]/5 border border-[#004E34]/20 rounded-xl px-6 py-4 mb-8">
+          <p className="text-xs text-[#6F7A72] mb-1">Reference Number</p>
+          <p className="text-xl font-bold tracking-widest text-[#004E34]">
+            {referenceNumber}
+          </p>
+          <p className="text-xs text-[#6F7A72] mt-2">
+            Save this number to resume your application later.
+          </p>
+        </div>
       )}
 
       <div className="flex flex-col sm:flex-row gap-3">
@@ -1398,6 +1412,14 @@ function FailedScreen({
         >
           Try Again
         </button>
+        {referenceNumber && (
+          <Link
+            href={`/check-status?ref=${referenceNumber}`}
+            className="px-6 py-2.5 rounded-lg border border-[#004E34] text-[#004E34] text-sm font-semibold hover:bg-[#004E34]/5 transition-colors"
+          >
+            Check Application Status
+          </Link>
+        )}
         <a
           href="/contact-us"
           className="px-6 py-2.5 rounded-lg border border-gray-200 text-[#6F7A72] text-sm font-semibold hover:bg-gray-50 transition-colors"
@@ -1655,6 +1677,7 @@ export function ApplyWizard({
       <div className="bg-white border border-gray-200 shadow-sm rounded-xl">
         <FailedScreen
           errorMessage={submissionError}
+          referenceNumber={referenceNumber}
           onRetry={() => {
             setSubmissionStatus("idle");
             setSubmissionError("");
