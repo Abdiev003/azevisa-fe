@@ -24,6 +24,7 @@ interface Decision {
   id: string;
   status: "APPROVED" | "REJECTED" | "CANCELLED";
   validUntil: string;
+  downloadablePdfUrl: string | null;
 }
 
 type ApplicationResult = ActiveApplication | Decision | null;
@@ -40,8 +41,28 @@ interface ApiStatusResponse {
   visa_type_name?: string;
   submitted_at?: string;
   valid_until?: string;
+  downloadable_pdf_url?: string | null;
   /** 0 = Submitted, 1 = Under Review, 2 = Processing, 3 = Final Decision */
   current_step?: number;
+}
+
+function resolveDownloadUrl(path?: string | null): string | null {
+  if (!path) return null;
+
+  if (/^https?:\/\//i.test(path)) {
+    return path;
+  }
+
+  const publicApiUrl = process.env.NEXT_PUBLIC_API_URL;
+  if (!publicApiUrl) {
+    return path;
+  }
+
+  try {
+    return new URL(path, publicApiUrl).toString();
+  } catch {
+    return path;
+  }
 }
 
 function fmtDate(iso?: string): string {
@@ -73,6 +94,7 @@ function mapApiResponse(data: ApiStatusResponse): ApplicationResult {
       id: data.reference_number,
       status: status as Decision["status"],
       validUntil: fmtDate(data.valid_until),
+      downloadablePdfUrl: resolveDownloadUrl(data.downloadable_pdf_url),
     };
   }
 
@@ -421,6 +443,8 @@ export default function StatusChecker({
     null,
   );
 
+  console.log(result);
+
   const {
     form,
     activeApplication,
@@ -681,13 +705,31 @@ export default function StatusChecker({
                     {/* Approved applications can download the visa. Other final
                         states should guide the user toward support instead. */}
                     {result.status === "APPROVED" ? (
-                      <button
-                        type="button"
-                        className="flex items-center gap-2 bg-[#004E34] hover:bg-[#003322] text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors cursor-pointer shrink-0"
+                      <a
+                        href={result.downloadablePdfUrl ?? undefined}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        download
+                        className={`flex items-center gap-2 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-colors shrink-0 ${
+                          result.downloadablePdfUrl
+                            ? "bg-[#004E34] hover:bg-[#003322] cursor-pointer"
+                            : "bg-[#004E34]/40 cursor-not-allowed pointer-events-none"
+                        }`}
+                        aria-disabled={!result.downloadablePdfUrl}
+                        title={
+                          result.downloadablePdfUrl
+                            ? recentDecisions.download
+                            : "PDF is not available yet."
+                        }
+                        onClick={(event) => {
+                          if (!result.downloadablePdfUrl) {
+                            event.preventDefault();
+                          }
+                        }}
                       >
                         <DownloadIcon className="w-4 h-4" />
                         {recentDecisions.download}
-                      </button>
+                      </a>
                     ) : (
                       <p className="max-w-xs text-sm leading-relaxed text-[#6F7A72] shrink-0">
                         {recentDecisions.nonApprovedMessage}
