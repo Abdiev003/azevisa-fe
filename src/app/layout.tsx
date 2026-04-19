@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { cookies } from "next/headers";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { Header } from "@/layouts/header";
@@ -130,6 +131,7 @@ export default async function RootLayout({
           <Toaster position="top-right" />
         </NextIntlClientProvider>
       </body>
+      <GoogleAnalytics gaId="G-2KJ01HMNJN" />
     </html>
   );
 }
