@@ -2,14 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { ContactForm } from "@/components/contact-us/contact-form";
-import {
-  ChevronIcon,
-  MailIcon,
-  PhoneIcon,
-  MapPinIcon,
-  ClockIcon,
-} from "@/components/icons";
-import { getContactFAQ } from "@/data/general";
+import { MailIcon, PhoneIcon } from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Contact AzEvisa Support – We're Here to Help 24/7",
@@ -40,7 +33,6 @@ const INFO_KEYS = ["email", "hours"] as const;
 
 export default async function ContactUsPage() {
   const t = await getTranslations("ContactUs");
-  const faqsContact = await getContactFAQ();
 
   return (
     <div className="min-h-screen bg-white">
@@ -113,7 +105,7 @@ export default async function ContactUsPage() {
 
         {/* FAQ — 2/5 */}
         <div className="flex flex-col gap-6 lg:col-span-2">
-          <p className="text-lg font-bold text-[#1F2937]">{t("faq.title")}</p>
+          {/* <p className="text-lg font-bold text-[#1F2937]">{t("faq.title")}</p>
           <div className="flex flex-col gap-4">
             {faqsContact.map((faq) => (
               <details
@@ -133,7 +125,7 @@ export default async function ContactUsPage() {
                 </div>
               </details>
             ))}
-          </div>
+          </div> */}
 
           {/* Extra trust block */}
           <div className="mt-2 bg-[#003322] rounded-xl p-6 flex flex-col gap-3">

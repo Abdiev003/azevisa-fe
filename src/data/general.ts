@@ -55,7 +55,7 @@ export const getContactFAQ = async (): Promise<FAQItem[]> => {
 
 export const getHomeFAQ = async (): Promise<FAQItem[]> => {
   try {
-    const res = await fetcher("/pages/faq/?category=general");
+    const res = await fetcher("/pages/faq/?category=home");
     return res;
   } catch (error) {
     console.error("Error fetching home FAQ:", error);
@@ -177,7 +177,9 @@ export const getVisaRequirements = async (params?: {
     if (params?.country) q.set("country", params.country);
     if (params?.purpose) q.set("purpose", params.purpose);
     const qs = q.toString();
-    const res = await fetcher(`/countries/visa-requirements/${qs ? `?${qs}` : ""}`);
+    const res = await fetcher(
+      `/countries/visa-requirements/${qs ? `?${qs}` : ""}`,
+    );
     return Array.isArray(res) ? res : [];
   } catch (error) {
     console.error("Error fetching visa requirements:", error);
