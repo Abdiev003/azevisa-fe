@@ -63,7 +63,9 @@ export default async function VisaTypesPage() {
       );
       return {
         label: vt.name,
-        price: priceEntry ? `$${Number(priceEntry.total_price).toFixed(0)}` : "—",
+        price: priceEntry
+          ? `$${Number(priceEntry.total_price).toFixed(0)}`
+          : "—",
         time: vt.processing_time_text,
         highlighted: vt.speed_type === "urgent",
       };
@@ -135,7 +137,7 @@ export default async function VisaTypesPage() {
       description: purpose.description,
       priceLabel: t(`visas.${id}.priceLabel`),
       price: getPriceRange(purpose.purpose_type),
-      disabled: id === "work",
+      disabled: id === "work" || id === "student", // Assuming work and student visas are currently unavailable
     };
   });
 
@@ -217,12 +219,12 @@ export default async function VisaTypesPage() {
                 {visa.description}
               </p>
               <div className="flex items-baseline gap-1.5">
-                <span className="text-2xl font-bold text-[#004E34]">
+                {/* <span className="text-2xl font-bold text-[#004E34]">
                   {visa.price}
                 </span>
                 <span className="text-xs text-[#6F7A72]">
                   {visa.priceLabel}
-                </span>
+                </span> */}
               </div>
               {visa.disabled ? (
                 <span className="w-full py-2.5 border border-gray-300 text-gray-300 text-sm font-semibold rounded-lg flex items-center justify-center cursor-not-allowed">
@@ -230,7 +232,7 @@ export default async function VisaTypesPage() {
                 </span>
               ) : (
                 <Link
-                  href="#"
+                  href="/apply"
                   className="w-full py-2.5 border border-[#004E34] text-[#004E34] text-sm font-semibold rounded-lg hover:bg-[#004E34] hover:text-white transition-colors flex items-center justify-center"
                 >
                   {t("secondary.details")}
@@ -242,7 +244,7 @@ export default async function VisaTypesPage() {
       </section>
 
       {/* ── Comprehensive Visa Comparison ────────────── */}
-      <section className="px-4 py-16 bg-white lg:px-8">
+      {/* <section className="px-4 py-16 bg-white lg:px-8">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl lg:text-3xl font-bold text-[#004E34] text-center mb-10">
             {t("comparison.title")}
@@ -291,7 +293,7 @@ export default async function VisaTypesPage() {
             </table>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ── CTA ───────────────────────────────────────── */}
       <section className="px-4 py-16 lg:px-8">

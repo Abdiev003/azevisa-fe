@@ -269,11 +269,11 @@ export default async function HomePage() {
                   {t("tiers.standard.tagline")}
                 </p>
               </div>
-              <div>
+              {/* <div>
                 <span className="text-4xl font-extrabold text-[#1F2937]">
                   {t("tiers.standard.price")}
                 </span>
-              </div>
+              </div> */}
               <ul className="flex flex-col gap-2.5">
                 <li className="flex items-center gap-2.5 text-sm text-[#1F2937]">
                   <span className="text-[#004E34]">
@@ -310,11 +310,11 @@ export default async function HomePage() {
                   {t("tiers.urgent.tagline")}
                 </p>
               </div>
-              <div>
+              {/* <div>
                 <span className="text-4xl font-extrabold text-white">
                   {t("tiers.urgent.price")}
                 </span>
-              </div>
+              </div> */}
               <ul className="flex flex-col gap-2.5">
                 <li className="flex items-center gap-2.5 text-sm text-white">
                   <span className="text-[#C8A84B]">
@@ -347,11 +347,11 @@ export default async function HomePage() {
                   {t("tiers.superRush.tagline")}
                 </p>
               </div>
-              <div>
+              {/* <div>
                 <span className="text-4xl font-extrabold text-[#1F2937]">
                   {t("tiers.superRush.price")}
                 </span>
-              </div>
+              </div> */}
               <ul className="flex flex-col gap-2.5">
                 <li className="flex items-center gap-2.5 text-sm text-[#1F2937]">
                   <span className="text-[#C8A84B]">

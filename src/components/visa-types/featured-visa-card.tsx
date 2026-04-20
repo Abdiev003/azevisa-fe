@@ -121,10 +121,10 @@ export function FeaturedVisaCard({ visa, labels }: Props) {
 
         {/* Processing & Fees */}
         <div className="overflow-hidden border border-gray-100 rounded-xl">
-          <div className="px-4 py-2.5 bg-gray-50 border-b border-gray-100">
-            <p className="text-xs font-semibold text-[#1F2937] uppercase tracking-wide">
+          <div className="px-4 py-0 bg-gray-50">
+            {/* <p className="text-xs font-semibold text-[#1F2937] uppercase tracking-wide">
               {labels.processingFees}
-            </p>
+            </p> */}
           </div>
           <div className="grid grid-cols-3 divide-x divide-gray-100">
             {visa.fees.map((tier) => (
@@ -143,7 +143,6 @@ export function FeaturedVisaCard({ visa, labels }: Props) {
                 >
                   {tier.label}
                 </span>
-                <span className="text-2xl font-bold">{tier.price}</span>
                 <span
                   className={`text-[11px] mt-0.5 ${
                     tier.highlighted ? "text-white/70" : "text-[#94A3B8]"
@@ -158,7 +157,7 @@ export function FeaturedVisaCard({ visa, labels }: Props) {
 
         {/* Apply button */}
         <Link
-          href="#"
+          href="/apply"
           className="w-full py-3 bg-[#004E34] text-white text-sm font-semibold rounded-lg hover:bg-[#003322] transition-colors flex items-center justify-center"
         >
           {visa.applyLabel}

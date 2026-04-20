@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import RequirementsTabs from "@/components/visa-requirements/requirements-tabs";
+import CountryRequirementsSection from "@/components/visa-requirements/country-requirements-section";
 
 export const metadata: Metadata = {
   title: "Azerbaijan eVisa Requirements – Documents & Eligibility",
@@ -254,7 +254,7 @@ export default async function VisaRequirementsPage() {
 
   const DOCS = [
     { icon: <PassportIcon />, key: "passport" as const },
-    { icon: <PhotoIcon />, key: "photo" as const },
+    // { icon: <PhotoIcon />, key: "photo" as const },
     { icon: <MailIcon />, key: "email" as const },
     { icon: <CardIcon />, key: "payment" as const },
     { icon: <PlaneIcon />, key: "travel" as const },
@@ -347,7 +347,7 @@ export default async function VisaRequirementsPage() {
           {DOCS.map(({ icon, key }, i) => (
             <div
               key={key}
-              className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md hover:border-[#004E34]/20 transition-all group"
+              className={`bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md hover:border-[#004E34]/20 transition-all group`}
             >
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-xl bg-[#004E34]/8 flex items-center justify-center shrink-0 text-[#004E34] group-hover:bg-[#004E34] group-hover:text-white transition-colors">
@@ -385,7 +385,7 @@ export default async function VisaRequirementsPage() {
             </p>
           </div>
 
-          <RequirementsTabs
+          <CountryRequirementsSection
             labels={{
               note: t("tabs.note"),
               applyNow: t("tabs.applyNow"),

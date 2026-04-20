@@ -153,6 +153,38 @@ export const getVisaTypes = async (): Promise<VisaType[]> => {
   }
 };
 
+export interface VisaRequirement {
+  id: number;
+  visa_purpose: {
+    id: number;
+    name: string;
+    slug: string;
+    purpose_type: string;
+    icon: string;
+  };
+  title: string;
+  description: string;
+  documents_required: string;
+  additional_notes: string;
+}
+
+export const getVisaRequirements = async (params?: {
+  country?: string;
+  purpose?: string;
+}): Promise<VisaRequirement[]> => {
+  try {
+    const q = new URLSearchParams();
+    if (params?.country) q.set("country", params.country);
+    if (params?.purpose) q.set("purpose", params.purpose);
+    const qs = q.toString();
+    const res = await fetcher(`/countries/visa-requirements/${qs ? `?${qs}` : ""}`);
+    return Array.isArray(res) ? res : [];
+  } catch (error) {
+    console.error("Error fetching visa requirements:", error);
+    return [];
+  }
+};
+
 const MAX_PAGES = 50;
 
 export const getAllCountries = async (): Promise<CountryItem[]> => {

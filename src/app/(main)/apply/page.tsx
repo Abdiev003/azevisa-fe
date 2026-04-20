@@ -190,6 +190,7 @@ export default async function ApplyPage() {
       <div className="max-w-5xl mx-auto">
         <ApplyWizard
           labels={labels}
+          allCountriesOptions={countries.map((c) => ({ id: c.id, name: c.name }))}
           countryOptions={countries.map((country) => ({
             id: country.id,
             name: country.name,

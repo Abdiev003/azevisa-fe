@@ -234,6 +234,11 @@ type CountryOption = {
   }[];
 };
 
+type SimpleCountryOption = {
+  id: number;
+  name: string;
+};
+
 type VisaTypePrice = {
   purposeId: number;
   purposeType: string;
@@ -582,11 +587,13 @@ function Step3({
   onBack,
   onNext,
   countryOptions,
+  allCountriesOptions,
 }: {
   labels: ApplyLabels;
   onBack: () => void;
   onNext: () => Promise<void>;
   countryOptions: CountryOption[];
+  allCountriesOptions: SimpleCountryOption[];
 }) {
   const {
     register,
@@ -662,7 +669,7 @@ function Step3({
             hasError={!!errors.countryOfBirth}
           >
             <option value="">{l.countryOfBirthPlaceholder}</option>
-            {countryOptions.map((country) => (
+            {allCountriesOptions.map((country) => (
               <option key={country.id} value={String(country.id)}>
                 {country.name}
               </option>
@@ -957,12 +964,14 @@ function Step5({
   onNext,
   goToStep,
   countryOptions,
+  allCountriesOptions,
 }: {
   labels: ApplyLabels;
   onBack: () => void;
   onNext: () => Promise<void>;
   goToStep: (step: number) => void;
   countryOptions: CountryOption[];
+  allCountriesOptions: SimpleCountryOption[];
 }) {
   const {
     register,
@@ -983,7 +992,7 @@ function Step5({
     countryOptions.find((country) => String(country.id) === values.nationality)
       ?.name ?? l.emptyValue;
   const selectedCountryOfBirth =
-    countryOptions.find(
+    allCountriesOptions.find(
       (country) => String(country.id) === values.countryOfBirth,
     )?.name ?? l.emptyValue;
   const selectedPassportIssuingCountry =
@@ -1438,10 +1447,12 @@ function FailedScreen({
 export function ApplyWizard({
   labels,
   countryOptions,
+  allCountriesOptions,
   visaTypes,
 }: {
   labels: ApplyLabels;
   countryOptions: CountryOption[];
+  allCountriesOptions: SimpleCountryOption[];
   visaTypes: VisaTypeOption[];
 }) {
   const [currentStep, setCurrentStep] = useState(0);
@@ -1706,6 +1717,7 @@ export function ApplyWizard({
                 onBack={back}
                 onNext={handleStep3Next}
                 countryOptions={countryOptions}
+                allCountriesOptions={allCountriesOptions}
               />
             )}
             {currentStep === 2 && (
@@ -1715,6 +1727,7 @@ export function ApplyWizard({
                 onNext={handleStep4Next}
                 goToStep={goToStep}
                 countryOptions={countryOptions}
+                allCountriesOptions={allCountriesOptions}
               />
             )}
             {currentStep === 3 && (
