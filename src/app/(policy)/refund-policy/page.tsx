@@ -1,32 +1,50 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { SectionHeading } from "@/components/privacy-policy/section-heading";
 import { RefundPolicySidebar } from "@/components/refund-policy/sidebar";
-import {
-  AlertIcon,
-  BanIcon,
-  CheckCircleIcon,
-  ClockIcon,
-  ExternalLinkIcon,
-  MailIcon,
-  RefreshIcon,
-} from "@/components/icons";
 
 export const metadata: Metadata = {
   title: "Refund Policy | AzEvisa",
   description:
-    "Understand AzEvisa's refund policy for Azerbaijan eVisa applications. Learn about eligibility, timelines and how to request a refund.",
+    "Understand when AzEvisa.az fees may be refundable, which charges are non-refundable, and how to request a refund for your Azerbaijan e-Visa assistance order.",
   alternates: { canonical: "/refund-policy" },
   robots: { index: true, follow: false },
 };
 
+function BulletList({ items }: { items: string[] }) {
+  return (
+    <ul className="list-disc space-y-3 pl-6 text-base leading-7 text-[#52615A] marker:text-[#004E34]">
+      {items.map((item) => (
+        <li key={item}>{item}</li>
+      ))}
+    </ul>
+  );
+}
+
+function Subsection({
+  title,
+  items,
+  children,
+}: {
+  title: string;
+  items?: string[];
+  children?: ReactNode;
+}) {
+  return (
+    <div className="space-y-4 rounded-2xl border border-[#E7ECE9] bg-[#FAFCFB] p-6">
+      <h3 className="text-lg font-semibold text-[#004E34]">{title}</h3>
+      {items ? <BulletList items={items} /> : children}
+    </div>
+  );
+}
+
 export default function RefundPolicyPage() {
   return (
     <div className="min-h-screen bg-white">
-      {/* Breadcrumb */}
       <div className="border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-6 py-3 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-[#6F7A72]">
-          <Link href="/" className="hover:text-[#004E34] transition-colors">
+        <div className="mx-auto flex max-w-6xl items-center gap-2 px-6 py-3 text-xs font-medium uppercase tracking-wide text-[#6F7A72]">
+          <Link href="/" className="transition-colors hover:text-[#004E34]">
             Home
           </Link>
           <span>/</span>
@@ -34,396 +52,298 @@ export default function RefundPolicyPage() {
         </div>
       </div>
 
-      {/* Hero */}
-      <div className="max-w-6xl px-6 pt-10 pb-8 mx-auto">
-        <h1 className="text-4xl md:text-5xl font-bold text-[#004E34] leading-tight">
+      <div className="mx-auto max-w-6xl px-6 pb-8 pt-10">
+        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#7E8B84]">
+          AzEvisa.az
+        </p>
+        <h1 className="mt-3 text-4xl font-bold leading-tight text-[#004E34] md:text-5xl">
           Refund Policy
         </h1>
-        <p className="mt-3 text-xs font-semibold uppercase tracking-widest text-[#94A3B8]">
-          Last Updated: March 2025
+        <p className="mt-4 max-w-3xl text-lg leading-8 text-[#52615A]">
+          Understanding your rights regarding fees, refunds, and refund request
+          procedures when using our visa application assistance services.
+        </p>
+        <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-[#94A3B8]">
+          Effective Date: April 18, 2026
         </p>
       </div>
 
-      <div className="max-w-6xl px-6 pb-20 mx-auto">
+      <div className="mx-auto max-w-6xl px-6 pb-20">
         <div className="flex items-start gap-12">
           <RefundPolicySidebar />
 
-          <div className="flex flex-col flex-1 min-w-0 gap-14">
-            {/* 01 Overview */}
-            <section>
-              <SectionHeading number="01" title="Overview" id="overview" />
-              <div className="mt-5 flex flex-col gap-4 text-[#374151] text-sm leading-7">
-                <p>
-                  At azEvisa, we strive to make every visa application
-                  experience as smooth as possible. This Refund Policy outlines
-                  the circumstances under which refunds are issued for our
-                  service fees and the official government visa fee.
-                </p>
-                <div className="flex gap-3 p-4 border border-blue-200 rounded-lg bg-blue-50">
-                  <span className="text-blue-500 shrink-0 mt-0.5">
-                    <AlertIcon />
-                  </span>
-                  <p className="text-sm text-[#374151] leading-6">
-                    Please read this policy carefully before submitting your
-                    application. By using our services, you agree to the terms
-                    outlined below.
-                  </p>
-                </div>
-              </div>
+          <div className="flex min-w-0 flex-1 flex-col gap-14">
+            <section className="rounded-3xl border border-[#E7ECE9] bg-[#F7FAF8] p-8 md:p-10">
+              <p className="text-sm font-semibold uppercase tracking-[0.22em] text-[#7E8B84]">
+                www.azevisa.az
+              </p>
+              <p className="mt-4 text-base leading-8 text-[#52615A]">
+                This Refund Policy explains the circumstances under which
+                refunds may or may not be issued for our visa application
+                assistance services. By using our services and making a
+                payment, you acknowledge that you have read and understood this
+                policy.
+              </p>
             </section>
 
-            {/* 02 Service Fee Refunds */}
-            <section>
+            <section className="space-y-6">
+              <SectionHeading number="01" title="Overview" id="overview" />
+              <p className="text-base leading-8 text-[#52615A]">
+                Thank you for choosing AzEvisa.az. Please read this policy
+                carefully before submitting your application, as it explains
+                when fees are refundable, when they are not, and how refund
+                requests are handled.
+              </p>
+            </section>
+
+            <section className="space-y-6">
               <SectionHeading
                 number="02"
-                title="Service Fee Refunds"
-                id="service-fee-refunds"
+                title="Composition of Our Fees"
+                id="composition-of-fees"
               />
-              <p className="mt-4 text-sm text-[#6F7A72] leading-7">
-                The azEvisa service fee may be eligible for a refund depending
-                on the stage of your application:
+              <p className="text-base leading-8 text-[#52615A]">
+                The total fee charged by us upon submission of your application
+                consists of two components:
               </p>
-              <div className="flex flex-col gap-3 mt-4">
-                {[
-                  {
-                    title: "Before Submission — Full Refund",
-                    text: "If you cancel your application before it has been submitted to the Azerbaijan government portal, you are entitled to a full refund of the azEvisa service fee.",
-                    eligible: true,
-                  },
-                  {
-                    title: "After Submission — No Refund",
-                    text: "Once your application has been submitted to the government portal, the service fee is non-refundable as the facilitation work has been completed.",
-                    eligible: false,
-                  },
-                  {
-                    title: "Technical Errors — Full Refund",
-                    text: "If a technical error on our platform prevents successful submission of your application, you are entitled to a full refund of all fees charged by azEvisa.",
-                    eligible: true,
-                  },
-                ].map(({ title, text, eligible }) => (
-                  <div
-                    key={title}
-                    className={`flex items-start gap-4 rounded-lg px-5 py-4 border ${eligible ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}`}
-                  >
-                    <span className="mt-0.5 shrink-0">
-                      {eligible ? <CheckCircleIcon /> : <BanIcon />}
-                    </span>
-                    <div>
-                      <p className="text-sm font-semibold text-[#1F2937] mb-0.5">
-                        {title}
-                      </p>
-                      <p className="text-sm text-[#6F7A72] leading-6">{text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <BulletList
+                items={[
+                  "Government / Authority Fee: the fee charged by the relevant Azerbaijani authorities for processing your e-Visa application. This fee is collected on your behalf and remitted directly to the authorities.",
+                  "Service / Administration Fee: our fee for providing you with assistance, form review, submission, and support services.",
+                ]}
+              />
+              <p className="text-base leading-8 text-[#52615A]">
+                Both components are displayed transparently at the time of
+                payment.
+              </p>
             </section>
 
-            {/* 03 Government Fee */}
-            <section>
+            <section className="space-y-6">
               <SectionHeading
                 number="03"
-                title="Government Fee"
-                id="government-fee"
+                title="Non-Refundable Fees"
+                id="non-refundable-fees"
               />
-              <div className="flex gap-3 p-5 mt-5 border rounded-lg border-amber-300 bg-amber-50">
-                <span className="text-amber-500 shrink-0 mt-0.5">
-                  <AlertIcon />
-                </span>
-                <div className="flex flex-col gap-3 text-sm text-[#374151] leading-7">
-                  <p>
-                    The official government visa fee ($26.00) is paid directly
-                    to the Republic of Azerbaijan immigration authorities upon
-                    submission of your application.{" "}
-                    <strong>This fee is strictly non-refundable</strong> under
-                    all circumstances, including application withdrawal,
-                    rejection, or change of travel plans.
+
+              <div className="grid gap-5">
+                <Subsection
+                  title="3.1 Government Fee"
+                  items={[
+                    "Your visa application is refused or rejected by the Azerbaijani authorities",
+                    "You decide to withdraw your application after it has been submitted",
+                    "You change your travel plans or decide not to travel",
+                    "Your application is submitted with incorrect information provided by you",
+                  ]}
+                >
+                  <p className="text-base leading-8 text-[#52615A]">
+                    The government visa fee is non-refundable in all cases.
+                    Once the government fee is remitted to the authorities on
+                    your behalf, it cannot be recovered regardless of the
+                    outcome.
                   </p>
-                  <p>
-                    azEvisa has no authority to recover or refund government
-                    fees once they have been transmitted to the relevant
-                    authorities.
+                </Subsection>
+                <Subsection
+                  title="3.2 Service Fee – After Submission"
+                  items={[
+                    "Your visa application is refused",
+                    "Your travel plans change after submission",
+                    "You decide you no longer wish to travel to Azerbaijan",
+                  ]}
+                >
+                  <p className="text-base leading-8 text-[#52615A]">
+                    Our service fee is also non-refundable once your
+                    application has been reviewed, processed, and submitted to
+                    the authorities.
                   </p>
-                </div>
+                </Subsection>
               </div>
             </section>
 
-            {/* 04 Rejected Applications */}
-            <section>
+            <section className="space-y-6">
               <SectionHeading
                 number="04"
-                title="Rejected Applications"
-                id="rejected-applications"
+                title="Circumstances Where a Refund May Be Granted"
+                id="refund-circumstances"
               />
-              <p className="mt-4 text-sm text-[#6F7A72] leading-7">
-                In the event that your visa application is rejected by the
-                Azerbaijan government:
-              </p>
-              <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2">
-                {[
-                  {
-                    icon: <CheckCircleIcon />,
-                    title: "azEvisa Service Fee",
-                    text: "Fully refunded within 5–7 business days to your original payment method.",
-                    refundable: true,
-                  },
-                  {
-                    icon: <BanIcon />,
-                    title: "Government Visa Fee",
-                    text: "Non-refundable. The government does not return fees for rejected applications.",
-                    refundable: false,
-                  },
-                  {
-                    icon: <CheckCircleIcon />,
-                    title: "Express Processing Fee",
-                    text: "Refunded if the rejection occurs before the express processing window has elapsed.",
-                    refundable: true,
-                  },
-                  {
-                    icon: <BanIcon />,
-                    title: "Third-Party Charges",
-                    text: "Any charges incurred from your bank or payment provider are outside our control and non-refundable.",
-                    refundable: false,
-                  },
-                ].map(({ icon, title, text, refundable }) => (
-                  <div
-                    key={title}
-                    className={`flex items-start gap-3 border rounded-lg px-4 py-4 ${refundable ? "border-green-200 bg-green-50" : "border-red-200 bg-red-50"}`}
-                  >
-                    <span className="mt-0.5 shrink-0">{icon}</span>
-                    <div>
-                      <p className="text-sm font-semibold text-[#1F2937] mb-0.5">
-                        {title}
-                      </p>
-                      <p className="text-xs text-[#6F7A72] leading-5">{text}</p>
-                    </div>
-                  </div>
-                ))}
+
+              <div className="grid gap-5">
+                <Subsection title="4.1 Application Not Yet Submitted">
+                  <p className="text-base leading-8 text-[#52615A]">
+                    If you contact us and request a cancellation before your
+                    application has been submitted to the Azerbaijani
+                    authorities, you may be eligible for a partial refund of
+                    our service fee. The government fee component, if already
+                    collected, will be deducted. An administrative handling
+                    charge may also apply.
+                  </p>
+                </Subsection>
+                <Subsection title="4.2 Duplicate Payment">
+                  <p className="text-base leading-8 text-[#52615A]">
+                    If a technical error results in a duplicate charge for the
+                    same application, we will refund the duplicate amount in
+                    full within 10 business days of confirming the error.
+                  </p>
+                </Subsection>
+                <Subsection title="4.3 Service Not Delivered">
+                  <p className="text-base leading-8 text-[#52615A]">
+                    If, due to an error entirely on our part, we fail to submit
+                    your application and are unable to rectify this within a
+                    reasonable timeframe, you will be entitled to a full refund
+                    of both the service fee and the government fee.
+                  </p>
+                </Subsection>
               </div>
             </section>
 
-            {/* 05 Cancellation Policy */}
-            <section>
+            <section className="space-y-6">
               <SectionHeading
                 number="05"
-                title="Cancellation Policy"
-                id="cancellation"
+                title="Visa Refusal"
+                id="visa-refusal"
               />
-              <p className="mt-4 text-sm text-[#6F7A72] leading-7">
-                You may cancel your application at any time. The refund
-                eligibility depends on the application stage at the time of
-                cancellation:
+              <p className="text-base leading-8 text-[#52615A]">
+                We have no control over the visa decisions made by the
+                competent authorities of the Republic of Azerbaijan. If your
+                visa application is refused, this is a decision of the relevant
+                government authority and not a failure of our services.
               </p>
-              <div className="flex flex-col gap-0 mt-5">
-                {[
-                  {
-                    step: "01",
-                    title: "Draft Stage",
-                    text: "Application created but not yet paid — no charge applies, cancel freely.",
-                  },
-                  {
-                    step: "02",
-                    title: "Paid, Awaiting Submission",
-                    text: "Full refund of service fee available. Government fee refund not applicable as payment is pending transfer.",
-                  },
-                  {
-                    step: "03",
-                    title: "Submitted to Government",
-                    text: "Service fee is non-refundable. Government fee has been transmitted and cannot be recovered.",
-                  },
-                  {
-                    step: "04",
-                    title: "Decision Issued",
-                    text: "No refunds available once a visa decision (approved or rejected) has been issued by the authorities.",
-                  },
-                ].map(({ step, title, text }, i, arr) => (
-                  <div key={step} className="flex gap-5">
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-center justify-center w-9 h-9 rounded-full bg-[#004E34] text-white text-xs font-bold shrink-0">
-                        {step}
-                      </div>
-                      {i < arr.length - 1 && (
-                        <div className="w-px flex-1 bg-[#004E34]/20 my-1" />
-                      )}
-                    </div>
-                    <div className="pb-6">
-                      <p className="text-sm font-semibold text-[#1F2937] mb-1">
-                        {title}
-                      </p>
-                      <p className="text-sm text-[#6F7A72] leading-6">{text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <p className="text-base leading-8 text-[#52615A]">
+                In the event of a visa refusal:
+              </p>
+              <BulletList
+                items={[
+                  "The government fee will not be refunded.",
+                  "Our service fee will not be refunded.",
+                  "We will inform you of the refusal as soon as we receive notification from the authorities.",
+                  "We may, at our discretion, offer assistance in submitting a new application at a reduced service fee.",
+                ]}
+              />
+              <p className="text-base leading-8 text-[#52615A]">
+                If you believe the refusal was caused by a processing error on
+                our part, such as incorrect submission of data despite correct
+                information provided by you, please contact us within 7 days of
+                receiving the refusal notice so we can investigate.
+              </p>
             </section>
 
-            {/* 06 Refund Process */}
-            <section>
+            <section className="space-y-6">
               <SectionHeading
                 number="06"
-                title="Refund Process"
-                id="refund-process"
+                title="How to Request a Refund"
+                id="request-refund"
               />
-              <p className="mt-4 text-sm text-[#6F7A72] leading-7">
-                To request a refund, follow these steps:
+              <p className="text-base leading-8 text-[#52615A]">
+                To request a refund, please contact our support team and
+                include the required information below:
               </p>
-              <div className="grid grid-cols-1 gap-6 mt-4 sm:grid-cols-3">
-                {[
-                  {
-                    icon: <MailIcon />,
-                    label: "Submit Request",
-                    text: "Email our support team at refunds@eviza.azerbaijan.com with your application reference number and reason for refund.",
-                  },
-                  {
-                    icon: <ClockIcon />,
-                    label: "Review Period",
-                    text: "Our team will review your request within 2 business days and confirm eligibility based on this policy.",
-                  },
-                  {
-                    icon: <RefreshIcon />,
-                    label: "Refund Issued",
-                    text: "Approved refunds are processed back to your original payment method within the applicable timeframe.",
-                  },
-                ].map(({ icon, label, text }) => (
-                  <div
-                    key={label}
-                    className="flex flex-col gap-3 p-5 border border-gray-200 rounded-lg"
-                  >
-                    <span>{icon}</span>
-                    <p className="text-sm font-semibold text-[#1F2937]">
-                      {label}
-                    </p>
-                    <p className="text-sm text-[#6F7A72] leading-6">{text}</p>
-                  </div>
-                ))}
-              </div>
+              <BulletList
+                items={[
+                  "Email: support@azevisa.az",
+                  "Subject line: 'Refund Request – [Your Full Name] – [Application Reference Number]'",
+                  "Include: your application reference number, the reason for your refund request, and any supporting documentation",
+                ]}
+              />
+              <p className="text-base leading-8 text-[#52615A]">
+                We will acknowledge your request within 2 business days and
+                provide a decision within 10 business days of receiving all
+                required information.
+              </p>
             </section>
 
-            {/* 07 Timeframes */}
-            <section>
-              <SectionHeading number="07" title="Timeframes" id="timeframes" />
-              <p className="mt-4 text-sm text-[#6F7A72] leading-7">
-                Once a refund is approved, the time it takes to appear in your
-                account depends on your payment method:
+            <section className="space-y-6">
+              <SectionHeading
+                number="07"
+                title="Refund Processing"
+                id="refund-processing"
+              />
+              <p className="text-base leading-8 text-[#52615A]">
+                Approved refunds will be processed to the original payment
+                method used at the time of application. Processing times may
+                vary depending on your payment provider:
               </p>
-              <div className="mt-4 overflow-x-auto">
-                <table className="w-full text-sm border-collapse">
-                  <thead>
-                    <tr className="text-left bg-gray-50">
-                      <th className="px-4 py-3 text-xs font-bold uppercase tracking-wide text-[#94A3B8] border border-gray-200">
-                        Payment Method
-                      </th>
-                      <th className="px-4 py-3 text-xs font-bold uppercase tracking-wide text-[#94A3B8] border border-gray-200">
-                        Estimated Timeframe
-                      </th>
-                      <th className="px-4 py-3 text-xs font-bold uppercase tracking-wide text-[#94A3B8] border border-gray-200">
-                        Notes
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {[
-                      {
-                        method: "Credit / Debit Card",
-                        timeframe: "5–7 business days",
-                        notes: "Depends on your card issuer's processing time",
-                      },
-                      {
-                        method: "PayPal",
-                        timeframe: "3–5 business days",
-                        notes: "Refunded directly to your PayPal balance",
-                      },
-                      {
-                        method: "Apple Pay / Google Pay",
-                        timeframe: "5–10 business days",
-                        notes: "Routed back through the original card",
-                      },
-                      {
-                        method: "Bank Transfer",
-                        timeframe: "7–14 business days",
-                        notes: "International transfers may take longer",
-                      },
-                    ].map(({ method, timeframe, notes }) => (
-                      <tr key={method} className="border-b border-gray-100">
-                        <td className="px-4 py-3 text-[#1F2937] font-medium border border-gray-200">
-                          {method}
-                        </td>
-                        <td className="px-4 py-3 text-[#004E34] font-bold border border-gray-200">
-                          {timeframe}
-                        </td>
-                        <td className="px-4 py-3 text-[#6F7A72] border border-gray-200">
-                          {notes}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <BulletList
+                items={[
+                  "Credit or debit card refunds: typically 5–10 business days",
+                  "Other payment methods: as per the provider's standard timelines",
+                ]}
+              />
+              <p className="text-base leading-8 text-[#52615A]">
+                We are not responsible for any delays caused by your bank or
+                payment provider.
+              </p>
             </section>
 
-            {/* 08 Exceptions */}
-            <section>
-              <SectionHeading number="08" title="Exceptions" id="exceptions" />
-              <p className="mt-4 text-sm text-[#6F7A72] leading-7">
-                The following situations are considered exceptional and will be
-                reviewed on a case-by-case basis by our support team:
+            <section className="space-y-6">
+              <SectionHeading
+                number="08"
+                title="Chargebacks"
+                id="chargebacks"
+              />
+              <p className="text-base leading-8 text-[#52615A]">
+                We encourage you to contact us directly before initiating a
+                chargeback with your bank or payment provider. If you initiate
+                a chargeback without first contacting us, we reserve the right
+                to dispute the chargeback and provide all relevant
+                documentation to your payment provider demonstrating that our
+                services were duly rendered.
               </p>
-              <div className="mt-4 bg-[#003322] rounded-xl p-6 grid grid-cols-1 sm:grid-cols-2 gap-5">
-                {[
-                  "Serious illness or medical emergency of the applicant, supported by documentation",
-                  "Death of an immediate family member requiring cancellation of travel",
-                  "Natural disaster or government-issued travel ban affecting the destination",
-                  "Duplicate charges caused by a platform or payment gateway error",
-                  "Applications submitted fraudulently using stolen identity or payment details",
-                  "Force majeure events beyond the control of either party",
-                ].map((item) => (
-                  <div key={item} className="flex items-start gap-3">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#94A3B8] shrink-0 mt-2" />
-                    <p className="text-sm text-[#94A3B8] leading-6">{item}</p>
-                  </div>
-                ))}
-              </div>
+              <p className="text-base leading-8 text-[#52615A]">
+                Fraudulent or unjustified chargebacks may result in termination
+                of your account and, if applicable, may be reported to
+                relevant authorities.
+              </p>
             </section>
 
-            {/* 09 Contact Us */}
-            <section>
-              <SectionHeading number="09" title="Contact Us" id="contact" />
-              <div className="grid grid-cols-1 gap-6 mt-5 sm:grid-cols-2">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#94A3B8] mb-4">
-                    Refund Support
-                  </p>
-                  <div className="flex flex-col gap-3">
+            <section className="space-y-6">
+              <SectionHeading
+                number="09"
+                title="Changes to This Policy"
+                id="policy-changes"
+              />
+              <p className="text-base leading-8 text-[#52615A]">
+                We reserve the right to amend this Refund Policy at any time.
+                Any changes will be effective immediately upon publication on
+                our website. The refund policy applicable to your application
+                is the version in force at the time of payment.
+              </p>
+            </section>
+
+            <section className="space-y-6">
+              <SectionHeading
+                number="10"
+                title="Contact Us"
+                id="contact"
+              />
+              <div className="rounded-3xl border border-[#E7ECE9] bg-[#F7FAF8] p-8">
+                <p className="text-base leading-8 text-[#52615A]">
+                  If you have any questions or concerns about this Refund
+                  Policy, or wish to discuss your specific situation, please do
+                  not hesitate to contact us:
+                </p>
+                <div className="mt-6 space-y-3 text-base leading-7 text-[#52615A]">
+                  <p>
+                    <span className="font-semibold text-[#004E34]">Email:</span>{" "}
                     <a
-                      href="mailto:refunds@eviza.azerbaijan.com"
-                      className="flex items-center gap-2 text-sm text-[#004E34] hover:underline"
+                      href="mailto:support@azevisa.az"
+                      className="font-semibold text-[#004E34] underline decoration-[#004E34]/30 underline-offset-4"
                     >
-                      <MailIcon />
-                      refunds@eviza.azerbaijan.com
+                      support@azevisa.az
                     </a>
-                    <a
-                      href="#"
-                      className="flex items-center gap-2 text-sm text-[#004E34] hover:underline"
-                    >
-                      <ExternalLinkIcon />
-                      Open Refund Request Form
-                    </a>
-                  </div>
-                </div>
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-widest text-[#94A3B8] mb-4">
-                    Mailing Address
                   </p>
-                  <address className="not-italic text-sm text-[#6F7A72] leading-6">
-                    azEvisa Support Team
-                    <br />
-                    12 Niyami Street
-                    <br />
-                    Baku, AZ1001
-                    <br />
-                    Republic of Azerbaijan
-                  </address>
+                  <p>
+                    <span className="font-semibold text-[#004E34]">Website:</span>{" "}
+                    <a
+                      href="https://www.azevisa.az"
+                      className="font-semibold text-[#004E34] underline decoration-[#004E34]/30 underline-offset-4"
+                    >
+                      www.azevisa.az
+                    </a>
+                  </p>
                 </div>
+                <p className="mt-6 text-base leading-8 text-[#52615A]">
+                  Our team is available to assist you and will do our best to
+                  resolve any issues fairly and promptly.
+                </p>
               </div>
             </section>
           </div>

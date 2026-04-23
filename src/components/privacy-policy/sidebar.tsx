@@ -6,15 +6,16 @@ import { twMerge } from "tailwind-merge";
 const SECTIONS = [
   { id: "introduction", label: "Introduction" },
   { id: "information-we-collect", label: "Information We Collect" },
-  { id: "how-we-use", label: "How We Use Information" },
-  { id: "legal-basis", label: "Legal Basis (GDPR)" },
-  { id: "data-storage", label: "Storage and Security" },
-  { id: "sharing", label: "Sharing Information" },
-  { id: "cookies", label: "Cookies and Tracking" },
+  { id: "how-we-use", label: "How We Use Your Information" },
+  { id: "legal-basis", label: "Legal Basis for Processing" },
+  { id: "sharing", label: "Sharing of Your Information" },
+  { id: "data-retention", label: "Data Retention" },
+  { id: "cookies", label: "Cookies" },
+  { id: "data-security", label: "Data Security" },
+  { id: "data-transfers", label: "International Data Transfers" },
   { id: "your-rights", label: "Your Rights" },
-  { id: "data-transfers", label: "Data Transfers" },
   { id: "childrens-privacy", label: "Children's Privacy" },
-  { id: "policy-changes", label: "Policy Changes" },
+  { id: "policy-changes", label: "Changes to This Policy" },
   { id: "contact", label: "Contact Us" },
 ];
 

@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { cookies } from "next/headers";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { Toaster } from "sonner";
 import "./globals.css";
+import { CookieConsent } from "@/components/cookie-consent";
 import { Header } from "@/layouts/header";
 import { Footer } from "@/layouts/footer";
 
@@ -103,6 +103,8 @@ const websiteSchema = {
   },
 };
 
+const GA_ID = "G-2KJ01HMNJN";
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -128,10 +130,10 @@ export default async function RootLayout({
           <Header locale={locale} />
           <main className="flex-1">{children}</main>
           <Footer />
+          <CookieConsent gaId={GA_ID} />
           <Toaster position="top-right" />
         </NextIntlClientProvider>
       </body>
-      <GoogleAnalytics gaId="G-2KJ01HMNJN" />
     </html>
   );
 }

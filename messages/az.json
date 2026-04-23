@@ -316,6 +316,14 @@
     "applyNow": "İndi Müraciət Edin",
     "signIn": "Daxil ol"
   },
+  "CookieConsent": {
+    "eyebrow": "Cookie Tənzimləmələri",
+    "title": "Təcrübənizi yaxşılaşdırmaq üçün cookie-lərdən istifadə edirik",
+    "description": "Saytın təhlükəsiz və düzgün işləməsi üçün zəruri cookie-lərdən, trafiki anlamaq və performansı yaxşılaşdırmaq üçün isə seçimə bağlı üçüncü tərəf analitika cookie-lərindən istifadə edirik.",
+    "learnMore": "Ətraflı məlumatı Cookie Policy səhifəsində oxuyun",
+    "necessaryOnly": "Yalnız zəruri",
+    "acceptAll": "Hamısını qəbul et"
+  },
   "ContactUs": {
     "breadcrumb": "Bizimlə Əlaqə",
     "hero": {
@@ -514,6 +522,8 @@
     "sidebar": {
       "title": "Müraciət Gedişatı",
       "stepOf": "{total} addımdan {current}-ci addım",
+      "applicantsTitle": "Müraciət edənlər",
+      "currentApplicantBadge": "Aktiv",
       "steps": {
         "countryRegion": "Səyahət Məlumatları",
         "arrivalDate": "Gəliş Tarixi",
@@ -526,7 +536,7 @@
     "step1": {
       "number": "01",
       "title": "Səyahət Məlumatları",
-      "subtitle": "Vətəndaşlığınızı, sənəd növünü, gəliş tarixini, ziyarətin məqsədini və e-poçt ünvanınızı daxil edin.",
+      "subtitle": "Vətəndaşlığınızı, sənəd növünü, gəliş tarixini, səfər məqsədini, viza seçimini, qalma müddətini və e-poçt ünvanınızı daxil edin.",
       "nationality": "Vətəndaşlıq",
       "nationalityPlaceholder": "Siyahıdan seçin",
       "documentType": "Sənədin Növü",
@@ -638,13 +648,19 @@
       "addressInAzerbaijan": "Azərbaycandakı Ünvan",
       "emptyValue": "—",
       "declarationLabel": "Bu müraciətdə təqdim etdiyim bütün məlumatların doğru, tam və dəqiq olduğunu təsdiq edirəm. Yanlış məlumat təqdim etməyin viza imtinasına və ya deportasiyaya səbəb ola biləcəyini anlayıram.",
+      "agreementLabel": "Mən istifadə şərtləri və məxfilik siyasəti ilə razılaşıram",
+      "termsLink": "istifadə şərtləri",
+      "privacyLink": "məxfilik siyasəti",
+      "manageApplicantsSubtitle": "Hazırda bu müraciətdə nəfər var. Birlikdə səyahət edirsinizsə indi başqa şəxs də əlavə edə bilərsiniz.",
+      "addPerson": "Şəxs əlavə et",
+      "addPersonHint": "Yeni şəxs üçün səfər və viza məlumatları saxlanacaq, siz yalnız onun şəxsi məlumatlarını tamamlayacaqsınız.",
       "back": "Pasport bölməsinə qayıt",
-      "next": "Viza növünə davam et"
+      "next": "Ödənişə davam et"
     },
     "step6": {
       "number": "06",
-      "title": "Viza Növü",
-      "subtitle": "Müraciətiniz üçün emal növünü və qalma müddətini seçin.",
+      "title": "Ödəniş",
+      "subtitle": "Sifarişinizi yoxlayın, istəyə bağlı qeydlər əlavə edin və təhlükəsiz ödənişə davam edin.",
       "visaType": "Viza Emal Növü",
       "visaTypePlaceholder": "Siyahıdan seçin",
       "visaTypeStandard": "Standart Emal",
@@ -658,9 +674,21 @@
       "visaFeeLabel": "Viza Rüsumu",
       "serviceFeeLabel": "Xidmət haqqı",
       "totalLabel": "Cəmi",
+      "processingTimeLabel": "Emal müddəti",
+      "validityLabel": "Etibarlılıq",
+      "maxStayLabel": "Maks. qalma",
+      "paymentMethodTitle": "Ödəniş üsulu",
+      "paymentMethodSubtitle": "Təhlükəsiz PayPal checkout-a necə davam etmək istədiyinizi seçin.",
+      "secureCheckoutBadge": "Təhlükəsiz checkout",
+      "redirectNotice": "Kart məlumatları davam etdikdən sonra PayPal-ın host etdiyi təhlükəsiz pəncərədə daxil edilir.",
+      "payWithCard": "Kart / Kredit Kartı",
+      "cardFlowHint": "Təhlükəsiz ödəniş addımı açılana qədər bu müraciət səhifəsində qalacaqsınız.",
+      "alternativeDivider": "və ya",
+      "payWithPayPal": "PayPal",
+      "payWithPayPalHint": "PayPal hesabınızla təhlükəsiz checkout pəncərəsində ödəniş edin.",
       "supportText": "Köməyə ehtiyacınız var? Müraciəti göndərməzdən əvvəl seçdiyiniz emal növünü diqqətlə yoxlayın.",
       "back": "Yoxlamaya qayıt",
-      "submit": "Müraciəti Göndər",
+      "submit": "Davam etmək üçün ödəniş üsulu seçin",
       "submissionSuccess": "Müraciət uğurla göndərildi!"
     },
     "validation": {

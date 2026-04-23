@@ -4,22 +4,25 @@ import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 
 const SECTIONS = [
-  { id: "acceptance", label: "Acceptance of Terms" },
-  { id: "eligibility", label: "Eligibility Requirements" },
-  { id: "services", label: "Use of Services" },
+  { id: "introduction-acceptance", label: "Introduction and Acceptance" },
+  { id: "description-of-services", label: "Description of Services" },
+  { id: "eligibility", label: "Eligibility" },
+  { id: "user-responsibilities", label: "User Responsibilities" },
   { id: "application-process", label: "Application Process" },
-  { id: "fees-payments", label: "Fees and Payments" },
-  { id: "refund-policy", label: "Refund Policy" },
-  { id: "user-obligations", label: "User Obligations" },
-  { id: "prohibited", label: "Prohibited Activities" },
+  { id: "fees-payment", label: "Fees and Payment" },
   { id: "intellectual-property", label: "Intellectual Property" },
+  { id: "prohibited-uses", label: "Prohibited Uses" },
+  { id: "disclaimer", label: "Disclaimer of Warranties" },
   { id: "liability", label: "Limitation of Liability" },
+  { id: "third-party-links", label: "Third-Party Links and Services" },
+  { id: "service-modifications", label: "Modifications to Services" },
   { id: "governing-law", label: "Governing Law" },
-  { id: "contact", label: "Contact Us" },
+  { id: "terms-changes", label: "Changes to These Terms" },
+  { id: "contact", label: "Contact Information" },
 ];
 
 export function TermsOfUseSidebar() {
-  const [active, setActive] = useState<string>("acceptance");
+  const [active, setActive] = useState<string>("introduction-acceptance");
 
   useEffect(() => {
     const observer = new IntersectionObserver(

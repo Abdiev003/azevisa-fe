@@ -316,6 +316,14 @@
     "applyNow": "Apply Now",
     "signIn": "Sign In"
   },
+  "CookieConsent": {
+    "eyebrow": "Cookie Preferences",
+    "title": "We use cookies to improve your experience",
+    "description": "We use necessary cookies to keep the site secure and working properly, and optional third-party analytics cookies to understand traffic and improve performance.",
+    "learnMore": "Learn more in our Cookie Policy",
+    "necessaryOnly": "Necessary only",
+    "acceptAll": "Accept all"
+  },
   "ContactUs": {
     "breadcrumb": "Contact Us",
     "hero": {
@@ -509,6 +517,8 @@
     "sidebar": {
       "title": "Application Progress",
       "stepOf": "Step {current} of {total}",
+      "applicantsTitle": "Applicants",
+      "currentApplicantBadge": "Current",
       "steps": {
         "countryRegion": "Trip Details",
         "arrivalDate": "Arrival Date",
@@ -521,7 +531,7 @@
     "step1": {
       "number": "01",
       "title": "Trip Details",
-      "subtitle": "Select your nationality, travel document, arrival date, purpose of visit, and provide your email address.",
+      "subtitle": "Select your nationality, travel document, arrival date, purpose of visit, visa option, stay duration, and provide your email address.",
       "nationality": "Nationality / Citizenship",
       "nationalityPlaceholder": "Choose from list",
       "documentType": "Document Type",
@@ -633,13 +643,19 @@
       "addressInAzerbaijan": "Address in Azerbaijan",
       "emptyValue": "—",
       "declarationLabel": "I hereby certify that all information provided in this application is true, complete, and accurate. I understand that providing false information may result in denial of visa or deportation.",
+      "agreementLabel": "I agree to the terms and conditions and privacy policy",
+      "termsLink": "terms and conditions",
+      "privacyLink": "privacy policy",
+      "manageApplicantsSubtitle": "You currently have applicant(s) in progress. Add another person now if you are traveling together.",
+      "addPerson": "Add Person",
+      "addPersonHint": "We will reuse the travel and visa details for the new applicant so you only need to complete their personal information.",
       "back": "Back to Passport Details",
-      "next": "Continue to Visa Type"
+      "next": "Continue to Payment"
     },
     "step6": {
       "number": "06",
-      "title": "Visa Type",
-      "subtitle": "Choose the visa processing option and stay duration for your application.",
+      "title": "Payment",
+      "subtitle": "Review your order, add optional notes and continue to secure payment.",
       "visaType": "Visa Processing Type",
       "visaTypePlaceholder": "Choose from list",
       "visaTypeStandard": "Standard Processing",
@@ -653,9 +669,21 @@
       "visaFeeLabel": "Visa Fee",
       "serviceFeeLabel": "Service fee",
       "totalLabel": "Total",
+      "processingTimeLabel": "Processing time",
+      "validityLabel": "Validity",
+      "maxStayLabel": "Max stay",
+      "paymentMethodTitle": "Payment Method",
+      "paymentMethodSubtitle": "Choose how you want to continue to the secure PayPal checkout.",
+      "secureCheckoutBadge": "Secure checkout",
+      "redirectNotice": "Card details are collected in a PayPal-hosted secure window after you continue.",
+      "payWithCard": "Card / Credit Card",
+      "cardFlowHint": "You will stay on this application until the secure payment step opens.",
+      "alternativeDivider": "or",
+      "payWithPayPal": "PayPal",
+      "payWithPayPalHint": "Pay with your PayPal account in the secure checkout window.",
       "supportText": "Need assistance? Review the selected processing option carefully before submitting your application.",
       "back": "Back to Review",
-      "submit": "Submit Application",
+      "submit": "Select a payment option to continue",
       "submissionSuccess": "Application submitted successfully!"
     },
     "validation": {

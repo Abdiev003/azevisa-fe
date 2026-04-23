@@ -6,12 +6,11 @@ import { twMerge } from "tailwind-merge";
 const SECTIONS = [
   { id: "what-are-cookies", label: "What Are Cookies" },
   { id: "how-we-use", label: "How We Use Cookies" },
-  { id: "types-of-cookies", label: "Types of Cookies" },
-  { id: "third-party", label: "Third-Party Cookies" },
-  { id: "cookie-duration", label: "Cookie Duration" },
-  { id: "managing-cookies", label: "Managing Cookies" },
-  { id: "browser-settings", label: "Browser Settings" },
-  { id: "updates", label: "Updates to This Policy" },
+  { id: "types-of-cookies", label: "Types of Cookies We Use" },
+  { id: "third-party-cookies", label: "Third-Party Cookies" },
+  { id: "your-cookie-choices", label: "Your Cookie Choices" },
+  { id: "do-not-track", label: "Do Not Track" },
+  { id: "updates", label: "Updates to This Cookie Policy" },
   { id: "contact", label: "Contact Us" },
 ];
 

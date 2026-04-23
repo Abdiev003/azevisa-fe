@@ -5,13 +5,14 @@ import { twMerge } from "tailwind-merge";
 
 const SECTIONS = [
   { id: "overview", label: "Overview" },
-  { id: "service-fee-refunds", label: "Service Fee Refunds" },
-  { id: "government-fee", label: "Government Fee" },
-  { id: "rejected-applications", label: "Rejected Applications" },
-  { id: "cancellation", label: "Cancellation Policy" },
-  { id: "refund-process", label: "Refund Process" },
-  { id: "timeframes", label: "Timeframes" },
-  { id: "exceptions", label: "Exceptions" },
+  { id: "composition-of-fees", label: "Composition of Our Fees" },
+  { id: "non-refundable-fees", label: "Non-Refundable Fees" },
+  { id: "refund-circumstances", label: "When a Refund May Be Granted" },
+  { id: "visa-refusal", label: "Visa Refusal" },
+  { id: "request-refund", label: "How to Request a Refund" },
+  { id: "refund-processing", label: "Refund Processing" },
+  { id: "chargebacks", label: "Chargebacks" },
+  { id: "policy-changes", label: "Changes to This Policy" },
   { id: "contact", label: "Contact Us" },
 ];
 

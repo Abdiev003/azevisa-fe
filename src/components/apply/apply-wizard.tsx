@@ -1,7 +1,12 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { useForm, FormProvider, useFormContext, Controller } from "react-hook-form";
+import { useState, useCallback, useEffect, type ReactNode } from "react";
+import {
+  useForm,
+  FormProvider,
+  useFormContext,
+  Controller,
+} from "react-hook-form";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import { toast } from "sonner";
@@ -17,6 +22,7 @@ import {
   uploadDocument,
 } from "@/actions/applications";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -64,6 +70,8 @@ export interface ApplyLabels {
   sidebar: {
     title: string;
     stepOf: string;
+    applicantsTitle: string;
+    currentApplicantBadge: string;
     steps: {
       countryRegion: string;
       arrivalDate: string;
@@ -164,6 +172,7 @@ export interface ApplyLabels {
     number: string;
     title: string;
     subtitle: string;
+    manageApplicantsSubtitle: string;
     countryRegionTitle: string;
     arrivalDateTitle: string;
     personalTitle: string;
@@ -188,6 +197,11 @@ export interface ApplyLabels {
     addressInAzerbaijan: string;
     emptyValue: string;
     declarationLabel: string;
+    agreementLabel: string;
+    termsLink: string;
+    privacyLink: string;
+    addPerson: string;
+    addPersonHint: string;
     back: string;
     next: string;
   };
@@ -205,6 +219,18 @@ export interface ApplyLabels {
     visaFeeLabel: string;
     serviceFeeLabel: string;
     totalLabel: string;
+    processingTimeLabel: string;
+    validityLabel: string;
+    maxStayLabel: string;
+    paymentMethodTitle: string;
+    paymentMethodSubtitle: string;
+    secureCheckoutBadge: string;
+    redirectNotice: string;
+    payWithCard: string;
+    cardFlowHint: string;
+    alternativeDivider: string;
+    payWithPayPal: string;
+    payWithPayPalHint: string;
     supportText: string;
     back: string;
     submit: string;
@@ -255,16 +281,131 @@ type VisaTypeOption = {
   prices: VisaTypePrice[];
 };
 
+type PaymentMethod = "card" | "paypal";
+
+type ApplicantDraft = {
+  id: string;
+  referenceNumber: string | null;
+  data: ApplicationFormData;
+};
+
+type ApplicantSummary = {
+  id: string;
+  title: string;
+  subtitle: string;
+  isActive: boolean;
+};
+
+const DEFAULT_FORM_VALUES: ApplicationFormData = {
+  nationality: "",
+  documentType: "",
+  arrivalDate: "",
+  purposeOfVisit: "",
+  firstName: "",
+  surname: "",
+  otherNames: "",
+  dateOfBirth: "",
+  countryOfBirth: "",
+  placeOfBirth: "",
+  sex: "",
+  occupation: "",
+  mobileNumber: "",
+  address: "",
+  email: "",
+  passportNumber: "",
+  passportIssueDate: "",
+  passportExpiryDate: "",
+  passportIssuingCountry: "",
+  addressInAzerbaijan: "",
+  passportCopy: null,
+  declaration: false,
+  visaType: "",
+  stayDurationDays: "30",
+  applicantNotes: "",
+};
+
+function createApplicantId() {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return crypto.randomUUID();
+  }
+
+  return `applicant-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
 // ---------------------------------------------------------------------------
 // Sidebar
 // ---------------------------------------------------------------------------
 
+function ApplicantList({
+  applicants,
+  labels,
+  onSelectApplicant,
+  bordered = true,
+}: {
+  applicants: ApplicantSummary[];
+  labels: ApplyLabels;
+  onSelectApplicant: (applicantId: string) => void;
+  bordered?: boolean;
+}) {
+  if (applicants.length === 0) {
+    return null;
+  }
+
+  return (
+    <div
+      className={twMerge(
+        "px-3 py-4",
+        bordered && "mt-6 border-t border-white/10",
+      )}
+    >
+      <p className="mb-3 px-3 text-xs font-semibold tracking-widest uppercase text-white/60">
+        {labels.sidebar.applicantsTitle}
+      </p>
+      <div className="flex flex-col gap-2">
+        {applicants.map((applicant) => (
+          <button
+            key={applicant.id}
+            type="button"
+            onClick={() => onSelectApplicant(applicant.id)}
+            className={twMerge(
+              "rounded-xl border px-3 py-3 text-left transition-colors",
+              applicant.isActive
+                ? "border-[#C8A84B] bg-white/12"
+                : "border-white/10 bg-white/5 hover:bg-white/10",
+            )}
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-white">
+                  {applicant.title}
+                </p>
+                <p className="mt-1 truncate text-xs text-white/65">
+                  {applicant.subtitle}
+                </p>
+              </div>
+              {applicant.isActive && (
+                <span className="shrink-0 rounded-full bg-[#C8A84B] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#003322]">
+                  {labels.sidebar.currentApplicantBadge}
+                </span>
+              )}
+            </div>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Sidebar({
   current,
   labels,
+  applicants,
+  onSelectApplicant,
 }: {
   current: number;
   labels: ApplyLabels;
+  applicants: ApplicantSummary[];
+  onSelectApplicant: (applicantId: string) => void;
 }) {
   const stepLabels = [
     labels.sidebar.steps.countryRegion,
@@ -332,6 +473,11 @@ function Sidebar({
           );
         })}
       </nav>
+      <ApplicantList
+        applicants={applicants}
+        labels={labels}
+        onSelectApplicant={onSelectApplicant}
+      />
     </aside>
   );
 }
@@ -444,17 +590,19 @@ function StepHeader({
 }
 
 // ---------------------------------------------------------------------------
-// Step 1 — Country / Region + Arrival Date + Email
+// Step 1 — Travel Details + Visa Selection
 // ---------------------------------------------------------------------------
 
 function Step1({
   labels,
   onNext,
   countryOptions,
+  visaTypes,
 }: {
   labels: ApplyLabels;
   onNext: () => Promise<void>;
   countryOptions: CountryOption[];
+  visaTypes: VisaTypeOption[];
 }) {
   const {
     register,
@@ -465,6 +613,8 @@ function Step1({
   } = useFormContext<ApplicationFormData>();
 
   const nationality = watch("nationality");
+  const purposeOfVisit = watch("purposeOfVisit");
+  const visaType = watch("visaType");
 
   useEffect(() => {
     setValue("purposeOfVisit", "");
@@ -477,6 +627,8 @@ function Step1({
       "arrivalDate",
       "purposeOfVisit",
       "email",
+      "visaType",
+      "stayDurationDays",
     ]);
     if (ok) await onNext();
   };
@@ -484,10 +636,17 @@ function Step1({
   const l1 = labels.step1;
   const l2 = labels.step2;
   const l3 = labels.step3;
+  const l6 = labels.step6;
   const v = labels.validation;
   const selectedCountry = countryOptions.find(
     (country) => String(country.id) === nationality,
   );
+  const selectedVisaType =
+    visaTypes.find((item) => String(item.id) === visaType) ?? null;
+  const selectedPrice =
+    selectedVisaType?.prices.find(
+      (price) => String(price.purposeId) === purposeOfVisit,
+    ) ?? null;
 
   return (
     <div>
@@ -546,6 +705,37 @@ function Step1({
             ))}
           </Select>
         </Field>
+        <Field label={l6.visaType} error={errors.visaType?.message}>
+          <Select
+            {...register("visaType", { required: v.required })}
+            hasError={!!errors.visaType}
+          >
+            <option value="">{l6.visaTypePlaceholder}</option>
+            {visaTypes.map((type) => (
+              <option key={type.id} value={String(type.id)}>
+                {type.name}
+              </option>
+            ))}
+          </Select>
+        </Field>
+        <Field
+          label={l6.stayDurationDays}
+          error={errors.stayDurationDays?.message}
+        >
+          <Input
+            {...register("stayDurationDays", {
+              required: v.required,
+              validate: (value) =>
+                Number(value) <= (selectedVisaType?.maxStayDays ?? 30) ||
+                v.stayDurationMax,
+            })}
+            type="number"
+            min={1}
+            max={30}
+            placeholder={l6.stayDurationDaysPlaceholder}
+            hasError={!!errors.stayDurationDays}
+          />
+        </Field>
         <div className="sm:col-span-2">
           <Field label={l3.email} error={errors.email?.message}>
             <Input
@@ -572,6 +762,38 @@ function Step1({
             {l3.emailNote}
           </p>
         </div>
+        {selectedVisaType && (
+          <div className="sm:col-span-2 rounded-xl border border-[#004E34]/10 bg-[#004E34]/5 px-4 py-3">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+              <div>
+                <span className="text-[#6F7A72]">{l6.processingTimeLabel}</span>
+                <p className="font-semibold text-[#1F2937]">
+                  {selectedVisaType.processingTimeText}
+                </p>
+              </div>
+              <div>
+                <span className="text-[#6F7A72]">{l6.validityLabel}</span>
+                <p className="font-semibold text-[#1F2937]">
+                  {selectedVisaType.validityDays} days
+                </p>
+              </div>
+              <div>
+                <span className="text-[#6F7A72]">{l6.maxStayLabel}</span>
+                <p className="font-semibold text-[#1F2937]">
+                  {selectedVisaType.maxStayDays} days
+                </p>
+              </div>
+              {selectedPrice && (
+                <div>
+                  <span className="text-[#6F7A72]">{l6.totalLabel}</span>
+                  <p className="font-semibold text-[#004E34]">
+                    ${selectedPrice.totalPrice}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
       <NavButtons nextLabel={l1.next} backLabel="" onNext={handleNext} />
     </div>
@@ -958,20 +1180,97 @@ function ReviewSection({
   );
 }
 
+function ApplicantManagementPanel({
+  labels,
+  currentApplicant,
+  applicantCount,
+  onAddPerson,
+}: {
+  labels: ApplyLabels;
+  currentApplicant: ApplicantSummary | null;
+  applicantCount: number;
+  onAddPerson: () => void;
+}) {
+  const l = labels.step5;
+
+  return (
+    <div className="mb-6 grid gap-4 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+      <div className="rounded-2xl border border-[#004E34]/10 bg-[#004E34]/5 px-5 py-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold tracking-widest uppercase text-[#004E34]/70">
+              {labels.sidebar.applicantsTitle}
+            </p>
+            <p className="mt-1 text-lg font-semibold text-[#1F2937]">
+              {currentApplicant?.title || l.emptyValue}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#004E34] shadow-sm">
+              {applicantCount}
+            </span>
+            {currentApplicant?.isActive && (
+              <span className="rounded-full bg-[#C8A84B] px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-[#003322]">
+                {labels.sidebar.currentApplicantBadge}
+              </span>
+            )}
+          </div>
+        </div>
+        <p className="mt-3 text-sm leading-relaxed text-[#52625A]">
+          {l.manageApplicantsSubtitle.replace(
+            "applicant(s)",
+            `${applicantCount} applicant${applicantCount === 1 ? '' : 's'}`,
+          )}
+        </p>
+        <p className="mt-2 text-sm text-[#6F7A72]">
+          {currentApplicant?.subtitle || l.emptyValue}
+        </p>
+      </div>
+
+      <div className="rounded-2xl border border-dashed border-[#004E34]/25 bg-white px-5 py-4">
+        <p className="text-xs font-semibold tracking-widest uppercase text-[#004E34]/70">
+          {l.addPerson}
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-[#6F7A72]">
+          {l.addPersonHint}
+        </p>
+        <button
+          type="button"
+          onClick={onAddPerson}
+          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#004E34] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#003322]"
+        >
+          <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+            <path d="M10 3.25a.75.75 0 0 1 .75.75v5.25H16a.75.75 0 0 1 0 1.5h-5.25V16a.75.75 0 0 1-1.5 0v-5.25H4a.75.75 0 0 1 0-1.5h5.25V4a.75.75 0 0 1 .75-.75z" />
+          </svg>
+          {l.addPerson}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function Step5({
   labels,
   onBack,
   onNext,
+  onAddPerson,
   goToStep,
+  activeApplicantSummary,
+  applicantCount,
   countryOptions,
   allCountriesOptions,
+  visaTypes,
 }: {
   labels: ApplyLabels;
   onBack: () => void;
   onNext: () => Promise<void>;
+  onAddPerson: () => void;
   goToStep: (step: number) => void;
+  activeApplicantSummary: ApplicantSummary | null;
+  applicantCount: number;
   countryOptions: CountryOption[];
   allCountriesOptions: SimpleCountryOption[];
+  visaTypes: VisaTypeOption[];
 }) {
   const {
     register,
@@ -1005,6 +1304,9 @@ function Step5({
       ?.availablePurposes.find(
         (purpose) => String(purpose.id) === values.purposeOfVisit,
       )?.name ?? l.emptyValue;
+  const selectedVisaType =
+    visaTypes.find((type) => String(type.id) === values.visaType)?.name ??
+    l.emptyValue;
   const documentTypeLabels: Record<string, string> = {
     ordinary_passport: labels.step1.docOrdinary,
     service_passport: labels.step1.docOfficial,
@@ -1029,6 +1331,12 @@ function Step5({
   return (
     <div>
       <StepHeader num="03" title={l.title} subtitle={l.subtitle} />
+      <ApplicantManagementPanel
+        labels={labels}
+        currentApplicant={activeApplicantSummary}
+        applicantCount={applicantCount}
+        onAddPerson={onAddPerson}
+      />
       <div className="flex flex-col gap-4">
         <ReviewSection
           title={l.countryRegionTitle}
@@ -1049,6 +1357,11 @@ function Step5({
           rows={[
             { label: l.arrivalDate, value: values.arrivalDate },
             { label: l.purposeOfVisit, value: selectedPurpose },
+            { label: labels.step6.visaType, value: selectedVisaType },
+            {
+              label: labels.step6.stayDurationDays,
+              value: values.stayDurationDays || l.emptyValue,
+            },
           ]}
         />
         <ReviewSection
@@ -1112,7 +1425,39 @@ function Step5({
             className="mt-0.5 w-4 h-4 accent-[#004E34] cursor-pointer"
           />
           <span className="text-xs text-[#6F7A72] leading-relaxed">
-            {l.declarationLabel}
+            {(() => {
+              const agreementText = l.agreementLabel;
+              const termsText = l.termsLink;
+              const privacyText = l.privacyLink;
+              const parts = agreementText.split(termsText);
+              const before = parts[0];
+              const middle = parts[1].split(privacyText);
+              const between = middle[0];
+              const after = middle[1];
+              return (
+                <>
+                  {before}
+                  <a
+                    href="/terms-of-service"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#004E34] underline hover:text-[#003322]"
+                  >
+                    {termsText}
+                  </a>
+                  {between}
+                  <a
+                    href="/privacy-policy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#004E34] underline hover:text-[#003322]"
+                  >
+                    {privacyText}
+                  </a>
+                  {after}. {l.declarationLabel}
+                </>
+              );
+            })()}
           </span>
         </label>
         {errors.declaration && (
@@ -1133,28 +1478,27 @@ function Step5({
 }
 
 // ---------------------------------------------------------------------------
-// Step 6 — Visa Type
+// Step 6 — Payment
 // ---------------------------------------------------------------------------
 
 function Step6({
   labels,
   onBack,
-  loading,
+  onSelectPaymentMethod,
+  activePaymentMethod,
+  loadingMethod,
   visaTypes,
 }: {
   labels: ApplyLabels;
   onBack: () => void;
-  loading: boolean;
+  onSelectPaymentMethod: (method: PaymentMethod) => void;
+  activePaymentMethod: PaymentMethod | null;
+  loadingMethod: PaymentMethod | null;
   visaTypes: VisaTypeOption[];
 }) {
-  const {
-    register,
-    formState: { errors },
-    watch,
-  } = useFormContext<ApplicationFormData>();
+  const { register, watch } = useFormContext<ApplicationFormData>();
 
   const l = labels.step6;
-  const v = labels.validation;
   const visaType = watch("visaType");
   const purposeOfVisit = watch("purposeOfVisit");
   const selectedVisaType =
@@ -1163,12 +1507,54 @@ function Step6({
     selectedVisaType?.prices.find(
       (p) => String(p.purposeId) === purposeOfVisit,
     ) ?? null;
+  const paymentOptions: {
+    id: PaymentMethod;
+    title: string;
+    description: string;
+    icon: ReactNode;
+  }[] = [
+    {
+      id: "card",
+      title: l.payWithCard,
+      description: l.cardFlowHint,
+      icon: (
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          className="h-5 w-5"
+          stroke="currentColor"
+          strokeWidth={1.8}
+        >
+          <rect x="2.75" y="5.5" width="18.5" height="13" rx="2.5" />
+          <path d="M3.5 10.25h17M7 15.25h4" />
+        </svg>
+      ),
+    },
+    {
+      id: "paypal",
+      title: l.payWithPayPal,
+      description: l.payWithPayPalHint,
+      icon: (
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          className="h-5 w-5"
+          stroke="currentColor"
+          strokeWidth={1.8}
+        >
+          <path d="M8 19.25h4.25a4.75 4.75 0 0 0 4.7-4.1l.42-3.15a3.5 3.5 0 0 0-3.47-3.96H9.9a.75.75 0 0 0-.74.62L7.13 19.25" />
+          <path d="M6.25 21h3.5a3.4 3.4 0 0 0 3.37-2.93l.38-2.82" />
+          <path d="M9.15 8.66 10 3.75h5.26a3.5 3.5 0 0 1 3.47 3.96l-.18 1.29" />
+        </svg>
+      ),
+    },
+  ];
 
   return (
     <div>
       <StepHeader num="04" title={l.title} subtitle={l.subtitle} />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
-        {/* Visa type form */}
+        {/* Payment details */}
         <div className="lg:col-span-3">
           <div className="overflow-hidden bg-white border border-gray-200 rounded-xl">
             <div className="px-5 py-4 bg-[#004E34] text-white flex items-center gap-2">
@@ -1179,40 +1565,92 @@ function Step6({
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="text-sm font-semibold">{l.visaType}</span>
+              <span className="text-sm font-semibold">
+                {l.paymentMethodTitle}
+              </span>
             </div>
 
             <div className="px-5 py-5 flex flex-col gap-4">
-              <Field label={l.visaType} error={errors.visaType?.message}>
-                <Select
-                  {...register("visaType", { required: v.required })}
-                  hasError={!!errors.visaType}
-                >
-                  <option value="">{l.visaTypePlaceholder}</option>
-                  {visaTypes.map((vt) => (
-                    <option key={vt.id} value={String(vt.id)}>
-                      {vt.name}
-                    </option>
-                  ))}
-                </Select>
-              </Field>
-              <Field
-                label={l.stayDurationDays}
-                error={errors.stayDurationDays?.message}
-              >
-                <Input
-                  {...register("stayDurationDays", {
-                    required: v.required,
-                    validate: (value) =>
-                      Number(value) <= 30 || v.stayDurationMax,
-                  })}
-                  type="number"
-                  min={1}
-                  max={30}
-                  placeholder={l.stayDurationDaysPlaceholder}
-                  hasError={!!errors.stayDurationDays}
-                />
-              </Field>
+              <div className="rounded-xl border border-[#004E34]/10 bg-[#004E34]/5 px-4 py-4">
+                <h3 className="text-sm font-semibold text-[#1F2937]">
+                  {l.paymentMethodSubtitle}
+                </h3>
+                <p className="mt-1 text-xs leading-relaxed text-[#6F7A72]">
+                  {l.redirectNotice}
+                </p>
+                <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#004E34]">
+                  <span className="inline-block h-2 w-2 rounded-full bg-[#C8A84B]" />
+                  {l.secureCheckoutBadge}
+                </div>
+              </div>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {paymentOptions.map((option) => {
+                  const isActive = activePaymentMethod === option.id;
+                  const isLoading = loadingMethod === option.id;
+
+                  return (
+                    <button
+                      key={option.id}
+                      type="button"
+                      onClick={() => onSelectPaymentMethod(option.id)}
+                      disabled={Boolean(loadingMethod)}
+                      className={twMerge(
+                        "rounded-2xl border px-4 py-4 text-left transition-all",
+                        "focus:outline-none focus:ring-2 focus:ring-[#004E34]/20",
+                        isActive
+                          ? "border-[#004E34] bg-[#004E34] text-white shadow-sm"
+                          : "border-gray-200 bg-white hover:border-[#004E34]/40 hover:bg-[#004E34]/[0.03]",
+                        loadingMethod && !isLoading && "opacity-60",
+                      )}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div
+                          className={twMerge(
+                            "inline-flex h-10 w-10 items-center justify-center rounded-xl",
+                            isActive
+                              ? "bg-white/12 text-white"
+                              : "bg-[#004E34]/8 text-[#004E34]",
+                          )}
+                        >
+                          {option.icon}
+                        </div>
+                        {isLoading ? (
+                          <svg
+                            className="mt-1 h-4 w-4 animate-spin"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            />
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 0 1 8-8v8H4z"
+                            />
+                          </svg>
+                        ) : null}
+                      </div>
+                      <p className="mt-4 text-base font-semibold">
+                        {option.title}
+                      </p>
+                      <p
+                        className={twMerge(
+                          "mt-1 text-sm leading-relaxed",
+                          isActive ? "text-white/80" : "text-[#6F7A72]",
+                        )}
+                      >
+                        {option.description}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
               <Field label={l.applicantNotes} error={undefined}>
                 <textarea
                   {...register("applicantNotes")}
@@ -1246,19 +1684,21 @@ function Step6({
               {selectedVisaType && (
                 <>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-[#6F7A72]">Processing time</span>
+                    <span className="text-[#6F7A72]">
+                      {l.processingTimeLabel}
+                    </span>
                     <span className="font-medium text-[#1F2937]">
                       {selectedVisaType.processingTimeText}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-[#6F7A72]">Validity</span>
+                    <span className="text-[#6F7A72]">{l.validityLabel}</span>
                     <span className="font-medium text-[#1F2937]">
                       {selectedVisaType.validityDays} days
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-[#6F7A72]">Max stay</span>
+                    <span className="text-[#6F7A72]">{l.maxStayLabel}</span>
                     <span className="font-medium text-[#1F2937]">
                       {selectedVisaType.maxStayDays} days
                     </span>
@@ -1294,66 +1734,23 @@ function Step6({
         </div>
       </div>
 
-      <NavButtons
-        onBack={onBack}
-        backLabel={l.back}
-        nextLabel={l.submit}
-        nextIsSubmit
-        loading={loading}
-      />
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Success screen
-// ---------------------------------------------------------------------------
-
-function SuccessScreen({ referenceNumber }: { referenceNumber: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-      <div className="flex items-center justify-center w-20 h-20 rounded-full bg-[#004E34]/10 mb-6">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className="w-10 h-10 text-[#004E34]"
+      <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-6">
+        <button
+          type="button"
+          onClick={onBack}
+          disabled={Boolean(loadingMethod)}
+          className="flex items-center gap-2 rounded-lg border border-[#004E34] px-5 py-2.5 text-sm font-semibold text-[#004E34] transition-colors hover:bg-[#004E34]/5 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <path d="M20 6L9 17l-5-5" />
-        </svg>
-      </div>
-
-      <h2 className="text-2xl font-bold text-[#1F2937] mb-2">
-        Application Submitted!
-      </h2>
-      <p className="text-[#6F7A72] text-sm max-w-sm mb-6">
-        Your application has been received. We will review it and send updates
-        to your email address.
-      </p>
-
-      <div className="bg-[#004E34]/5 border border-[#004E34]/20 rounded-xl px-6 py-4 mb-8">
-        <p className="text-xs text-[#6F7A72] mb-1">Reference Number</p>
-        <p className="text-xl font-bold tracking-widest text-[#004E34]">
-          {referenceNumber}
-        </p>
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-3">
-        <Link
-          href="/check-status"
-          className="px-6 py-2.5 rounded-lg bg-[#004E34] text-white text-sm font-semibold hover:bg-[#003322] transition-colors"
-        >
-          Check Status
-        </Link>
-        <Link
-          href="/"
-          className="px-6 py-2.5 rounded-lg border border-gray-200 text-[#6F7A72] text-sm font-semibold hover:bg-gray-50 transition-colors"
-        >
-          Back to Home
-        </Link>
+          <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+            <path
+              fillRule="evenodd"
+              d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L4.862 9.25H16.25A.75.75 0 0 1 17 10z"
+              clipRule="evenodd"
+            />
+          </svg>
+          {l.back}
+        </button>
+        <p className="hidden text-sm text-[#6F7A72] md:block">{l.submit}</p>
       </div>
     </div>
   );
@@ -1455,48 +1852,106 @@ export function ApplyWizard({
   allCountriesOptions: SimpleCountryOption[];
   visaTypes: VisaTypeOption[];
 }) {
-  const [currentStep, setCurrentStep] = useState(0);
+  const router = useRouter();
+  const [currentStep, setCurrentStep] = useState(2);
   const [submitting, setSubmitting] = useState(false);
+  const [applicants, setApplicants] = useState<ApplicantDraft[]>([]);
+  const [activeApplicantId, setActiveApplicantId] = useState<string | null>(
+    null,
+  );
   const [referenceNumber, setReferenceNumber] = useState<string | null>(null);
   const [submissionStatus, setSubmissionStatus] = useState<
     "idle" | "success" | "failed"
   >("idle");
   const [submissionError, setSubmissionError] = useState("");
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState<PaymentMethod | null>(null);
+  const [submittingPaymentMethod, setSubmittingPaymentMethod] =
+    useState<PaymentMethod | null>(null);
 
   const methods = useForm<ApplicationFormData>({
     mode: "onBlur",
-    defaultValues: {
-      nationality: "",
-      documentType: "",
-      arrivalDate: "",
-      purposeOfVisit: "",
-      firstName: "",
-      surname: "",
-      otherNames: "",
-      dateOfBirth: "",
-      countryOfBirth: "",
-      placeOfBirth: "",
-      sex: "",
-      occupation: "",
-      mobileNumber: "",
-      address: "",
-      email: "",
-      passportNumber: "",
-      passportIssueDate: "",
-      passportExpiryDate: "",
-      passportIssuingCountry: "",
-      addressInAzerbaijan: "",
-      passportCopy: null,
-      declaration: false,
-      visaType: "",
-      stayDurationDays: "30",
-      applicantNotes: "",
-    },
+    defaultValues: DEFAULT_FORM_VALUES,
   });
 
   const next = useCallback(() => setCurrentStep((s) => Math.min(s + 1, 3)), []);
   const back = useCallback(() => setCurrentStep((s) => Math.max(s - 1, 0)), []);
   const goToStep = useCallback((step: number) => setCurrentStep(step), []);
+  const getFormSnapshot = useCallback(
+    () => ({ ...methods.getValues() }),
+    [methods],
+  );
+
+  const upsertApplicant = useCallback(
+    (
+      applicantId: string,
+      applicantReferenceNumber: string | null,
+      data: ApplicationFormData,
+    ) => {
+      setApplicants((prev) => {
+        const nextApplicant: ApplicantDraft = {
+          id: applicantId,
+          referenceNumber: applicantReferenceNumber,
+          data: { ...data },
+        };
+        const existingIndex = prev.findIndex(
+          (applicant) => applicant.id === applicantId,
+        );
+
+        if (existingIndex === -1) {
+          return [...prev, nextApplicant];
+        }
+
+        const nextApplicants = [...prev];
+        nextApplicants[existingIndex] = nextApplicant;
+        return nextApplicants;
+      });
+    },
+    [],
+  );
+
+  const syncActiveApplicant = useCallback(
+    (nextReferenceNumber?: string | null) => {
+      if (!activeApplicantId) {
+        return;
+      }
+
+      upsertApplicant(
+        activeApplicantId,
+        nextReferenceNumber ?? referenceNumber,
+        getFormSnapshot(),
+      );
+    },
+    [activeApplicantId, getFormSnapshot, referenceNumber, upsertApplicant],
+  );
+
+  const applicantSummaries: ApplicantSummary[] = applicants.map(
+    (applicant, index) => {
+      const fullName = [
+        applicant.data.firstName,
+        applicant.data.surname,
+        applicant.data.otherNames,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+
+      const subtitle =
+        applicant.data.email ||
+        applicant.referenceNumber ||
+        applicant.data.passportNumber ||
+        labels.step5.emptyValue;
+
+      return {
+        id: applicant.id,
+        title: fullName || `${labels.sidebar.applicantsTitle} ${index + 1}`,
+        subtitle,
+        isActive: applicant.id === activeApplicantId,
+      };
+    },
+  );
+  const activeApplicantSummary =
+    applicantSummaries.find((applicant) => applicant.isActive) ?? null;
 
   const extractReferenceNumber = useCallback((data: unknown): string | null => {
     if (!data || typeof data !== "object") {
@@ -1592,11 +2047,12 @@ export function ApplyWizard({
         arrival_date: methods.getValues("arrivalDate"),
         visa_purpose: Number(methods.getValues("purposeOfVisit")),
       });
+      syncActiveApplicant();
       next();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
     }
-  }, [methods, next, persistStep]);
+  }, [methods, next, persistStep, syncActiveApplicant]);
 
   const handleStep3Next = useCallback(async () => {
     try {
@@ -1636,52 +2092,122 @@ export function ApplyWizard({
         }
       }
 
+      const applicantId = activeApplicantId ?? createApplicantId();
+      if (!activeApplicantId) {
+        setActiveApplicantId(applicantId);
+      }
+      upsertApplicant(applicantId, ref, getFormSnapshot());
       next();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : String(error));
     }
-  }, [ensureDraftApplication, methods, next, persistStep]);
+  }, [
+    activeApplicantId,
+    ensureDraftApplication,
+    getFormSnapshot,
+    methods,
+    next,
+    persistStep,
+    upsertApplicant,
+  ]);
 
   const handleStep4Next = useCallback(async () => {
+    syncActiveApplicant();
     next();
-  }, [next]);
+  }, [next, syncActiveApplicant]);
 
-  const handleSubmit = methods.handleSubmit(async () => {
-    setSubmitting(true);
-    try {
-      await persistStep(4, {
-        visa_type: Number(methods.getValues("visaType")),
-        stay_duration_days: Number(methods.getValues("stayDurationDays")),
-        applicant_notes: methods.getValues("applicantNotes"),
-      });
+  const handleAddPerson = useCallback(() => {
+    syncActiveApplicant();
 
-      const currentReferenceNumber = await ensureDraftApplication();
-      const result = await submitApplication(currentReferenceNumber);
+    const currentValues = methods.getValues();
+    methods.reset({
+      ...DEFAULT_FORM_VALUES,
+      nationality: currentValues.nationality,
+      documentType: currentValues.documentType,
+      arrivalDate: currentValues.arrivalDate,
+      purposeOfVisit: currentValues.purposeOfVisit,
+      email: currentValues.email,
+      visaType: currentValues.visaType,
+      stayDurationDays: currentValues.stayDurationDays,
+    });
 
-      if (!result.success) {
-        setSubmissionError(result.error);
-        setSubmissionStatus("failed");
+    setActiveApplicantId(null);
+    setReferenceNumber(null);
+    setCurrentStep(0);
+    setSubmissionStatus("idle");
+    setSubmissionError("");
+    setSelectedPaymentMethod(null);
+    setSubmittingPaymentMethod(null);
+  }, [methods, syncActiveApplicant]);
+
+  const handleSelectApplicant = useCallback(
+    (applicantId: string) => {
+      syncActiveApplicant();
+
+      const selectedApplicant = applicants.find(
+        (applicant) => applicant.id === applicantId,
+      );
+      if (!selectedApplicant) {
         return;
       }
 
-      setSubmissionStatus("success");
-    } catch (error) {
-      setSubmissionError(
-        error instanceof Error ? error.message : String(error),
-      );
-      setSubmissionStatus("failed");
-    } finally {
-      setSubmitting(false);
-    }
-  });
+      setActiveApplicantId(selectedApplicant.id);
+      setReferenceNumber(selectedApplicant.referenceNumber);
+      methods.reset({
+        ...DEFAULT_FORM_VALUES,
+        ...selectedApplicant.data,
+      });
+      setCurrentStep(0);
+      setSubmissionStatus("idle");
+      setSubmissionError("");
+      setSelectedPaymentMethod(null);
+      setSubmittingPaymentMethod(null);
+    },
+    [applicants, methods, syncActiveApplicant],
+  );
 
-  if (submissionStatus === "success") {
-    return (
-      <div className="bg-white border border-gray-200 shadow-sm rounded-xl">
-        <SuccessScreen referenceNumber={referenceNumber ?? ""} />
-      </div>
-    );
-  }
+  const handlePaymentSelection = useCallback(
+    async (paymentMethod: PaymentMethod) => {
+      setSelectedPaymentMethod(paymentMethod);
+      setSubmitting(true);
+      setSubmittingPaymentMethod(paymentMethod);
+      setSubmissionStatus("idle");
+      setSubmissionError("");
+
+      try {
+        syncActiveApplicant();
+        await persistStep(4, {
+          visa_type: Number(methods.getValues("visaType")),
+          stay_duration_days: Number(methods.getValues("stayDurationDays")),
+          applicant_notes: methods.getValues("applicantNotes"),
+        });
+
+        const currentReferenceNumber = await ensureDraftApplication();
+        const submitResult = await submitApplication(currentReferenceNumber);
+
+        if (!submitResult.success) {
+          setSubmissionError(submitResult.error);
+          setSubmissionStatus("failed");
+          return;
+        }
+
+        const checkoutSearch = new URLSearchParams({
+          ref: currentReferenceNumber,
+          method: paymentMethod,
+        });
+        router.push(`/payment/checkout?${checkoutSearch.toString()}`);
+      } catch (error) {
+        setSubmissionError(
+          error instanceof Error ? error.message : String(error),
+        );
+        setSubmissionStatus("failed");
+      } finally {
+        setSubmitting(false);
+        setSubmittingPaymentMethod(null);
+      }
+    },
+    [ensureDraftApplication, methods, persistStep, router, syncActiveApplicant],
+  );
 
   if (submissionStatus === "failed") {
     return (
@@ -1700,15 +2226,31 @@ export function ApplyWizard({
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit} noValidate>
+      <form onSubmit={(event) => event.preventDefault()} noValidate>
+        {applicantSummaries.length > 0 && (
+          <div className="mb-4 overflow-hidden rounded-xl bg-[#004E34] lg:hidden">
+            <ApplicantList
+              applicants={applicantSummaries}
+              labels={labels}
+              onSelectApplicant={handleSelectApplicant}
+              bordered={false}
+            />
+          </div>
+        )}
         <div className="flex items-start gap-6">
-          <Sidebar current={currentStep} labels={labels} />
+          <Sidebar
+            current={currentStep}
+            labels={labels}
+            applicants={applicantSummaries}
+            onSelectApplicant={handleSelectApplicant}
+          />
           <div className="flex-1 min-w-0 px-6 bg-white border border-gray-200 shadow-sm rounded-xl py-7">
             {currentStep === 0 && (
               <Step1
                 labels={labels}
                 onNext={handleStep1Next}
                 countryOptions={countryOptions}
+                visaTypes={visaTypes}
               />
             )}
             {currentStep === 1 && (
@@ -1725,16 +2267,22 @@ export function ApplyWizard({
                 labels={labels}
                 onBack={back}
                 onNext={handleStep4Next}
+                onAddPerson={handleAddPerson}
                 goToStep={goToStep}
+                activeApplicantSummary={activeApplicantSummary}
+                applicantCount={applicantSummaries.length}
                 countryOptions={countryOptions}
                 allCountriesOptions={allCountriesOptions}
+                visaTypes={visaTypes}
               />
             )}
             {currentStep === 3 && (
               <Step6
                 labels={labels}
                 onBack={back}
-                loading={submitting}
+                onSelectPaymentMethod={handlePaymentSelection}
+                activePaymentMethod={selectedPaymentMethod}
+                loadingMethod={submitting ? submittingPaymentMethod : null}
                 visaTypes={visaTypes}
               />
             )}
