@@ -1853,7 +1853,7 @@ export function ApplyWizard({
   visaTypes: VisaTypeOption[];
 }) {
   const router = useRouter();
-  const [currentStep, setCurrentStep] = useState(2);
+  const [currentStep, setCurrentStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [applicants, setApplicants] = useState<ApplicantDraft[]>([]);
   const [activeApplicantId, setActiveApplicantId] = useState<string | null>(
