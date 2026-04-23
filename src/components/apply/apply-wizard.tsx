@@ -1219,7 +1219,7 @@ function ApplicantManagementPanel({
         <p className="mt-3 text-sm leading-relaxed text-[#52625A]">
           {l.manageApplicantsSubtitle.replace(
             "applicant(s)",
-            `${applicantCount} applicant${applicantCount === 1 ? '' : 's'}`,
+            `${applicantCount} applicant${applicantCount === 1 ? "" : "s"}`,
           )}
         </p>
         <p className="mt-2 text-sm text-[#6F7A72]">
