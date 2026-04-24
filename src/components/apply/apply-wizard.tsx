@@ -358,7 +358,7 @@ function ApplicantList({
         bordered && "mt-6 border-t border-white/10",
       )}
     >
-      <p className="mb-3 px-3 text-xs font-semibold tracking-widest uppercase text-white/60">
+      <p className="px-3 mb-3 text-xs font-semibold tracking-widest uppercase text-white/60">
         {labels.sidebar.applicantsTitle}
       </p>
       <div className="flex flex-col gap-2">
@@ -376,10 +376,10 @@ function ApplicantList({
           >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-white">
+                <p className="text-sm font-semibold text-white truncate">
                   {applicant.title}
                 </p>
-                <p className="mt-1 truncate text-xs text-white/65">
+                <p className="mt-1 text-xs truncate text-white/65">
                   {applicant.subtitle}
                 </p>
               </div>
@@ -764,7 +764,7 @@ function Step1({
         </div>
         {selectedVisaType && (
           <div className="sm:col-span-2 rounded-xl border border-[#004E34]/10 bg-[#004E34]/5 px-4 py-3">
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+            <div className="flex flex-wrap items-center text-sm gap-x-5 gap-y-2">
               <div>
                 <span className="text-[#6F7A72]">{l6.processingTimeLabel}</span>
                 <p className="font-semibold text-[#1F2937]">
@@ -968,7 +968,7 @@ function Step3({
           />
         </Field>
       </div>
-      <div className="mt-8 border-t border-gray-200 pt-8">
+      <div className="pt-8 mt-8 border-t border-gray-200">
         <div className="mb-6">
           <h3 className="text-lg font-bold text-[#1F2937]">{passport.title}</h3>
           <p className="mt-1 text-sm text-[#6F7A72]">{passport.subtitle}</p>
@@ -1239,7 +1239,7 @@ function ApplicantManagementPanel({
           onClick={onAddPerson}
           className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#004E34] px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#003322]"
         >
-          <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+          <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
             <path d="M10 3.25a.75.75 0 0 1 .75.75v5.25H16a.75.75 0 0 1 0 1.5h-5.25V16a.75.75 0 0 1-1.5 0v-5.25H4a.75.75 0 0 1 0-1.5h5.25V4a.75.75 0 0 1 .75-.75z" />
           </svg>
           {l.addPerson}
@@ -1521,7 +1521,7 @@ function Step6({
         <svg
           viewBox="0 0 24 24"
           fill="none"
-          className="h-5 w-5"
+          className="w-5 h-5"
           stroke="currentColor"
           strokeWidth={1.8}
         >
@@ -1538,7 +1538,7 @@ function Step6({
         <svg
           viewBox="0 0 24 24"
           fill="none"
-          className="h-5 w-5"
+          className="w-5 h-5"
           stroke="currentColor"
           strokeWidth={1.8}
         >
@@ -1570,7 +1570,7 @@ function Step6({
               </span>
             </div>
 
-            <div className="px-5 py-5 flex flex-col gap-4">
+            <div className="flex flex-col gap-4 px-5 py-5">
               <div className="rounded-xl border border-[#004E34]/10 bg-[#004E34]/5 px-4 py-4">
                 <h3 className="text-sm font-semibold text-[#1F2937]">
                   {l.paymentMethodSubtitle}
@@ -1616,7 +1616,7 @@ function Step6({
                         </div>
                         {isLoading ? (
                           <svg
-                            className="mt-1 h-4 w-4 animate-spin"
+                            className="w-4 h-4 mt-1 animate-spin"
                             viewBox="0 0 24 24"
                             fill="none"
                           >
@@ -1734,14 +1734,14 @@ function Step6({
         </div>
       </div>
 
-      <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-6">
+      <div className="flex items-center justify-between pt-6 mt-6 border-t border-gray-100">
         <button
           type="button"
           onClick={onBack}
           disabled={Boolean(loadingMethod)}
           className="flex items-center gap-2 rounded-lg border border-[#004E34] px-5 py-2.5 text-sm font-semibold text-[#004E34] transition-colors hover:bg-[#004E34]/5 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4">
+          <svg viewBox="0 0 20 20" fill="currentColor" className="w-4 h-4">
             <path
               fillRule="evenodd"
               d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L4.862 9.25H16.25A.75.75 0 0 1 17 10z"
@@ -1770,8 +1770,8 @@ function FailedScreen({
   referenceNumber: string | null;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
-      <div className="flex items-center justify-center w-20 h-20 rounded-full bg-red-50 mb-6">
+    <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+      <div className="flex items-center justify-center w-20 h-20 mb-6 rounded-full bg-red-50">
         <svg
           viewBox="0 0 24 24"
           fill="none"
@@ -1810,7 +1810,7 @@ function FailedScreen({
         </div>
       )}
 
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <button
           type="button"
           onClick={onRetry}
