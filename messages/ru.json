@@ -236,9 +236,13 @@
       "applicant": "ЗАЯВИТЕЛЬ",
       "visaType": "ТИП ВИЗЫ",
       "submissionDate": "ДАТА ПОДАЧИ",
+      "statusPending": "ОЖИДАЕТ ОПЛАТЫ",
       "statusProcessing": "В ОБРАБОТКЕ",
       "statusApproved": "ОДОБРЕНО",
       "statusRejected": "ОТКЛОНЕНО",
+      "pendingPaymentTitle": "Оплата все еще требуется",
+      "pendingPaymentDescription": "Ваша заявка сохранена и ожидает оплаты. Продолжите через PayPal, чтобы завершить оплату и отправить визовый запрос в обработку.",
+      "pendingPaymentButton": "Оплатить через PayPal",
       "steps": {
         "submitted": "Подано",
         "underReview": "На рассмотрении",

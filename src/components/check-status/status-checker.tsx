@@ -15,7 +15,7 @@ interface ActiveApplication {
   applicant: string;
   visaType: string;
   submissionDate: string;
-  status: AppStatus;
+  status: Extract<AppStatus, "PROCESSING"> | "PENDING";
   currentStep: 0 | 1 | 2 | 3; // 0=Submitted,1=Review,2=Processing,3=Final
 }
 
@@ -75,6 +75,7 @@ function fmtDate(iso?: string): string {
 }
 
 const STATUS_STEP_MAP: Record<string, 0 | 1 | 2 | 3> = {
+  PENDING: 0,
   SUBMITTED: 0,
   UNDER_REVIEW: 1,
   PROCESSING: 2,
@@ -109,7 +110,7 @@ function mapApiResponse(data: ApiStatusResponse): ApplicationResult {
     applicant: data.first_name + " " + data.last_name,
     visaType: data.visa_type_name ?? "",
     submissionDate: fmtDate(data.submitted_at),
-    status: "PROCESSING",
+    status: status === "PENDING" ? "PENDING" : "PROCESSING",
     currentStep: step,
   };
 }
@@ -238,9 +239,13 @@ export interface StatusCheckerLabels {
     applicant: string;
     visaType: string;
     submissionDate: string;
+    statusPending: string;
     statusProcessing: string;
     statusApproved: string;
     statusRejected: string;
+    pendingPaymentTitle: string;
+    pendingPaymentDescription: string;
+    pendingPaymentButton: string;
     steps: {
       submitted: string;
       underReview: string;
@@ -443,8 +448,6 @@ export default function StatusChecker({
     null,
   );
 
-  console.log(result);
-
   const {
     form,
     activeApplication,
@@ -606,8 +609,16 @@ export default function StatusChecker({
                     <h2 className="text-base font-bold text-[#1F2937]">
                       {activeApplication.title}
                     </h2>
-                    <span className="px-3 py-1 text-xs font-bold tracking-wider border rounded-full bg-amber-50 text-amber-700 border-amber-200">
-                      {activeApplication.statusProcessing}
+                    <span
+                      className={`px-3 py-1 text-xs font-bold tracking-wider border rounded-full ${
+                        result.status === "PENDING"
+                          ? "bg-[#FFF7E8] text-[#9A6700] border-[#F3D38A]"
+                          : "bg-amber-50 text-amber-700 border-amber-200"
+                      }`}
+                    >
+                      {result.status === "PENDING"
+                        ? activeApplication.statusPending
+                        : activeApplication.statusProcessing}
                     </span>
                   </div>
 
@@ -644,6 +655,28 @@ export default function StatusChecker({
                     currentStep={result.currentStep}
                     labels={activeApplication.steps}
                   />
+
+                  {result.status === "PENDING" && (
+                    <div className="mt-8 rounded-2xl border border-[#004E34]/10 bg-[#004E34]/[0.04] p-5 sm:p-6">
+                      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div className="max-w-xl">
+                          <h3 className="text-sm font-bold text-[#1F2937]">
+                            {activeApplication.pendingPaymentTitle}
+                          </h3>
+                          <p className="mt-1 text-sm leading-relaxed text-[#6F7A72]">
+                            {activeApplication.pendingPaymentDescription}
+                          </p>
+                        </div>
+
+                        <Link
+                          href={`/payment/checkout?ref=${encodeURIComponent(result.id)}&method=paypal`}
+                          className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#004E34] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#003322]"
+                        >
+                          {activeApplication.pendingPaymentButton}
+                        </Link>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

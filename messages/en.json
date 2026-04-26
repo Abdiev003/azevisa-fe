@@ -236,9 +236,13 @@
       "applicant": "APPLICANT",
       "visaType": "VISA TYPE",
       "submissionDate": "SUBMISSION DATE",
+      "statusPending": "PENDING PAYMENT",
       "statusProcessing": "PROCESSING",
       "statusApproved": "APPROVED",
       "statusRejected": "REJECTED",
+      "pendingPaymentTitle": "Payment is still required",
+      "pendingPaymentDescription": "Your application is saved and waiting for payment. Continue with PayPal to complete the payment and move your visa request into processing.",
+      "pendingPaymentButton": "Pay with PayPal",
       "steps": {
         "submitted": "Submitted",
         "underReview": "Under Review",

@@ -46,9 +46,15 @@ export default async function CheckStatusPage() {
       applicant: t("activeApplication.applicant"),
       visaType: t("activeApplication.visaType"),
       submissionDate: t("activeApplication.submissionDate"),
+      statusPending: t("activeApplication.statusPending"),
       statusProcessing: t("activeApplication.statusProcessing"),
       statusApproved: t("activeApplication.statusApproved"),
       statusRejected: t("activeApplication.statusRejected"),
+      pendingPaymentTitle: t("activeApplication.pendingPaymentTitle"),
+      pendingPaymentDescription: t(
+        "activeApplication.pendingPaymentDescription",
+      ),
+      pendingPaymentButton: t("activeApplication.pendingPaymentButton"),
       steps: {
         submitted: t("activeApplication.steps.submitted"),
         underReview: t("activeApplication.steps.underReview"),

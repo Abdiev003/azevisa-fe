@@ -236,9 +236,13 @@
       "applicant": "MÜRACİƏTÇİ",
       "visaType": "VİZA NÖV",
       "submissionDate": "TƏQDİM TARİXİ",
+      "statusPending": "ÖDƏNİŞ GÖZLƏYİR",
       "statusProcessing": "İCRADA",
       "statusApproved": "TƏSDİQLƏNİB",
       "statusRejected": "RƏDD EDİLİB",
+      "pendingPaymentTitle": "Ödəniş hələ tələb olunur",
+      "pendingPaymentDescription": "Müraciətiniz yadda saxlanılıb və ödənişi gözləyir. Ödənişi tamamlayıb viza sorğunuzu icraya keçirmək üçün PayPal ilə davam edin.",
+      "pendingPaymentButton": "PayPal ilə ödə",
       "steps": {
         "submitted": "Təqdim edildi",
         "underReview": "Nəzərdən keçirilir",
