@@ -706,7 +706,7 @@
       "stayDurationMax": "Maksimum qalma müddəti 30 gündür",
       "arrivalDatePast": "Gəliş tarixi keçmiş tarix ola bilməz",
       "passportIssueFuture": "Pasportunun verilmə tarixi gələcək tarix ola bilməz",
-      "passportExpiryMin": "Pasportunun etibarlılıq müddəti ən az 30 gün olmalıdır"
+      "passportExpiryMin": "Pasaport gəliş tarixindən etibarən ən azı 6 ay etibarlı olmalıdır"
     }
   },
   "Login": {

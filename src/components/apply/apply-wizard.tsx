@@ -1033,8 +1033,8 @@ function Step3({
               {...register("passportExpiryDate", {
                 required: v.required,
                 validate: (value) => {
-                  const minDate = new Date();
-                  minDate.setDate(minDate.getDate() + 30);
+                  const minDate = new Date(watch("arrivalDate"));
+                  minDate.setDate(minDate.getDate() + 180); // at least 6 months validity
                   minDate.setHours(0, 0, 0, 0);
                   return new Date(value) >= minDate || v.passportExpiryMin;
                 },

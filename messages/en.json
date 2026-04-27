@@ -701,7 +701,7 @@
       "stayDurationMax": "Maximum stay duration is 30 days",
       "arrivalDatePast": "Arrival date cannot be in the past",
       "passportIssueFuture": "Passport issue date cannot be in the future",
-      "passportExpiryMin": "Passport must be valid for at least 30 days"
+      "passportExpiryMin": "Passport must be valid for at least 6 months from arrival date"
     }
   },
   "Login": {
