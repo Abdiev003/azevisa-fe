@@ -42,6 +42,24 @@ export type PayPalCaptureResponse = {
   payment: PaymentRecord;
 };
 
+export type ApplicationGroupApplication = {
+  reference_number: string;
+  status: string;
+  total_amount: string;
+  currency: string;
+  visa_type?: { name: string } | null;
+  visa_purpose?: { name: string } | null;
+  applicant_name?: string | null;
+};
+
+export type ApplicationGroup = {
+  group_id: string;
+  status: string;
+  total_amount: string;
+  currency: string;
+  applications: ApplicationGroupApplication[];
+};
+
 // -----------------------------------------------------------------------------
 // Actions
 // -----------------------------------------------------------------------------
@@ -97,6 +115,94 @@ export async function getPaymentStatus(
 ): Promise<ActionResult<PaymentRecord>> {
   try {
     const data = (await fetcher(`/payments/status/${referenceNumber}/`, {
+      method: "GET",
+    })) as PaymentRecord;
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        typeof error === "string"
+          ? error
+          : "Could not load the payment status.",
+    };
+  }
+}
+
+/**
+ * Create an ApplicationGroup that bundles multiple applications under a single
+ * checkout. Applications must already be in `pending` status (i.e. submitted
+ * and awaiting payment).
+ */
+export async function createApplicationGroup(
+  referenceNumbers: string[],
+): Promise<ActionResult<ApplicationGroup>> {
+  try {
+    const data = (await fetcher(`/application-groups/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ application_refs: referenceNumbers }),
+    })) as ApplicationGroup;
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        typeof error === "string"
+          ? error
+          : "Could not create the application group.",
+    };
+  }
+}
+
+export async function getApplicationGroup(
+  groupId: string,
+): Promise<ActionResult<ApplicationGroup>> {
+  try {
+    const data = (await fetcher(`/application-groups/${groupId}/`, {
+      method: "GET",
+    })) as ApplicationGroup;
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error:
+        typeof error === "string"
+          ? error
+          : "Could not load the application group.",
+    };
+  }
+}
+
+/**
+ * Create a PayPal order for an application group. The amount equals the sum
+ * of every application in the group.
+ */
+export async function createPayPalGroupOrder(
+  groupId: string,
+): Promise<ActionResult<PayPalCreateOrderResponse>> {
+  try {
+    const data = (await fetcher(
+      `/payments/paypal/create-order/group/${groupId}/`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      },
+    )) as PayPalCreateOrderResponse;
+    return { success: true, data };
+  } catch (error) {
+    return {
+      success: false,
+      error: typeof error === "string" ? error : "Could not start the payment.",
+    };
+  }
+}
+
+export async function getGroupPaymentStatus(
+  groupId: string,
+): Promise<ActionResult<PaymentRecord>> {
+  try {
+    const data = (await fetcher(`/payments/status/group/${groupId}/`, {
       method: "GET",
     })) as PaymentRecord;
     return { success: true, data };

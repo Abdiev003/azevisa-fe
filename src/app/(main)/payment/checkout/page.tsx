@@ -3,13 +3,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { PayPalCheckout } from "@/components/payment/paypal-checkout";
+import { getApplicationGroup } from "@/actions/payments";
 import { fetcher } from "@/lib/fetcher";
 
 // =============================================================================
 // Types
 // =============================================================================
 
-type SearchParams = Promise<{ ref?: string; method?: string }>;
+type SearchParams = Promise<{ ref?: string; group?: string; method?: string }>;
 
 type ApplicationDetails = {
   reference_number: string;
@@ -40,9 +41,9 @@ export default async function PaymentCheckoutPage({
 }: {
   searchParams: SearchParams;
 }) {
-  const { ref, method } = await searchParams;
+  const { ref, group, method } = await searchParams;
 
-  if (!ref) {
+  if (!group && !ref) {
     redirect("/");
   }
 
@@ -53,38 +54,7 @@ export default async function PaymentCheckoutPage({
       <ErrorState
         title="Payment unavailable"
         message="Payment provider is not configured. Please contact support."
-        referenceNumber={ref}
-      />
-    );
-  }
-
-  // Fetch the application so we know the amount and can render a summary.
-  let application: ApplicationDetails | null = null;
-  try {
-    application = (await fetcher(`/applications/${ref}/`, {
-      method: "GET",
-    })) as ApplicationDetails;
-  } catch {
-    return (
-      <ErrorState
-        title="Application not found"
-        message="We could not find an application with that reference number."
-        referenceNumber={ref}
-      />
-    );
-  }
-
-  // Validate that the application is ready to accept payment.
-  if (application.status !== "pending") {
-    if (application.status === "submitted") {
-      // Already paid — send them to their status page.
-      redirect(`/check-status?ref=${ref}`);
-    }
-    return (
-      <ErrorState
-        title="This application is not awaiting payment"
-        message={`Current status: ${application.status}. Please contact support if this looks wrong.`}
-        referenceNumber={ref}
+        referenceNumber={group ?? ref ?? ""}
       />
     );
   }
@@ -101,7 +71,145 @@ export default async function PaymentCheckoutPage({
       ? "Your application has been saved. Continue to the secure card checkout powered by PayPal."
       : "Your application has been saved. Continue with PayPal to complete payment securely.";
 
-  // All good — render the checkout.
+  // -------------------------------------------------------------------------
+  // Group flow — preferred when multiple applicants are involved.
+  // -------------------------------------------------------------------------
+  if (group) {
+    const groupResult = await getApplicationGroup(group);
+    if (!groupResult.success) {
+      return (
+        <ErrorState
+          title="Application group not found"
+          message="We could not find the payment group. Please start over or contact support."
+          referenceNumber={group}
+        />
+      );
+    }
+
+    const groupData = groupResult.data;
+
+    if (groupData.status === "submitted") {
+      const firstRef = groupData.applications[0]?.reference_number ?? group;
+      redirect(`/check-status?ref=${firstRef}`);
+    }
+
+    if (groupData.status !== "pending" && groupData.status !== "draft") {
+      return (
+        <ErrorState
+          title="This group is not awaiting payment"
+          message={`Current status: ${groupData.status}. Please contact support if this looks wrong.`}
+          referenceNumber={group}
+        />
+      );
+    }
+
+    return (
+      <div className="max-w-xl mx-auto my-12 px-6">
+        <div className="bg-white border border-gray-200 shadow-sm rounded-xl py-8 px-8">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-[#1F2937] mb-2">
+              {paymentTitle}
+            </h1>
+            <p className="text-sm text-[#6F7A72]">{paymentDescription}</p>
+          </div>
+
+          <div className="mb-6 border border-gray-100 rounded-xl overflow-hidden">
+            <div className="px-5 py-3 bg-gray-50 border-b border-gray-100">
+              <h2 className="text-sm font-semibold text-[#1F2937]">
+                Order summary
+              </h2>
+            </div>
+            <div className="px-5 py-4 flex flex-col gap-3">
+              {groupData.applications.map((application) => (
+                <div
+                  key={application.reference_number}
+                  className="flex flex-col gap-1 pb-3 border-b border-gray-100 last:border-b-0 last:pb-0"
+                >
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-[#6F7A72]">
+                      {application.applicant_name ||
+                        application.reference_number}
+                    </span>
+                    <span className="font-medium text-[#1F2937]">
+                      {application.total_amount} {application.currency}
+                    </span>
+                  </div>
+                  {(application.visa_type || application.visa_purpose) && (
+                    <div className="text-xs text-[#6F7A72]">
+                      {[
+                        application.visa_type?.name,
+                        application.visa_purpose?.name,
+                      ]
+                        .filter(Boolean)
+                        .join(" — ")}
+                    </div>
+                  )}
+                  <div className="text-xs font-mono text-[#6F7A72]">
+                    {application.reference_number}
+                  </div>
+                </div>
+              ))}
+              <div className="flex items-center justify-between text-sm pt-2 border-t border-gray-100">
+                <span className="text-[#6F7A72]">Payment method</span>
+                <span className="font-medium text-[#1F2937]">
+                  {paymentMethodLabel}
+                </span>
+              </div>
+              <div className="flex items-center justify-between text-base pt-2 border-t border-gray-100">
+                <span className="font-bold text-[#1F2937]">Total</span>
+                <span className="font-black text-[#004E34]">
+                  {groupData.total_amount} {groupData.currency}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <PayPalCheckout
+            groupId={groupData.group_id}
+            referenceNumber={
+              groupData.applications[0]?.reference_number ?? groupData.group_id
+            }
+            amount={groupData.total_amount}
+            currency={groupData.currency}
+            clientId={paypalClientId}
+            preferredFunding={preferredFunding}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // -------------------------------------------------------------------------
+  // Single-application flow — kept for backwards compatibility.
+  // -------------------------------------------------------------------------
+  let application: ApplicationDetails | null = null;
+  try {
+    application = (await fetcher(`/applications/${ref}/`, {
+      method: "GET",
+    })) as ApplicationDetails;
+  } catch {
+    return (
+      <ErrorState
+        title="Application not found"
+        message="We could not find an application with that reference number."
+        referenceNumber={ref ?? ""}
+      />
+    );
+  }
+
+  if (application.status !== "pending") {
+    if (application.status === "submitted") {
+      redirect(`/check-status?ref=${ref}`);
+    }
+    return (
+      <ErrorState
+        title="This application is not awaiting payment"
+        message={`Current status: ${application.status}. Please contact support if this looks wrong.`}
+        referenceNumber={ref ?? ""}
+      />
+    );
+  }
+
   return (
     <div className="max-w-xl mx-auto my-12 px-6">
       <div className="bg-white border border-gray-200 shadow-sm rounded-xl py-8 px-8">
@@ -109,12 +217,9 @@ export default async function PaymentCheckoutPage({
           <h1 className="text-2xl font-bold text-[#1F2937] mb-2">
             {paymentTitle}
           </h1>
-          <p className="text-sm text-[#6F7A72]">
-            {paymentDescription}
-          </p>
+          <p className="text-sm text-[#6F7A72]">{paymentDescription}</p>
         </div>
 
-        {/* Order summary */}
         {(application.visa_type || application.visa_purpose) && (
           <div className="mb-6 border border-gray-100 rounded-xl overflow-hidden">
             <div className="px-5 py-3 bg-gray-50 border-b border-gray-100">
@@ -155,7 +260,6 @@ export default async function PaymentCheckoutPage({
           </div>
         )}
 
-        {/* PayPal buttons + card form */}
         <PayPalCheckout
           referenceNumber={application.reference_number}
           amount={application.total_amount}
@@ -202,16 +306,22 @@ function ErrorState({
         <h1 className="text-2xl font-bold text-[#1F2937] mb-2">{title}</h1>
         <p className="text-[#6F7A72] text-sm max-w-sm mb-6">{message}</p>
 
-        <div className="bg-[#004E34]/5 border border-[#004E34]/20 rounded-xl px-6 py-4 mb-8 w-full max-w-xs">
-          <p className="text-xs text-[#6F7A72] mb-1">Reference Number</p>
-          <p className="text-xl font-bold tracking-widest text-[#004E34]">
-            {referenceNumber}
-          </p>
-        </div>
+        {referenceNumber && (
+          <div className="bg-[#004E34]/5 border border-[#004E34]/20 rounded-xl px-6 py-4 mb-8 w-full max-w-xs">
+            <p className="text-xs text-[#6F7A72] mb-1">Reference Number</p>
+            <p className="text-xl font-bold tracking-widest text-[#004E34]">
+              {referenceNumber}
+            </p>
+          </div>
+        )}
 
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
-            href={`/check-status?ref=${referenceNumber}`}
+            href={
+              referenceNumber
+                ? `/check-status?ref=${referenceNumber}`
+                : "/check-status"
+            }
             className="px-6 py-2.5 rounded-lg bg-[#004E34] text-white text-sm font-semibold hover:bg-[#003322] transition-colors"
           >
             Check Status

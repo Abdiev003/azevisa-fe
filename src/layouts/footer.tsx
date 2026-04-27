@@ -8,6 +8,7 @@ import {
   ShareIcon,
   ShieldIcon,
 } from "@/components/icons";
+import Image from "next/image";
 
 export function Footer() {
   const t = useTranslations("Footer");
@@ -18,9 +19,18 @@ export function Footer() {
       <div className="grid grid-cols-1 gap-12 px-8 py-16 sm:grid-cols-2 lg:grid-cols-4">
         {/* Brand */}
         <div className="flex flex-col gap-5">
-          <span className="text-2xl font-bold text-white">azEvisa</span>
+          <Link href="/" aria-label="azeVisa">
+            <Image
+              src="/logo.svg"
+              alt="azeVisa"
+              width={283}
+              height={57}
+              className="w-auto h-10"
+              priority={false}
+            />
+          </Link>
           <p className="text-sm leading-7">{t("brand.description")}</p>
-          <div className="flex items-center gap-4 mt-1">
+          {/* <div className="flex items-center gap-4 mt-1">
             <button
               aria-label="Website"
               className="transition-opacity hover:opacity-80"
@@ -39,7 +49,7 @@ export function Footer() {
             >
               <ShareIcon />
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Quick Links */}

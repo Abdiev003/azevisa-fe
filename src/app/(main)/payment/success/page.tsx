@@ -2,9 +2,15 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 
-import { getPaymentStatus, type PaymentRecord } from "@/actions/payments";
+import {
+  getApplicationGroup,
+  getGroupPaymentStatus,
+  getPaymentStatus,
+  type ApplicationGroupApplication,
+  type PaymentRecord,
+} from "@/actions/payments";
 
-type SearchParams = Promise<{ ref?: string }>;
+type SearchParams = Promise<{ ref?: string; group?: string }>;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -18,41 +24,125 @@ export default async function PaymentSuccessPage({
 }: {
   searchParams: SearchParams;
 }) {
-  const { ref } = await searchParams;
+  const { ref, group } = await searchParams;
 
-  if (!ref) {
+  if (!ref && !group) {
     redirect("/");
   }
 
   // Capture happened in the PayPalCheckout component already.
   // We just fetch the latest payment status to show a confirmation.
   let payment: PaymentRecord | null = null;
-  const result = await getPaymentStatus(ref);
-  if (result.success) {
-    payment = result.data;
+  let groupApplications: ApplicationGroupApplication[] | null = null;
+
+  if (group) {
+    const [statusResult, groupResult] = await Promise.all([
+      getGroupPaymentStatus(group),
+      getApplicationGroup(group),
+    ]);
+    if (statusResult.success) {
+      payment = statusResult.data;
+    }
+    if (groupResult.success) {
+      groupApplications = groupResult.data.applications;
+    }
+  } else if (ref) {
+    const result = await getPaymentStatus(ref);
+    if (result.success) {
+      payment = result.data;
+    }
   }
 
   const isCompleted =
     payment?.status === "completed" || payment?.status === "approved";
+  const displayRef = ref ?? group ?? "";
 
   if (!isCompleted) {
-    return <Pending referenceNumber={ref} />;
+    return (
+      <Pending
+        referenceNumber={displayRef}
+        groupApplications={groupApplications}
+      />
+    );
   }
 
-  return <Completed payment={payment!} referenceNumber={ref} />;
+  return (
+    <Completed
+      payment={payment!}
+      referenceNumber={displayRef}
+      groupApplications={groupApplications}
+    />
+  );
 }
 
 // -----------------------------------------------------------------------------
 // Views
 // -----------------------------------------------------------------------------
 
+function ReferenceList({
+  applications,
+}: {
+  applications: ApplicationGroupApplication[];
+}) {
+  return (
+    <div className="bg-[#004E34]/5 border border-[#004E34]/20 rounded-xl px-5 py-4 mb-4 w-full">
+      <p className="text-xs text-[#6F7A72] mb-3">
+        Reference Numbers ({applications.length})
+      </p>
+      <ul className="flex flex-col gap-3">
+        {applications.map((application) => (
+          <li
+            key={application.reference_number}
+            className="flex items-center justify-between gap-3"
+          >
+            <div className="flex flex-col items-start text-left">
+              {application.applicant_name && (
+                <span className="text-xs text-[#6F7A72]">
+                  {application.applicant_name}
+                </span>
+              )}
+              <span className="text-base font-bold tracking-widest text-[#004E34]">
+                {application.reference_number}
+              </span>
+            </div>
+            <Link
+              href={`/check-status?ref=${application.reference_number}`}
+              className="text-xs font-semibold text-[#004E34] hover:underline shrink-0"
+            >
+              View →
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function SingleReference({ referenceNumber }: { referenceNumber: string }) {
+  return (
+    <div className="bg-[#004E34]/5 border border-[#004E34]/20 rounded-xl px-6 py-4 mb-4 w-full">
+      <p className="text-xs text-[#6F7A72] mb-1">Reference Number</p>
+      <p className="text-xl font-bold tracking-widest text-[#004E34]">
+        {referenceNumber}
+      </p>
+    </div>
+  );
+}
+
 function Completed({
   payment,
   referenceNumber,
+  groupApplications,
 }: {
   payment: PaymentRecord;
   referenceNumber: string;
+  groupApplications: ApplicationGroupApplication[] | null;
 }) {
+  const hasGroup = groupApplications && groupApplications.length > 1;
+  const primaryRef = hasGroup
+    ? groupApplications[0].reference_number
+    : referenceNumber;
+
   return (
     <div className="max-w-xl mx-auto my-16 px-6">
       <div className="bg-white border border-gray-200 shadow-sm rounded-xl py-12 px-8 flex flex-col items-center text-center">
@@ -74,16 +164,16 @@ function Completed({
           Payment successful
         </h1>
         <p className="text-[#6F7A72] text-sm max-w-sm mb-6">
-          Your application has been submitted and your payment was received.
-          We&apos;ll review it and send updates to your email.
+          {hasGroup
+            ? `${groupApplications.length} applications have been submitted and your payment was received. We'll review them and send updates to your email.`
+            : "Your application has been submitted and your payment was received. We'll review it and send updates to your email."}
         </p>
 
-        <div className="bg-[#004E34]/5 border border-[#004E34]/20 rounded-xl px-6 py-4 mb-4 w-full">
-          <p className="text-xs text-[#6F7A72] mb-1">Reference Number</p>
-          <p className="text-xl font-bold tracking-widest text-[#004E34]">
-            {referenceNumber}
-          </p>
-        </div>
+        {hasGroup ? (
+          <ReferenceList applications={groupApplications} />
+        ) : (
+          <SingleReference referenceNumber={referenceNumber} />
+        )}
 
         <div className="bg-gray-50 border border-gray-100 rounded-xl px-6 py-3 mb-8 w-full flex items-center justify-between text-sm">
           <span className="text-[#6F7A72]">Amount paid</span>
@@ -94,7 +184,7 @@ function Completed({
 
         <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
           <Link
-            href={`/check-status?ref=${referenceNumber}`}
+            href={`/check-status?ref=${primaryRef}`}
             className="px-6 py-2.5 rounded-lg bg-[#004E34] text-white text-sm font-semibold hover:bg-[#003322] transition-colors"
           >
             Check Status
@@ -111,7 +201,18 @@ function Completed({
   );
 }
 
-function Pending({ referenceNumber }: { referenceNumber: string }) {
+function Pending({
+  referenceNumber,
+  groupApplications,
+}: {
+  referenceNumber: string;
+  groupApplications: ApplicationGroupApplication[] | null;
+}) {
+  const hasGroup = groupApplications && groupApplications.length > 1;
+  const primaryRef = hasGroup
+    ? groupApplications[0].reference_number
+    : referenceNumber;
+
   return (
     <div className="max-w-xl mx-auto my-16 px-6">
       <div className="bg-white border border-gray-200 shadow-sm rounded-xl py-12 px-8 flex flex-col items-center text-center">
@@ -138,15 +239,14 @@ function Pending({ referenceNumber }: { referenceNumber: string }) {
           confirmation when it completes.
         </p>
 
-        <div className="bg-[#004E34]/5 border border-[#004E34]/20 rounded-xl px-6 py-4 mb-8 w-full">
-          <p className="text-xs text-[#6F7A72] mb-1">Reference Number</p>
-          <p className="text-xl font-bold tracking-widest text-[#004E34]">
-            {referenceNumber}
-          </p>
-        </div>
+        {hasGroup ? (
+          <ReferenceList applications={groupApplications} />
+        ) : (
+          <SingleReference referenceNumber={referenceNumber} />
+        )}
 
         <Link
-          href={`/check-status?ref=${referenceNumber}`}
+          href={`/check-status?ref=${primaryRef}`}
           className="px-6 py-2.5 rounded-lg bg-[#004E34] text-white text-sm font-semibold hover:bg-[#003322] transition-colors"
         >
           Check Status

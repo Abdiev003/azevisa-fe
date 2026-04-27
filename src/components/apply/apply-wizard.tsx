@@ -21,6 +21,7 @@ import {
   updateApplicationStep,
   uploadDocument,
 } from "@/actions/applications";
+import { createApplicationGroup } from "@/actions/payments";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -1488,6 +1489,7 @@ function Step6({
   activePaymentMethod,
   loadingMethod,
   visaTypes,
+  applicantCount,
 }: {
   labels: ApplyLabels;
   onBack: () => void;
@@ -1495,6 +1497,7 @@ function Step6({
   activePaymentMethod: PaymentMethod | null;
   loadingMethod: PaymentMethod | null;
   visaTypes: VisaTypeOption[];
+  applicantCount: number;
 }) {
   const { register, watch } = useFormContext<ApplicationFormData>();
 
@@ -1679,6 +1682,12 @@ function Step6({
                   {selectedPrice ? `$${selectedPrice.totalPrice}` : "—"}
                 </span>
               </div>
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-[#6F7A72]">Applicants</span>
+                <span className="font-medium text-[#1F2937]">
+                  × {applicantCount}
+                </span>
+              </div>
               {selectedVisaType && (
                 <>
                   <div className="flex items-center justify-between text-sm">
@@ -1708,7 +1717,9 @@ function Step6({
                   {l.totalLabel}
                 </span>
                 <span className="text-xl font-black text-[#004E34]">
-                  {selectedPrice ? `$${selectedPrice.totalPrice}` : "—"}
+                  {selectedPrice
+                    ? `$${selectedPrice.totalPrice * applicantCount}`
+                    : "—"}
                 </span>
               </div>
             </div>
@@ -2173,24 +2184,74 @@ export function ApplyWizard({
       setSubmissionError("");
 
       try {
+        // 1. Make sure the active applicant's latest form values (visa type,
+        //    stay duration, notes) are flushed into the applicants array.
         syncActiveApplicant();
-        await persistStep(4, {
-          visa_type: Number(methods.getValues("visaType")),
-          stay_duration_days: Number(methods.getValues("stayDurationDays")),
-          applicant_notes: methods.getValues("applicantNotes"),
-        });
 
-        const currentReferenceNumber = await ensureDraftApplication();
-        const submitResult = await submitApplication(currentReferenceNumber);
+        // 2. Build the up-to-date list of applicants. We merge the current
+        //    form snapshot for the active one because state updates from
+        //    syncActiveApplicant are async.
+        const activeSnapshot = getFormSnapshot();
+        const allApplicants: ApplicantDraft[] = (() => {
+          if (!activeApplicantId) {
+            return applicants;
+          }
+          const existingIndex = applicants.findIndex(
+            (applicant) => applicant.id === activeApplicantId,
+          );
+          const draft: ApplicantDraft = {
+            id: activeApplicantId,
+            referenceNumber,
+            data: activeSnapshot,
+          };
+          if (existingIndex === -1) {
+            return [...applicants, draft];
+          }
+          const next = [...applicants];
+          next[existingIndex] = draft;
+          return next;
+        })();
 
-        if (!submitResult.success) {
-          setSubmissionError(submitResult.error);
-          setSubmissionStatus("failed");
-          return;
+        if (allApplicants.length === 0) {
+          throw new Error("No applicants to submit.");
         }
 
+        // 3. Persist step 4 (visa selection + notes) and submit each applicant.
+        const submittedRefs: string[] = [];
+        for (const applicant of allApplicants) {
+          const ref = applicant.referenceNumber;
+          if (!ref) {
+            throw new Error(
+              "An applicant is missing a reference number. Please re-open them and try again.",
+            );
+          }
+
+          const stepResult = await updateApplicationStep(ref, 4, {
+            visa_type: Number(applicant.data.visaType),
+            stay_duration_days: Number(applicant.data.stayDurationDays),
+            applicant_notes: applicant.data.applicantNotes,
+          });
+          if (!stepResult.success) {
+            throw new Error(stepResult.error);
+          }
+
+          const submitResult = await submitApplication(ref);
+          if (!submitResult.success) {
+            throw new Error(submitResult.error);
+          }
+
+          submittedRefs.push(ref);
+        }
+
+        // 4. Bundle them into a single payment group.
+        const groupResult = await createApplicationGroup(submittedRefs);
+        if (!groupResult.success) {
+          throw new Error(groupResult.error);
+        }
+
+        // 5. Hand off to the checkout page using the group id.
         const checkoutSearch = new URLSearchParams({
-          ref: currentReferenceNumber,
+          group: groupResult.data.group_id,
           method: paymentMethod,
         });
         router.push(`/payment/checkout?${checkoutSearch.toString()}`);
@@ -2204,7 +2265,14 @@ export function ApplyWizard({
         setSubmittingPaymentMethod(null);
       }
     },
-    [ensureDraftApplication, methods, persistStep, router, syncActiveApplicant],
+    [
+      activeApplicantId,
+      applicants,
+      getFormSnapshot,
+      referenceNumber,
+      router,
+      syncActiveApplicant,
+    ],
   );
 
   if (submissionStatus === "failed") {
@@ -2282,6 +2350,7 @@ export function ApplyWizard({
                 activePaymentMethod={selectedPaymentMethod}
                 loadingMethod={submitting ? submittingPaymentMethod : null}
                 visaTypes={visaTypes}
+                applicantCount={Math.max(applicantSummaries.length, 1)}
               />
             )}
           </div>

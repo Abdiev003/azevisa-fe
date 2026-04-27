@@ -8,6 +8,7 @@ import { twMerge } from "tailwind-merge";
 
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 
 const MENU_ITEMS = [
   { id: "home", key: "home", path: "/" },
@@ -39,7 +40,13 @@ export function Header({ locale }: { locale: string }) {
       {/* Logo + Desktop nav */}
       <div className="flex items-center gap-8">
         <Link href="/" className="flex items-center gap-2">
-          <h1 className="text-[#004E34] font-bold text-2xl">azEvisa</h1>
+          <Image
+            src="/logo.svg"
+            alt="azeVisa"
+            width={283}
+            height={16}
+            className="object-contain"
+          />
         </Link>
 
         <nav className="hidden lg:block">
@@ -66,9 +73,7 @@ export function Header({ locale }: { locale: string }) {
       {/* Desktop right */}
       <div className="items-center hidden gap-4 xl:flex">
         <LanguageSwitcher currentLocale={locale as "en" | "az" | "ru"} />
-        <Button onClick={() => router.push("/apply")}>
-          {tH("applyNow")}
-        </Button>
+        <Button onClick={() => router.push("/apply")}>{tH("applyNow")}</Button>
       </div>
 
       {/* Tablet / Mobile right */}

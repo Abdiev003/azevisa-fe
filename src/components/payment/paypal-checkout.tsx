@@ -10,20 +10,30 @@ import {
 } from "@paypal/react-paypal-js";
 import type { OnApproveData } from "@paypal/paypal-js";
 
-import { createPayPalOrder, capturePayPalOrder } from "@/actions/payments";
+import {
+  createPayPalOrder,
+  capturePayPalOrder,
+  createPayPalGroupOrder,
+} from "@/actions/payments";
 
 // =============================================================================
 // Props
 // =============================================================================
 
 export type PayPalCheckoutProps = {
+  // Reference number used for display + the legacy single-application flow.
+  // When `groupId` is set, this is also used as the fallback identifier passed
+  // to the success page so the user always sees something meaningful.
   referenceNumber: string;
+  // When present, the group payment endpoints are used instead of the
+  // per-application ones, and the success page is told about the group.
+  groupId?: string;
   amount: string; // e.g. "66.00"
   currency: string; // e.g. "USD"
   clientId: string; // PayPal Client ID (public, safe to expose)
   preferredFunding?: "paypal" | "card";
   // Optional: customize "success" destination. Defaults to /payment/success.
-  successHref?: (ref: string) => string;
+  successHref?: (params: { ref: string; groupId?: string }) => string;
 };
 
 // =============================================================================
@@ -32,11 +42,15 @@ export type PayPalCheckoutProps = {
 
 export function PayPalCheckout({
   referenceNumber,
+  groupId,
   amount,
   currency,
   clientId,
   preferredFunding = "paypal",
-  successHref = (ref) => `/payment/success?ref=${ref}`,
+  successHref = ({ ref, groupId: gid }) =>
+    gid
+      ? `/payment/success?group=${gid}&ref=${ref}`
+      : `/payment/success?ref=${ref}`,
 }: PayPalCheckoutProps) {
   const router = useRouter();
   const [status, setStatus] = useState<
@@ -68,7 +82,9 @@ export function PayPalCheckout({
     setStatus("processing");
     setErrorMessage("");
 
-    const result = await createPayPalOrder(referenceNumber);
+    const result = groupId
+      ? await createPayPalGroupOrder(groupId)
+      : await createPayPalOrder(referenceNumber);
 
     if (!result.success) {
       setStatus("error");
@@ -85,7 +101,7 @@ export function PayPalCheckout({
 
     // Return the order_id to the SDK — it will use this to open the payment UI.
     return result.data.order_id;
-  }, [referenceNumber]);
+  }, [groupId, referenceNumber]);
 
   const handleApprove = useCallback(
     async (data: OnApproveData) => {
@@ -100,10 +116,10 @@ export function PayPalCheckout({
       }
 
       setStatus("success");
-      // Redirect to the success page with the reference
-      router.push(successHref(referenceNumber));
+      // Redirect to the success page with the reference (and group, if any)
+      router.push(successHref({ ref: referenceNumber, groupId }));
     },
-    [referenceNumber, router, successHref],
+    [groupId, referenceNumber, router, successHref],
   );
 
   const handleCancel = useCallback(() => {

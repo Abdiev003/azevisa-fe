@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 
-type SearchParams = Promise<{ ref?: string }>;
+type SearchParams = Promise<{ ref?: string; group?: string }>;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -16,9 +16,10 @@ export default async function PaymentCancelPage({
 }: {
   searchParams: SearchParams;
 }) {
-  const { ref } = await searchParams;
+  const { ref, group } = await searchParams;
+  const displayRef = ref ?? group;
 
-  if (!ref) {
+  if (!displayRef) {
     redirect("/");
   }
 
@@ -50,7 +51,7 @@ export default async function PaymentCancelPage({
         <div className="bg-[#004E34]/5 border border-[#004E34]/20 rounded-xl px-6 py-4 mb-8 w-full">
           <p className="text-xs text-[#6F7A72] mb-1">Reference Number</p>
           <p className="text-xl font-bold tracking-widest text-[#004E34]">
-            {ref}
+            {displayRef}
           </p>
           <p className="text-xs text-[#6F7A72] mt-2">
             Save this number — you can resume payment later.
@@ -59,7 +60,7 @@ export default async function PaymentCancelPage({
 
         <div className="flex flex-col sm:flex-row gap-3">
           <Link
-            href={`/check-status?ref=${ref}`}
+            href={`/check-status?ref=${ref ?? displayRef}`}
             className="px-6 py-2.5 rounded-lg bg-[#004E34] text-white text-sm font-semibold hover:bg-[#003322] transition-colors"
           >
             View Application
