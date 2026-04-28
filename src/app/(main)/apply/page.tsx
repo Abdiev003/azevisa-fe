@@ -8,6 +8,16 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: t("title"),
     description: t("description"),
+    alternates: { canonical: "/apply" },
+    openGraph: {
+      url: "/apply",
+      title: t("title"),
+      description: t("description"),
+    },
+    twitter: {
+      title: t("title"),
+      description: t("description"),
+    },
   };
 }
 

@@ -69,7 +69,7 @@ export default async function BlogDetailPage({ params }: PageProps) {
     publisher: {
       "@type": "Organization",
       name: "AzEvisa",
-      url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://azevisa.online",
+      url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://azevisa.az",
     },
     ...(post.featured_image ? { image: post.featured_image } : {}),
   };

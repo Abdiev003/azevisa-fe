@@ -169,8 +169,30 @@ export default async function HomePage() {
     { value: t("stats.years"), label: t("stats.yearsLabel") },
   ];
 
+  const faqSchema =
+    faqsHome.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqsHome.map((f) => ({
+            "@type": "Question",
+            name: f.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: f.answer,
+            },
+          })),
+        }
+      : null;
+
   return (
     <div className="bg-[#F8F9FA]">
+      {faqSchema ? (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      ) : null}
       {/* ══════════════════════ HERO ══════════════════════ */}
       <section className="relative flex items-end min-h-135 sm:items-center">
         {/* Background image */}

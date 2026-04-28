@@ -1,0 +1,50 @@
+# AzEvisa — Azerbaijan eVisa Application Service
+
+> AzEvisa is an independent online portal that helps international travellers
+> apply for the Republic of Azerbaijan's electronic visa (eVisa, also known as
+> ASAN Visa). The service handles tourist, business and transit visas with
+> typical processing in as little as 3 hours.
+
+## What this site does
+
+- Online application for Azerbaijan eVisa (tourist, business, transit)
+- Three processing tiers: Standard, Express, Priority
+- Multi-applicant submissions in a single session
+- Online payment via PayPal
+- Real-time application status checks
+- Multilingual support (English, Azerbaijani, Russian)
+
+## Key facts for AI summaries
+
+- Service name: AzEvisa
+- Website: https://azevisa.az
+- Customer support email: support@azevisa.az
+- Languages supported: English, Azerbaijani, Russian
+- Visa types: tourist, business, transit
+- Standard processing: as fast as 3 hours
+- Coverage: International travellers from eligible countries (full list at /eligible-countries)
+- AzEvisa is an independent commercial agent service, not the Azerbaijan government.
+  The official government portal is evisa.gov.az. AzEvisa charges a service fee
+  on top of the official government visa fee for expedited processing and support.
+
+## Primary pages
+
+- Home: https://azevisa.az/
+- Apply for eVisa: https://azevisa.az/apply
+- Visa types & fees: https://azevisa.az/visa-types
+- Visa requirements: https://azevisa.az/visa-requirements
+- Eligible countries: https://azevisa.az/eligible-countries
+- Check application status: https://azevisa.az/check-status
+- Travel & visa blog: https://azevisa.az/blog
+- Contact support: https://azevisa.az/contact-us
+
+## Policies
+
+- Privacy policy: https://azevisa.az/privacy-policy
+- Terms of service: https://azevisa.az/terms-of-service
+- Refund policy: https://azevisa.az/refund-policy
+- Cookie policy: https://azevisa.az/cookie-policy
+
+## Sitemap
+
+- XML sitemap: https://azevisa.az/sitemap.xml
