@@ -142,7 +142,7 @@ export function PayPalCheckout({
   return (
     <div className="flex flex-col gap-4">
       {/* Amount summary — always visible */}
-      <div className="bg-gray-50 border border-gray-100 rounded-xl px-5 py-4 flex items-center justify-between">
+      <div className="flex items-center justify-between px-5 py-4 border border-gray-100 bg-gray-50 rounded-xl">
         <div>
           <span className="text-sm text-[#6F7A72]">Total to pay</span>
           <p className="mt-1 text-sm font-medium text-[#1F2937]">
@@ -156,7 +156,7 @@ export function PayPalCheckout({
 
       {/* Status messages */}
       {status === "processing" && (
-        <div className="bg-blue-50 border border-blue-100 text-blue-700 text-sm rounded-xl px-4 py-3">
+        <div className="px-4 py-3 text-sm text-blue-700 border border-blue-100 bg-blue-50 rounded-xl">
           Processing payment — please wait…
         </div>
       )}
@@ -168,7 +168,7 @@ export function PayPalCheckout({
       )}
 
       {status === "error" && errorMessage && (
-        <div className="bg-red-50 border border-red-100 text-red-600 text-sm rounded-xl px-4 py-3">
+        <div className="px-4 py-3 text-sm text-red-600 border border-red-100 bg-red-50 rounded-xl">
           {errorMessage}
         </div>
       )}
@@ -178,21 +178,21 @@ export function PayPalCheckout({
         <PayPalButtons
           style={{
             layout: "vertical",
-            shape: "rect",
-            label: "pay",
-            color: "blue",
+            shape: "pill",
+            // label: "pay",
+            // color: "blue",
             height: 45,
           }}
-          fundingSource={preferredFunding}
-          disabled={status === "processing" || status === "success"}
+          fundingSource={"card"}
+          // disabled={status === "processing" || status === "success"}
           createOrder={handleCreateOrder}
           onApprove={handleApprove}
           onCancel={handleCancel}
           onError={handleError}
         >
-          <div className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
-            The selected payment option is currently unavailable. Please go
-            back and choose the other payment method.
+          <div className="px-4 py-3 text-sm border rounded-xl border-amber-200 bg-amber-50 text-amber-700">
+            The selected payment option is currently unavailable. Please go back
+            and choose the other payment method.
           </div>
         </PayPalButtons>
       </PayPalScriptProvider>

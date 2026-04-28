@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { CookieConsent } from "@/components/cookie-consent";
+import { WhatsAppBubble } from "@/components/whatsapp-bubble";
 import { Header } from "@/layouts/header";
 import { Footer } from "@/layouts/footer";
 
@@ -130,6 +131,7 @@ export default async function RootLayout({
           <Header locale={locale} />
           <main className="flex-1">{children}</main>
           <Footer />
+          <WhatsAppBubble />
           <CookieConsent gaId={GA_ID} />
           <Toaster position="top-right" />
         </NextIntlClientProvider>
