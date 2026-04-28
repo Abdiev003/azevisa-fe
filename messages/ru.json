@@ -16,7 +16,7 @@
       "step2": {
         "num": "02",
         "title": "Оплатите",
-        "desc": "Надёжно оплатите визовый сбор кредитной картой или PayPal. Мы используем банковское шифрование."
+        "desc": "Надёжно оплатите визовый сбор банковской картой через Stripe. Мы используем банковское шифрование."
       },
       "step3": {
         "num": "03",
@@ -241,8 +241,8 @@
       "statusApproved": "ОДОБРЕНО",
       "statusRejected": "ОТКЛОНЕНО",
       "pendingPaymentTitle": "Оплата все еще требуется",
-      "pendingPaymentDescription": "Ваша заявка сохранена и ожидает оплаты. Продолжите через PayPal, чтобы завершить оплату и отправить визовый запрос в обработку.",
-      "pendingPaymentButton": "Оплатить через PayPal",
+      "pendingPaymentDescription": "Ваша заявка сохранена и ожидает оплаты. Продолжите через Stripe, чтобы завершить оплату и отправить визовый запрос в обработку.",
+      "pendingPaymentButton": "Оплатить через Stripe",
       "steps": {
         "submitted": "Подано",
         "underReview": "На рассмотрении",
@@ -682,17 +682,17 @@
       "validityLabel": "Срок действия",
       "maxStayLabel": "Макс. пребывание",
       "paymentMethodTitle": "Способ оплаты",
-      "paymentMethodSubtitle": "Выберите, как продолжить к безопасному PayPal checkout.",
+      "paymentMethodSubtitle": "Перейдите к безопасному Stripe checkout, чтобы завершить оплату.",
       "secureCheckoutBadge": "Безопасная оплата",
-      "redirectNotice": "Данные карты вводятся в защищенном окне, размещенном PayPal, после продолжения оплаты.",
-      "payWithCard": "Карта / Кредитная карта",
-      "cardFlowHint": "Вы останетесь на странице заявки, пока не откроется безопасный этап оплаты.",
+      "redirectNotice": "После продолжения данные карты вводятся в защищенном окне, размещенном Stripe.",
+      "payWithCard": "Оплатить через Stripe",
+      "cardFlowHint": "Вы будете перенаправлены на Stripe для завершения безопасной оплаты.",
       "alternativeDivider": "или",
-      "payWithPayPal": "PayPal",
-      "payWithPayPalHint": "Оплатите через аккаунт PayPal в защищенном окне checkout.",
+      "payWithPayPal": "Stripe",
+      "payWithPayPalHint": "Безопасно оплатите картой в окне Stripe checkout.",
       "supportText": "Нужна помощь? Перед отправкой заявки внимательно проверьте выбранный вариант обработки.",
       "back": "Назад к проверке",
-      "submit": "Выберите способ оплаты, чтобы продолжить",
+      "submit": "Перейти к безопасной оплате",
       "submissionSuccess": "Заявка успешно отправлена!"
     },
     "validation": {

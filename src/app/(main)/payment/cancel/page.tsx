@@ -11,13 +11,26 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// Single-application references look like `EV-XXXXXXXX`; group identifiers are UUIDs.
+// Stripe's cancel_url forwards whichever identifier was used, so we route on shape.
+function isApplicationReference(value: string) {
+  return /^EV-[A-Z0-9]{8}$/.test(value);
+}
+
 export default async function PaymentCancelPage({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
   const { ref, group } = await searchParams;
-  const displayRef = ref ?? group;
+  const groupId = group ?? (ref && !isApplicationReference(ref) ? ref : null);
+  const applicationRef = ref && isApplicationReference(ref) ? ref : null;
+  const displayRef = applicationRef ?? groupId;
+  const retryHref = groupId
+    ? `/payment/checkout?group=${encodeURIComponent(groupId)}`
+    : applicationRef
+      ? `/payment/checkout?ref=${encodeURIComponent(applicationRef)}`
+      : null;
 
   if (!displayRef) {
     redirect("/");
@@ -59,12 +72,22 @@ export default async function PaymentCancelPage({
         </div>
 
         <div className="flex flex-col sm:flex-row gap-3">
-          <Link
-            href={`/check-status?ref=${ref ?? displayRef}`}
-            className="px-6 py-2.5 rounded-lg bg-[#004E34] text-white text-sm font-semibold hover:bg-[#003322] transition-colors"
-          >
-            View Application
-          </Link>
+          {retryHref && (
+            <Link
+              href={retryHref}
+              className="px-6 py-2.5 rounded-lg bg-[#004E34] text-white text-sm font-semibold hover:bg-[#003322] transition-colors"
+            >
+              Retry Payment
+            </Link>
+          )}
+          {applicationRef && (
+            <Link
+              href={`/check-status?ref=${applicationRef}`}
+              className="px-6 py-2.5 rounded-lg border border-gray-200 text-[#6F7A72] text-sm font-semibold hover:bg-gray-50 transition-colors"
+            >
+              View Application
+            </Link>
+          )}
           <Link
             href="/"
             className="px-6 py-2.5 rounded-lg border border-gray-200 text-[#6F7A72] text-sm font-semibold hover:bg-gray-50 transition-colors"

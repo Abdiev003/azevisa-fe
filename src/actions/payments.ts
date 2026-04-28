@@ -10,11 +10,11 @@ type ActionResult<T = unknown> =
   | { success: true; data: T }
   | { success: false; error: string };
 
-export type PayPalCreateOrderResponse = {
-  payment_id: number;
-  order_id: string;
-  status: string;
-  approval_url: string | null;
+export type StripeCheckoutSessionResponse = {
+  payment_id?: number;
+  session_id?: string;
+  client_secret?: string | null;
+  status?: string;
 };
 
 export type PaymentRecord = {
@@ -35,11 +35,6 @@ export type PaymentRecord = {
   payer_email: string;
   created_at: string;
   completed_at: string | null;
-};
-
-export type PayPalCaptureResponse = {
-  message: string;
-  payment: PaymentRecord;
 };
 
 export type ApplicationGroupApplication = {
@@ -64,48 +59,25 @@ export type ApplicationGroup = {
 // Actions
 // -----------------------------------------------------------------------------
 
-/**
- * Create a PayPal order for a pending application.
- * Called from the PayPalButtons `createOrder` callback.
- */
-export async function createPayPalOrder(
+export async function createStripeCheckoutSession(
   referenceNumber: string,
-): Promise<ActionResult<PayPalCreateOrderResponse>> {
+): Promise<ActionResult<StripeCheckoutSessionResponse>> {
   try {
     const data = (await fetcher(
-      `/payments/paypal/create-order/${referenceNumber}/`,
+      `/payments/stripe/create-checkout-session/${referenceNumber}/`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       },
-    )) as PayPalCreateOrderResponse;
-    return { success: true, data };
-  } catch (error) {
-    return {
-      success: false,
-      error: typeof error === "string" ? error : "Could not start the payment.",
-    };
-  }
-}
-
-/**
- * Capture an approved PayPal order on the backend.
- * Called from the PayPalButtons `onApprove` callback after user confirms.
- */
-export async function capturePayPalOrder(
-  orderId: string,
-): Promise<ActionResult<PayPalCaptureResponse>> {
-  try {
-    const data = (await fetcher(`/payments/paypal/capture-order/${orderId}/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    })) as PayPalCaptureResponse;
+    )) as StripeCheckoutSessionResponse;
     return { success: true, data };
   } catch (error) {
     return {
       success: false,
       error:
-        typeof error === "string" ? error : "Could not confirm the payment.",
+        typeof error === "string"
+          ? error
+          : "Could not prepare the Stripe checkout.",
     };
   }
 }
@@ -174,26 +146,25 @@ export async function getApplicationGroup(
   }
 }
 
-/**
- * Create a PayPal order for an application group. The amount equals the sum
- * of every application in the group.
- */
-export async function createPayPalGroupOrder(
+export async function createStripeGroupCheckoutSession(
   groupId: string,
-): Promise<ActionResult<PayPalCreateOrderResponse>> {
+): Promise<ActionResult<StripeCheckoutSessionResponse>> {
   try {
     const data = (await fetcher(
-      `/payments/paypal/create-order/group/${groupId}/`,
+      `/payments/stripe/create-checkout-session/group/${groupId}/`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       },
-    )) as PayPalCreateOrderResponse;
+    )) as StripeCheckoutSessionResponse;
     return { success: true, data };
   } catch (error) {
     return {
       success: false,
-      error: typeof error === "string" ? error : "Could not start the payment.",
+      error:
+        typeof error === "string"
+          ? error
+          : "Could not prepare the Stripe checkout.",
     };
   }
 }

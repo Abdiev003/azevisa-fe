@@ -2,8 +2,12 @@ import { redirect } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { PayPalCheckout } from "@/components/payment/paypal-checkout";
-import { getApplicationGroup } from "@/actions/payments";
+import { StripeCheckout } from "@/components/payment/stripe-checkout";
+import {
+  createStripeCheckoutSession,
+  createStripeGroupCheckoutSession,
+  getApplicationGroup,
+} from "@/actions/payments";
 import { fetcher } from "@/lib/fetcher";
 
 // =============================================================================
@@ -19,7 +23,46 @@ type ApplicationDetails = {
   currency: string;
   visa_type?: { name: string } | null;
   visa_purpose?: { name: string } | null;
+  group_id?: string | null;
+  application_group?:
+    | string
+    | {
+        id?: string | null;
+        group_id?: string | null;
+      }
+    | null;
+  group?:
+    | string
+    | {
+        id?: string | null;
+        group_id?: string | null;
+      }
+    | null;
 };
+
+function getApplicationGroupId(application: ApplicationDetails) {
+  if (application.group_id) {
+    return application.group_id;
+  }
+
+  for (const value of [application.application_group, application.group]) {
+    if (typeof value === "string" && value) {
+      return value;
+    }
+
+    if (value && typeof value === "object") {
+      if (value.group_id) {
+        return value.group_id;
+      }
+
+      if (value.id) {
+        return value.id;
+      }
+    }
+  }
+
+  return null;
+}
 
 // =============================================================================
 // Metadata
@@ -47,29 +90,25 @@ export default async function PaymentCheckoutPage({
     redirect("/");
   }
 
-  // The Client ID is public — safe to expose via NEXT_PUBLIC_* env var.
-  const paypalClientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-  if (!paypalClientId) {
+  const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+  if (!stripePublishableKey) {
     return (
       <ErrorState
         title="Payment unavailable"
-        message="Payment provider is not configured. Please contact support."
+        message="Stripe is not configured. Please contact support."
         referenceNumber={group ?? ref ?? ""}
       />
     );
   }
 
-  const preferredFunding = method === "card" ? "card" : "paypal";
-  const paymentMethodLabel =
-    preferredFunding === "card" ? "Card / Credit Card" : "PayPal";
-  const paymentTitle =
-    preferredFunding === "card"
-      ? "Complete your card payment"
-      : "Complete your PayPal payment";
-  const paymentDescription =
-    preferredFunding === "card"
-      ? "Your application has been saved. Continue to the secure card checkout powered by PayPal."
-      : "Your application has been saved. Continue with PayPal to complete payment securely.";
+  const isCardAlias = method === "card";
+  const paymentMethodLabel = "Stripe";
+  const paymentTitle = isCardAlias
+    ? "Complete your card payment"
+    : "Complete your Stripe payment";
+  const paymentDescription = isCardAlias
+    ? "Your application has been saved. Continue to the secure card checkout powered by Stripe."
+    : "Your application has been saved. Continue with Stripe to complete payment securely.";
 
   // -------------------------------------------------------------------------
   // Group flow — preferred when multiple applicants are involved.
@@ -98,6 +137,30 @@ export default async function PaymentCheckoutPage({
         <ErrorState
           title="This group is not awaiting payment"
           message={`Current status: ${groupData.status}. Please contact support if this looks wrong.`}
+          referenceNumber={group}
+        />
+      );
+    }
+
+    const sessionResult = await createStripeGroupCheckoutSession(
+      groupData.group_id,
+    );
+    if (!sessionResult.success) {
+      return (
+        <ErrorState
+          title="Payment unavailable"
+          message={sessionResult.error}
+          referenceNumber={group}
+        />
+      );
+    }
+
+    const clientSecret = sessionResult.data.client_secret;
+    if (!clientSecret) {
+      return (
+        <ErrorState
+          title="Payment unavailable"
+          message="Stripe checkout client secret was not returned."
           referenceNumber={group}
         />
       );
@@ -164,15 +227,15 @@ export default async function PaymentCheckoutPage({
             </div>
           </div>
 
-          <PayPalCheckout
+          <StripeCheckout
             groupId={groupData.group_id}
             referenceNumber={
               groupData.applications[0]?.reference_number ?? groupData.group_id
             }
             amount={groupData.total_amount}
             currency={groupData.currency}
-            clientId={paypalClientId}
-            preferredFunding={preferredFunding}
+            publishableKey={stripePublishableKey}
+            clientSecret={clientSecret}
           />
         </div>
       </div>
@@ -205,6 +268,37 @@ export default async function PaymentCheckoutPage({
       <ErrorState
         title="This application is not awaiting payment"
         message={`Current status: ${application.status}. Please contact support if this looks wrong.`}
+        referenceNumber={ref ?? ""}
+      />
+    );
+  }
+
+  const applicationGroupId = getApplicationGroupId(application);
+  if (applicationGroupId) {
+    redirect(
+      `/payment/checkout?group=${encodeURIComponent(applicationGroupId)}&ref=${encodeURIComponent(application.reference_number)}&method=stripe`,
+    );
+  }
+
+  const sessionResult = await createStripeCheckoutSession(
+    application.reference_number,
+  );
+  if (!sessionResult.success) {
+    return (
+      <ErrorState
+        title="Payment unavailable"
+        message={sessionResult.error}
+        referenceNumber={ref ?? ""}
+      />
+    );
+  }
+
+  const clientSecret = sessionResult.data.client_secret;
+  if (!clientSecret) {
+    return (
+      <ErrorState
+        title="Payment unavailable"
+        message="Stripe checkout client secret was not returned."
         referenceNumber={ref ?? ""}
       />
     );
@@ -260,12 +354,12 @@ export default async function PaymentCheckoutPage({
           </div>
         )}
 
-        <PayPalCheckout
+        <StripeCheckout
           referenceNumber={application.reference_number}
           amount={application.total_amount}
           currency={application.currency}
-          clientId={paypalClientId}
-          preferredFunding={preferredFunding}
+          publishableKey={stripePublishableKey}
+          clientSecret={clientSecret}
         />
       </div>
     </div>

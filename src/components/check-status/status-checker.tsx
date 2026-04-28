@@ -12,6 +12,7 @@ type AppStatus = "PROCESSING" | "APPROVED" | "REJECTED" | "CANCELLED";
 interface ActiveApplication {
   kind: "active";
   id: string;
+  groupId: string | null;
   applicant: string;
   visaType: string;
   submissionDate: string;
@@ -42,8 +43,47 @@ interface ApiStatusResponse {
   submitted_at?: string;
   valid_until?: string;
   downloadable_pdf_url?: string | null;
+  group_id?: string | null;
+  application_group?:
+    | string
+    | {
+        id?: string | null;
+        group_id?: string | null;
+      }
+    | null;
+  group?:
+    | string
+    | {
+        id?: string | null;
+        group_id?: string | null;
+      }
+    | null;
   /** 0 = Submitted, 1 = Under Review, 2 = Processing, 3 = Final Decision */
   current_step?: number;
+}
+
+function getApiGroupId(data: ApiStatusResponse) {
+  if (data.group_id) {
+    return data.group_id;
+  }
+
+  for (const value of [data.application_group, data.group]) {
+    if (typeof value === "string" && value) {
+      return value;
+    }
+
+    if (value && typeof value === "object") {
+      if (value.group_id) {
+        return value.group_id;
+      }
+
+      if (value.id) {
+        return value.id;
+      }
+    }
+  }
+
+  return null;
 }
 
 function resolveDownloadUrl(path?: string | null): string | null {
@@ -107,6 +147,7 @@ function mapApiResponse(data: ApiStatusResponse): ApplicationResult {
   return {
     kind: "active",
     id: data.reference_number,
+    groupId: getApiGroupId(data),
     applicant: data.first_name + " " + data.last_name,
     visaType: data.visa_type_name ?? "",
     submissionDate: fmtDate(data.submitted_at),
@@ -669,7 +710,11 @@ export default function StatusChecker({
                         </div>
 
                         <Link
-                          href={`/payment/checkout?ref=${encodeURIComponent(result.id)}&method=paypal`}
+                          href={
+                            result.groupId
+                              ? `/payment/checkout?group=${encodeURIComponent(result.groupId)}&ref=${encodeURIComponent(result.id)}&method=stripe`
+                              : `/payment/checkout?ref=${encodeURIComponent(result.id)}&method=stripe`
+                          }
                           className="inline-flex shrink-0 items-center justify-center rounded-xl bg-[#004E34] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#003322]"
                         >
                           {activeApplication.pendingPaymentButton}

@@ -16,7 +16,7 @@
       "step2": {
         "num": "02",
         "title": "Ödəniş edin",
-        "desc": "Kredit kartı və ya PayPal ilə viza rüsumunu təhlükəsiz ödəyin. Banka səviyyəli şifrashlanma istəklədiririk."
+        "desc": "Viza rüsumunu Stripe üzərindən bank kartınızla təhlükəsiz ödəyin. Bütün əməliyyatlarda bank səviyyəli şifrələmədən istifadə edirik."
       },
       "step3": {
         "num": "03",
@@ -241,8 +241,8 @@
       "statusApproved": "TƏSDİQLƏNİB",
       "statusRejected": "RƏDD EDİLİB",
       "pendingPaymentTitle": "Ödəniş hələ tələb olunur",
-      "pendingPaymentDescription": "Müraciətiniz yadda saxlanılıb və ödənişi gözləyir. Ödənişi tamamlayıb viza sorğunuzu icraya keçirmək üçün PayPal ilə davam edin.",
-      "pendingPaymentButton": "PayPal ilə ödə",
+      "pendingPaymentDescription": "Müraciətiniz yadda saxlanılıb və ödənişi gözləyir. Ödənişi tamamlayıb viza sorğunuzu icraya keçirmək üçün Stripe ilə davam edin.",
+      "pendingPaymentButton": "Stripe ilə ödə",
       "steps": {
         "submitted": "Təqdim edildi",
         "underReview": "Nəzərdən keçirilir",
@@ -682,17 +682,17 @@
       "validityLabel": "Etibarlılıq",
       "maxStayLabel": "Maks. qalma",
       "paymentMethodTitle": "Ödəniş üsulu",
-      "paymentMethodSubtitle": "Təhlükəsiz PayPal checkout-a necə davam etmək istədiyinizi seçin.",
+      "paymentMethodSubtitle": "Ödənişi tamamlamaq üçün təhlükəsiz Stripe checkout-a davam edin.",
       "secureCheckoutBadge": "Təhlükəsiz checkout",
-      "redirectNotice": "Kart məlumatları davam etdikdən sonra PayPal-ın host etdiyi təhlükəsiz pəncərədə daxil edilir.",
-      "payWithCard": "Kart / Kredit Kartı",
-      "cardFlowHint": "Təhlükəsiz ödəniş addımı açılana qədər bu müraciət səhifəsində qalacaqsınız.",
+      "redirectNotice": "Davam etdikdən sonra kart məlumatları Stripe-ın host etdiyi təhlükəsiz pəncərədə daxil edilir.",
+      "payWithCard": "Stripe ilə ödə",
+      "cardFlowHint": "Təhlükəsiz ödənişi tamamlamaq üçün Stripe səhifəsinə yönləndiriləcəksiniz.",
       "alternativeDivider": "və ya",
-      "payWithPayPal": "PayPal",
-      "payWithPayPalHint": "PayPal hesabınızla təhlükəsiz checkout pəncərəsində ödəniş edin.",
+      "payWithPayPal": "Stripe",
+      "payWithPayPalHint": "Stripe checkout pəncərəsində kartınızla təhlükəsiz ödəniş edin.",
       "supportText": "Köməyə ehtiyacınız var? Müraciəti göndərməzdən əvvəl seçdiyiniz emal növünü diqqətlə yoxlayın.",
       "back": "Yoxlamaya qayıt",
-      "submit": "Davam etmək üçün ödəniş üsulu seçin",
+      "submit": "Təhlükəsiz ödənişə davam edin",
       "submissionSuccess": "Müraciət uğurla göndərildi!"
     },
     "validation": {

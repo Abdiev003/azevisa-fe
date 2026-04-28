@@ -10,7 +10,7 @@
 - Online application for Azerbaijan eVisa (tourist, business, transit)
 - Three processing tiers: Standard, Express, Priority
 - Multi-applicant submissions in a single session
-- Online payment via PayPal
+- Online payment via Stripe
 - Real-time application status checks
 - Multilingual support (English, Azerbaijani, Russian)
 

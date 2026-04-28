@@ -10,13 +10,23 @@ import {
   type PaymentRecord,
 } from "@/actions/payments";
 
-type SearchParams = Promise<{ ref?: string; group?: string }>;
+type SearchParams = Promise<{
+  ref?: string;
+  group?: string;
+  session_id?: string;
+}>;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Payment successful",
     robots: { index: false, follow: false },
   };
+}
+
+// Single-application references look like `EV-XXXXXXXX`; group identifiers are UUIDs.
+// Stripe's success_url forwards whichever identifier was used, so we route on shape.
+function isApplicationReference(value: string) {
+  return /^EV-[A-Z0-9]{8}$/.test(value);
 }
 
 export default async function PaymentSuccessPage({
@@ -30,15 +40,18 @@ export default async function PaymentSuccessPage({
     redirect("/");
   }
 
-  // Capture happened in the PayPalCheckout component already.
-  // We just fetch the latest payment status to show a confirmation.
+  const groupId = group ?? (ref && !isApplicationReference(ref) ? ref : null);
+  const applicationRef = ref && isApplicationReference(ref) ? ref : null;
+
+  // Stripe/PayPal completion is finalized off-page.
+  // We fetch the latest payment status here to show confirmation.
   let payment: PaymentRecord | null = null;
   let groupApplications: ApplicationGroupApplication[] | null = null;
 
-  if (group) {
+  if (groupId) {
     const [statusResult, groupResult] = await Promise.all([
-      getGroupPaymentStatus(group),
-      getApplicationGroup(group),
+      getGroupPaymentStatus(groupId),
+      getApplicationGroup(groupId),
     ]);
     if (statusResult.success) {
       payment = statusResult.data;
@@ -46,8 +59,8 @@ export default async function PaymentSuccessPage({
     if (groupResult.success) {
       groupApplications = groupResult.data.applications;
     }
-  } else if (ref) {
-    const result = await getPaymentStatus(ref);
+  } else if (applicationRef) {
+    const result = await getPaymentStatus(applicationRef);
     if (result.success) {
       payment = result.data;
     }
@@ -55,7 +68,11 @@ export default async function PaymentSuccessPage({
 
   const isCompleted =
     payment?.status === "completed" || payment?.status === "approved";
-  const displayRef = ref ?? group ?? "";
+  const displayRef =
+    applicationRef ??
+    groupApplications?.[0]?.reference_number ??
+    groupId ??
+    "";
 
   if (!isCompleted) {
     return (

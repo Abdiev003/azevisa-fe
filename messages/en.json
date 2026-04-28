@@ -16,7 +16,7 @@
       "step2": {
         "num": "02",
         "title": "Make Payment",
-        "desc": "Securely pay the visa fee using your credit card or PayPal. We use bank-grade encryption for all transactions."
+        "desc": "Securely pay the visa fee using your credit card with Stripe. We use bank-grade encryption for all transactions."
       },
       "step3": {
         "num": "03",
@@ -241,8 +241,8 @@
       "statusApproved": "APPROVED",
       "statusRejected": "REJECTED",
       "pendingPaymentTitle": "Payment is still required",
-      "pendingPaymentDescription": "Your application is saved and waiting for payment. Continue with PayPal to complete the payment and move your visa request into processing.",
-      "pendingPaymentButton": "Pay with PayPal",
+      "pendingPaymentDescription": "Your application is saved and waiting for payment. Continue with Stripe to complete the payment and move your visa request into processing.",
+      "pendingPaymentButton": "Pay with Stripe",
       "steps": {
         "submitted": "Submitted",
         "underReview": "Under Review",
@@ -677,17 +677,17 @@
       "validityLabel": "Validity",
       "maxStayLabel": "Max stay",
       "paymentMethodTitle": "Payment Method",
-      "paymentMethodSubtitle": "Choose how you want to continue to the secure PayPal checkout.",
+      "paymentMethodSubtitle": "Continue to the secure Stripe checkout to complete your payment.",
       "secureCheckoutBadge": "Secure checkout",
-      "redirectNotice": "Card details are collected in a PayPal-hosted secure window after you continue.",
-      "payWithCard": "Card / Credit Card",
-      "cardFlowHint": "You will stay on this application until the secure payment step opens.",
+      "redirectNotice": "Card details are collected in a Stripe-hosted secure window after you continue.",
+      "payWithCard": "Pay with Stripe",
+      "cardFlowHint": "You will be redirected to Stripe to complete the secure payment.",
       "alternativeDivider": "or",
-      "payWithPayPal": "PayPal",
-      "payWithPayPalHint": "Pay with your PayPal account in the secure checkout window.",
+      "payWithPayPal": "Stripe",
+      "payWithPayPalHint": "Pay securely with your card in the Stripe checkout window.",
       "supportText": "Need assistance? Review the selected processing option carefully before submitting your application.",
       "back": "Back to Review",
-      "submit": "Select a payment option to continue",
+      "submit": "Continue to secure payment",
       "submissionSuccess": "Application submitted successfully!"
     },
     "validation": {
