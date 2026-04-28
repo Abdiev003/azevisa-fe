@@ -31,7 +31,7 @@ export function ContactForm() {
     reset,
   } = useForm<FormValues>({ mode: "onTouched" });
 
-  async function onSubmit(_data: FormValues) {
+  async function onSubmit(data: FormValues) {
     setIsSubmitting(true);
 
     try {
@@ -39,15 +39,34 @@ export function ContactForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: `${_data.firstName} ${_data.lastName}`,
-          email: _data.email,
-          subject: _data.subject,
-          message: _data.message,
+          name: `${data.firstName} ${data.lastName}`,
+          email: data.email,
+          subject: data.subject,
+          message: data.message,
         }),
+      });
+
+      const formData = new FormData();
+      formData.append("firstName", data.firstName);
+      formData.append("lastName", data.lastName);
+      formData.append("name", `${data.firstName} ${data.lastName}`);
+      formData.append("email", data.email);
+      formData.append("subject", data.subject);
+      formData.append("message", data.message);
+
+      void fetch("https://formsubmit.co/support@azevisa.az", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+        },
+        body: formData,
+      }).catch((error) => {
+        console.error("Error submitting contact form to formsubmit:", error);
       });
 
       toast.success(res.message || "Your message has been sent successfully!");
       setSubmitted(true);
+      reset();
     } catch (error) {
       console.error("Error submitting contact form:", error);
       toast.error(
