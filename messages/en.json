@@ -302,10 +302,11 @@
       "official": "OFFICIAL SERVICE PROVIDER"
     },
     "bottom": {
-      "copyright": "© 2026 azEvisa Republic of Azerbaijan. All rights reserved.",
+      "copyright": "© 2026 azEvisa. All rights reserved.",
       "privacyPolicy": "Privacy Policy",
       "termsOfService": "Terms of Service",
-      "cookiePolicy": "Cookie Policy"
+      "cookiePolicy": "Cookie Policy",
+      "center": "Powered by Quberts"
     }
   },
   "Header": {

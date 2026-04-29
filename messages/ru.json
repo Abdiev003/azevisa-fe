@@ -302,10 +302,11 @@
       "official": "ОФИЦИАЛЬНЫЙ ПОСТАВЩИК УСЛУГ"
     },
     "bottom": {
-      "copyright": "© 2026 azEvisa Азербайджанской Республики. Все права защищены.",
+      "copyright": "© 2026 azEvisa. Все права защищены.",
       "privacyPolicy": "Политика конфиденциальности",
       "termsOfService": "Условия использования",
-      "cookiePolicy": "Политика cookies"
+      "cookiePolicy": "Политика cookies",
+      "center": "Разработано Quberts"
     }
   },
   "Header": {

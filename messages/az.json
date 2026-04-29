@@ -302,10 +302,11 @@
       "official": "RƏSMİ XİDMƏT TƏMİNATÇISI"
     },
     "bottom": {
-      "copyright": "© 2026 Azərbaycan Respublikasının azEvisası. Bütün hüquqlar qorunur.",
+      "copyright": "© 2026 azEvisa. Bütün hüquqlar qorunur.",
       "privacyPolicy": "Məxfilik Siyasəti",
       "termsOfService": "İstifadə Şərtləri",
-      "cookiePolicy": "Çərəz Siyasəti"
+      "cookiePolicy": "Çərəz Siyasəti",
+      "center": "Quberts tərəfindən hazırlanmışdır"
     }
   },
   "Header": {

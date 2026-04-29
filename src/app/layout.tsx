@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
+import { Manrope, Host_Grotesk } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { cookies } from "next/headers";
 import { Toaster } from "sonner";
@@ -11,6 +11,12 @@ import { Footer } from "@/layouts/footer";
 
 const manrope = Manrope({
   variable: "--font-manrope",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const hostGrotesk = Host_Grotesk({
+  variable: "--font-host-grotesk",
   subsets: ["latin"],
   display: "swap",
 });
@@ -202,7 +208,10 @@ export default async function RootLayout({
   const locale = store.get("locale")?.value ?? "en";
 
   return (
-    <html lang={locale} className={`${manrope.variable} h-full antialiased`}>
+    <html
+      lang={locale}
+      className={`${manrope.variable} ${hostGrotesk.variable} h-full antialiased`}
+    >
       <body className="flex flex-col min-h-full">
         <script
           type="application/ld+json"

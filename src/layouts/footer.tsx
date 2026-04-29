@@ -148,6 +148,14 @@ export function Footer() {
       <div className="border-t border-[#1E293B]">
         <div className="flex flex-col gap-4 px-8 py-5 text-sm sm:flex-row sm:items-center sm:justify-between">
           <span>{t("bottom.copyright")}</span>
+          <Link
+            href="https://quberts.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-host-grotesk"
+          >
+            {t("bottom.center")}
+          </Link>
           <div className="flex items-center gap-6">
             <Link
               href="/privacy-policy"
